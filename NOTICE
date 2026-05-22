@@ -1,0 +1,21 @@
+StreamingMarkdown for iOS
+Copyright (c) 2026 Microsoft Corporation
+
+This project is released under the MIT License. This NOTICE file tracks third-party components currently referenced by the Swift package manifest so attribution can be preserved for release.
+
+This file is not yet the final release notice bundle. Before public release, replace the summary rows below with the exact upstream copyright notices, license texts or links, and attribution text required by the approved dependency review.
+
+## Third-party components
+
+| Component | Version / pin | Area | License / notice |
+| --- | --- | --- | --- |
+| swift-markdown | 0.7.3 | Markdown parsing | Apache License 2.0 |
+| HighlightSwift | 99c431b38a1444a5fd6a4978307fbbefe3a7af53 | Syntax highlighting | MIT License |
+| iosMath | 066ba2f8353782a644889efe9ceb884ea844180b | Math rendering | MIT License |
+| XCTest | Toolchain provided, tests only | Unit tests | Apple toolchain component |
+
+## Pre-release attribution blockers
+
+1. Confirm exact required notices for every runtime, demo, test, and build dependency in the final package set.
+2. Generate or attach final third-party notice artifacts from Component Governance or the approved dependency-review process.
+3. Include the approved NOTICE/BOM in any distributed package artifacts where required.

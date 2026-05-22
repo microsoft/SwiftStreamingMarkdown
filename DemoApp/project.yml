@@ -1,0 +1,25 @@
+name: StreamingMarkdownDemo
+options:
+  bundleIdPrefix: dev.streamingmarkdown
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  StreamingMarkdown:
+    path: ..
+targets:
+  StreamingMarkdownDemo:
+    type: application
+    platform: iOS
+    sources:
+      - Sources/StreamingMarkdownDemo
+    dependencies:
+      - package: StreamingMarkdown
+        product: StreamingMarkdown
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.streamingmarkdown.demo.ios
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        SWIFT_VERSION: "5.9"
