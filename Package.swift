@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
+        .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.8.0"),
         .package(url: "https://github.com/appstefan/highlightswift", revision: "99c431b38a1444a5fd6a4978307fbbefe3a7af53"),
         .package(url: "https://github.com/maitbayev/iosMath", revision: "066ba2f8353782a644889efe9ceb884ea844180b")
     ],
