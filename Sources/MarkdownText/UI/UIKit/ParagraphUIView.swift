@@ -418,6 +418,47 @@ struct LatexAttachmentData: Codable {
   let latex: String
   let fontSize: CGFloat
   let textColor: String
+  /// Hex string for the light-mode foreground color. Optional for backward
+  /// compatibility with payloads written before per-appearance colors existed.
+  let lightTextColor: String?
+  /// Hex string for the dark-mode foreground color. Optional for backward
+  /// compatibility with payloads written before per-appearance colors existed.
+  let darkTextColor: String?
+
+  init(latex: String,
+       fontSize: CGFloat,
+       textColor: String,
+       lightTextColor: String? = nil,
+       darkTextColor: String? = nil) {
+    self.latex = latex
+    self.fontSize = fontSize
+    self.textColor = textColor
+    self.lightTextColor = lightTextColor
+    self.darkTextColor = darkTextColor
+  }
+}
+
+/// `MTMathUILabel` subclass that re-resolves a dynamic text color whenever the
+/// view's trait collection changes, so inline LaTeX foreground adapts to
+/// light/dark mode toggles after the attachment has been created.
+private final class DynamicTextColorMathLabel: MTMathUILabel {
+  var dynamicTextColor: UIColor? {
+    didSet {
+      guard let dynamicTextColor else { return }
+      textColor = dynamicTextColor.resolvedColor(with: traitCollection)
+      setNeedsDisplay()
+    }
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    guard traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle,
+          let dynamicTextColor else {
+      return
+    }
+    textColor = dynamicTextColor.resolvedColor(with: traitCollection)
+    setNeedsDisplay()
+  }
 }
 
 final class LatexViewProvider: NSTextAttachmentViewProvider {
@@ -433,12 +474,12 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
 
     var tempLatex = ""
     var tempFontSize = Typography.base.uiFont.pointSize
-    var tempTextColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
+    var tempTextColor: UIColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
     if let data = attachment.contents {
       if let attachmentData = try? Self.jsonDecoder.decode(LatexAttachmentData.self, from: data) {
         tempLatex = attachmentData.latex
         tempFontSize = attachmentData.fontSize
-        tempTextColor = UIColor(hex: attachmentData.textColor) ?? UIColor(Color.Theme.Foreground.Primary.Primary750)
+        tempTextColor = Self.resolveTextColor(from: attachmentData)
       }
     }
     latex = tempLatex
@@ -453,10 +494,26 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
     tracksTextAttachmentViewBounds = true
   }
 
+  /// Builds a dynamic `UIColor` from the light/dark hex strings stored in the
+  /// attachment payload. Falls back to the legacy single-hex value (or the
+  /// theme default) when the per-appearance hexes are not present.
+  private static func resolveTextColor(from attachmentData: LatexAttachmentData) -> UIColor {
+    let fallback = UIColor(hex: attachmentData.textColor) ?? UIColor(Color.Theme.Foreground.Primary.Primary750)
+    guard let lightHex = attachmentData.lightTextColor,
+          let darkHex = attachmentData.darkTextColor,
+          let lightColor = UIColor(hex: lightHex),
+          let darkColor = UIColor(hex: darkHex) else {
+      return fallback
+    }
+    return UIColor { trait in
+      trait.userInterfaceStyle == .dark ? darkColor : lightColor
+    }
+  }
+
   override func loadView() {
-    let label = MTMathUILabel()
+    let label = DynamicTextColorMathLabel()
     label.latex = latex
-    label.textColor = textColor
+    label.dynamicTextColor = textColor
     label.displayErrorInline = false
     label.fontSize = fontSize
     label.setContentHuggingPriority(.defaultHigh, for: .vertical)

@@ -224,7 +224,15 @@ extension Markdown.InlineCode: InlineConvertible {
         .dropLast(LaTexPreProcessorImpl.inlineCodeSuffix.count))
       let font = attributeContainer[NSAttributedString.Key.font] as? UIFont ?? config.paragraphStyle.textFont.uiFont
       let textColor = config.paragraphStyle.textColor
-      let attachmentData = LatexAttachmentData(latex: codeContent, fontSize: font.pointSize, textColor: textColor.toHexString())
+      let lightHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)).toHexString()
+      let darkHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)).toHexString()
+      let attachmentData = LatexAttachmentData(
+        latex: codeContent,
+        fontSize: font.pointSize,
+        textColor: lightHex,
+        lightTextColor: lightHex,
+        darkTextColor: darkHex
+      )
       let encoder = JSONEncoder()
       if let payload = try? encoder.encode(attachmentData) {
         let attachment = NSTextAttachment(data: payload, ofType: UTType.data.identifier)
