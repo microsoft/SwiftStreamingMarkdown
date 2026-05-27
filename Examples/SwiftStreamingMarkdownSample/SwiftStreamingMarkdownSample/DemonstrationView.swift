@@ -7,6 +7,7 @@ import SwiftStreamingMarkdown
 
 struct DemonstrationView: View {
   @AppStorage(SampleSettings.preferStreamedMarkdownKey) private var preferStreamedMarkdown = true
+  @AppStorage(SampleSettings.appearanceModeKey) private var appearanceMode = AppearanceMode.device
 
   let demonstration: Demonstration
   let markdownText: String
@@ -38,5 +39,19 @@ struct DemonstrationView: View {
     }
     .navigationTitle(demonstration.rawValue)
     .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      ToolbarItem(placement: .topBarTrailing) {
+        Menu {
+          Picker("Appearance", selection: $appearanceMode) {
+            ForEach(AppearanceMode.allCases) { mode in
+              Text(mode.displayName).tag(mode)
+            }
+          }
+        } label: {
+          Image(systemName: "circle.righthalf.filled")
+            .accessibilityLabel("Appearance")
+        }
+      }
+    }
   }
 }
