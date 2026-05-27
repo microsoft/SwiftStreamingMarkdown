@@ -2,7 +2,7 @@
 
 This fixture intentionally mixes supported Markdown, streaming edge cases, citations, and syntax that may not have first-class rendering yet. It is useful for checking graceful fallback behavior while text is still arriving.
 
-Inline styles: **strong text**, *emphasis*, ***strong emphasis***, ~~strikethrough~~, `inline code`, a [regular link](https://example.com), an app action link [open settings](copilot-action://settings), and inline math `$E = mc^2$`.
+Inline styles: **strong text**, *emphasis*, ***strong emphasis***, ~~strikethrough~~, `inline code`, a [regular link](https://example.com), an app action link [open settings](copilot-action://settings), and inline math $E = mc^2$.
 
 Inline citations should render as compact attachments when the renderer recognizes the citation marker: [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/release-notes?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=1&citationFullTitle=Streaming%20Markdown%20release%20notes&citationId=doc-1&chatItemId=demo-1) [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/api-reference?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=2&citationFullTitle=Markdown%20renderer%20API%20reference&citationId=doc-2&chatItemId=demo-1).
 
@@ -51,7 +51,7 @@ The next list intentionally mixes tight lists, loose lists, ordered lists, unord
 
 1. **Discovery phase** starts as an ordered item with a paragraph continuation.
 
-   The continuation includes inline citation [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/nested-discovery?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=6&citationFullTitle=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math `$p95 < 200ms$`, and `inline code`.
+   The continuation includes inline citation [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/nested-discovery?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=6&citationFullTitle=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math $p95 < 200ms$, and `inline code`.
 
    - A nested unordered item with its own children.
      1. Ordered grandchild that starts at one.
@@ -135,7 +135,7 @@ Lazy continuation line without indentation after the item marker. Some Markdown 
 | Obsidian embed | ![[diagram.png]] | Whether Obsidian embeds remain readable |
 | Markdoc tag | {% callout type="warning" %}Text{% /callout %} | Whether templating syntax remains readable |
 | MDX JSX | <Alert severity="info">MDX content</Alert> | Whether JSX-like tags remain readable |
-| Escaped pipe | `a \| b` | Whether escaped pipes work in table cells |
+| Escaped pipe | `a &#124; b` | Whether literal pipe-like content stays readable in table cells |
 
 ::: warning
 Container directives from Markdown-it and GitHub-style alerts are extension syntax. This block should stay readable if no custom directive renderer exists.
@@ -175,15 +175,15 @@ struct PreviewRow: View {
 ## Tables
 
 | Feature | Example | Expected behavior |
-| --- | --- | --- |
+| :--- | :--- | ---: |
 | Inline citation | [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/table-source?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=4&citationFullTitle=Table%20source%20citation&citationId=doc-4&chatItemId=demo-1) | Render a compact citation attachment |
 | Inline code | `let value = 42` | Preserve code styling in a cell |
 | Link | [Example](https://example.com/table-link) | Render as tappable link |
-| Alignment | right aligned number | 12345 |
+| Alignment | 12345 | Right-align this expected-behavior column |
 
 ## Math
 
-Inline math appears in a sentence as `$a^2 + b^2 = c^2$`.
+Inline math appears in a sentence as $a^2 + b^2 = c^2$.
 
 $$
 \int_0^1 x^2 dx = \frac{1}{3}
@@ -228,4 +228,4 @@ Term
 
 ## Mixed final paragraph
 
-The final paragraph combines a normal link, an action link, inline math `$f(x) = x^2$`, a citation [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/final-source?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=5&citationFullTitle=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.
+The final paragraph combines a normal link, an action link, inline math $f(x) = x^2$, a citation [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://example.com/final-source?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=5&citationFullTitle=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.
