@@ -429,29 +429,6 @@ struct LatexAttachmentData: Codable {
   }
 }
 
-/// `MTMathUILabel` subclass that re-resolves a dynamic text color whenever the
-/// view's trait collection changes, so inline LaTeX foreground adapts to
-/// light/dark mode toggles after the attachment has been created.
-private final class DynamicTextColorMathLabel: MTMathUILabel {
-  var dynamicTextColor: UIColor? {
-    didSet {
-      guard let dynamicTextColor else { return }
-      textColor = dynamicTextColor.resolvedColor(with: traitCollection)
-      setNeedsDisplay()
-    }
-  }
-
-  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    guard traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle,
-          let dynamicTextColor else {
-      return
-    }
-    textColor = dynamicTextColor.resolvedColor(with: traitCollection)
-    setNeedsDisplay()
-  }
-}
-
 final class LatexViewProvider: NSTextAttachmentViewProvider {
   private let latex: String
   private let fontSize: CGFloat
@@ -502,9 +479,9 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
   }
 
   override func loadView() {
-    let label = DynamicTextColorMathLabel()
+    let label = MTMathUILabel()
     label.latex = latex
-    label.dynamicTextColor = textColor
+    label.textColor = textColor
     label.displayErrorInline = false
     label.fontSize = fontSize
     label.setContentHuggingPriority(.defaultHigh, for: .vertical)
