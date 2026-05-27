@@ -48,7 +48,7 @@ extension String {
       ), citationLabel)
   }
 
-  static func openActionLink(linkLabel: String) -> String {
+  static func openCopilotActionLink(linkLabel: String) -> String {
     return String(format:
       NSLocalizedString(
         "a11y_open_action_link",

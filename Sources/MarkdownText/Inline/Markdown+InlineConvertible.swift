@@ -101,22 +101,6 @@ extension Markdown.Link: InlineConvertible {
     }
   }
 
-  /// Checks if this link uses the `copilot-action://` URL scheme.
-  ///
-  /// Copilot action links are special action links that trigger in-app actions rather than opening external URLs.
-  /// They are rendered with dotted underlines to visually distinguish them from regular hyperlinks,
-  /// using the paragraph text color instead of the accent link color.
-  ///
-  /// - Returns: `true` if the link's destination has the `copilot-action` scheme (case-insensitive).
-  private var isCopilotActionLink: Bool {
-    guard let destination = self.destination,
-          let url = URL(string: destination)
-    else {
-      return false
-    }
-    return url.isCopilotActionLink
-  }
-
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     var container = attributeContainer
 
@@ -136,12 +120,12 @@ extension Markdown.Link: InlineConvertible {
       return buildAttributedString()
     }
 
-    // Handle copilot action links (copilot-action:// scheme) as inline attributed text.
+    // Handle copilot action links (`copilot-action://` and `ca://`) as inline attributed text.
     // Rendered as regular text with a dotted underline so the text wraps naturally
     // with the paragraph, unlike NSTextAttachment which is an atomic inline element.
     // Tap handling works via the existing textView(_:shouldInteractWith URL:) delegate.
-    if self.isCopilotActionLink {
-      // Validate URL structure - copilot-action:// URLs must have a host (action name)
+    if url.isCopilotActionLink {
+      // Validate URL structure - action URLs must have a host (action name)
       // to ensure well-formed action links. Malformed URLs fall back to regular link styling.
       guard url.host != nil else {
         return buildAttributedString()

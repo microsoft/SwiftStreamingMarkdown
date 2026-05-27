@@ -217,6 +217,15 @@ class ParagraphUIView: UITextView {
     textDragInteraction?.isEnabled = false
   }
 
+  /// Creates a custom accessibility action that forwards activation to `onUrlTap`.
+  private func makeAccessibilityAction(name: String, url: URL) -> UIAccessibilityCustomAction {
+    return UIAccessibilityCustomAction(name: name) { [weak self] _ in
+      guard let self else { return false }
+      self.onUrlTap(url)
+      return true
+    }
+  }
+
   /// Generate accessibility label and actions in a single pass (optimized)
   private func generateAccessibilityContent(from attributedString: NSAttributedString) -> AccessibilityContent? {
     var labelComponents: [String] = []
@@ -232,11 +241,7 @@ class ParagraphUIView: UITextView {
 
         // Create accessibility action for citations
         let actionName = String.openCitation(citationLabel: citationData.accessibilityLabel)
-        let action = UIAccessibilityCustomAction(name: actionName) { [weak self] _ in
-          guard let self else { return false }
-          self.onUrlTap(citationData.url)
-          return true
-        }
+        let action = makeAccessibilityAction(name: actionName, url: citationData.url)
         actions.append(action)
       } else if let linkURL = attrs[.link] as? URL,
                 linkURL.isCopilotActionLink {
@@ -245,12 +250,8 @@ class ParagraphUIView: UITextView {
         labelComponents.append(linkText)
 
         // Create accessibility action for copilot action links
-        let actionName = String.openActionLink(linkLabel: linkText)
-        let action = UIAccessibilityCustomAction(name: actionName) { [weak self] _ in
-          guard let self else { return false }
-          self.onUrlTap(linkURL)
-          return true
-        }
+        let actionName = String.openCopilotActionLink(linkLabel: linkText)
+        let action = makeAccessibilityAction(name: actionName, url: linkURL)
         actions.append(action)
       } else {
         // Add the regular text for this range
