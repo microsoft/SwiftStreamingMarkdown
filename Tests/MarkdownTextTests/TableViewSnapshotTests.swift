@@ -36,7 +36,10 @@ final class TableViewSnapshotTests: SnapshotTestCase {
   /// Create a LaTeX attachment with proper data encoding
   private func createLatexAttachment(latex: String, fontSize: CGFloat = 16.0) -> NSTextAttachment {
     // Create LatexAttachmentData and encode it
-    let attachmentData = LatexAttachmentData(latex: latex, fontSize: fontSize, textColor: UIColor(Color.Theme.Foreground.Primary.Primary750).toHexString())
+    let textColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
+    let lightHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)).toHexString()
+    let darkHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)).toHexString()
+    let attachmentData = LatexAttachmentData(latex: latex, fontSize: fontSize, lightTextColor: lightHex, darkTextColor: darkHex)
     let encoder = JSONEncoder()
     guard let payload = try? encoder.encode(attachmentData) else {
       XCTFail("Failed to encode LaTeX attachment data")

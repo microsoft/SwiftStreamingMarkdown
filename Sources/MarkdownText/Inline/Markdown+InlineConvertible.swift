@@ -182,7 +182,6 @@ extension Markdown.InlineCode: InlineConvertible {
       let attachmentData = LatexAttachmentData(
         latex: codeContent,
         fontSize: font.pointSize,
-        textColor: lightHex,
         lightTextColor: lightHex,
         darkTextColor: darkHex
       )

@@ -408,25 +408,8 @@ fileprivate extension NSMutableAttributedString {
 struct LatexAttachmentData: Codable {
   let latex: String
   let fontSize: CGFloat
-  let textColor: String
-  /// Hex string for the light-mode foreground color. Optional for backward
-  /// compatibility with payloads written before per-appearance colors existed.
-  let lightTextColor: String?
-  /// Hex string for the dark-mode foreground color. Optional for backward
-  /// compatibility with payloads written before per-appearance colors existed.
-  let darkTextColor: String?
-
-  init(latex: String,
-       fontSize: CGFloat,
-       textColor: String,
-       lightTextColor: String? = nil,
-       darkTextColor: String? = nil) {
-    self.latex = latex
-    self.fontSize = fontSize
-    self.textColor = textColor
-    self.lightTextColor = lightTextColor
-    self.darkTextColor = darkTextColor
-  }
+  let lightTextColor: String
+  let darkTextColor: String
 }
 
 final class LatexViewProvider: NSTextAttachmentViewProvider {
@@ -462,15 +445,10 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
     tracksTextAttachmentViewBounds = true
   }
 
-  /// Builds a dynamic `UIColor` from the light/dark hex strings stored in the
-  /// attachment payload. Falls back to the legacy single-hex value (or the
-  /// theme default) when the per-appearance hexes are not present.
   private static func resolveTextColor(from attachmentData: LatexAttachmentData) -> UIColor {
-    let fallback = UIColor(hex: attachmentData.textColor) ?? UIColor(Color.Theme.Foreground.Primary.Primary750)
-    guard let lightHex = attachmentData.lightTextColor,
-          let darkHex = attachmentData.darkTextColor,
-          let lightColor = UIColor(hex: lightHex),
-          let darkColor = UIColor(hex: darkHex) else {
+    let fallback = UIColor(Color.Theme.Foreground.Primary.Primary750)
+    guard let lightColor = UIColor(hex: attachmentData.lightTextColor),
+          let darkColor = UIColor(hex: attachmentData.darkTextColor) else {
       return fallback
     }
     return UIColor { trait in
