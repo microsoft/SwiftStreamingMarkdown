@@ -8,8 +8,6 @@ import UIKit
 
 public struct MarkdownRenderConfig: Hashable, Sendable {
   public let shouldAnimateText: Bool
-  public let fixCitationAccessibilityEnabled: Bool
-  public let fixURLDoubleEncoded: Bool
   public let blockQuoteStyle: MarkdownTextStyle
   public let headingStyle: MarkdownHeadingTextStyle
   public let orderedListStyle: MarkdownTextStyle
@@ -91,8 +89,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
   public init(
     shouldAnimateText: Bool = false,
-    fixCitationAccessibilityEnabled: Bool = false,
-    fixURLDoubleEncoded: Bool = false,
     blockQuoteStyle: MarkdownTextStyle = .init(
       textFont: Typography.base,
       boldTextFont: Typography.baseStrong,
@@ -137,8 +133,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     )
   ) {
     self.shouldAnimateText = shouldAnimateText
-    self.fixCitationAccessibilityEnabled = fixCitationAccessibilityEnabled
-    self.fixURLDoubleEncoded = fixURLDoubleEncoded
     self.blockQuoteStyle = blockQuoteStyle
     self.headingStyle = headingStyle
     self.orderedListStyle = orderedListStyle
@@ -150,22 +144,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public init(copyFrom config: MarkdownRenderConfig, shouldAnimateText: Bool) {
     self.init(
       shouldAnimateText: shouldAnimateText,
-      fixCitationAccessibilityEnabled: config.fixCitationAccessibilityEnabled,
-      fixURLDoubleEncoded: config.fixURLDoubleEncoded,
-      blockQuoteStyle: config.blockQuoteStyle,
-      headingStyle: config.headingStyle,
-      orderedListStyle: config.orderedListStyle,
-      paragraphStyle: config.paragraphStyle,
-      tableStyle: config.tableStyle,
-      inlineStyle: config.inlineStyle
-    )
-  }
-
-  public init(copyFrom config: MarkdownRenderConfig, fixCitationAccessibilityEnabled: Bool) {
-    self.init(
-      shouldAnimateText: config.shouldAnimateText,
-      fixCitationAccessibilityEnabled: fixCitationAccessibilityEnabled,
-      fixURLDoubleEncoded: config.fixURLDoubleEncoded,
       blockQuoteStyle: config.blockQuoteStyle,
       headingStyle: config.headingStyle,
       orderedListStyle: config.orderedListStyle,
@@ -179,7 +157,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
   public static let chainOfThought = MarkdownRenderConfig(
     shouldAnimateText: true,
-    fixCitationAccessibilityEnabled: true,
     blockQuoteStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
     headingStyle: .init(h1Font: .extraSmall, h2Font: .extraSmall, h3Font: .extraSmall, h4Font: .extraSmall, h5Font: .extraSmall, h6Font: .extraSmall, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
     orderedListStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),

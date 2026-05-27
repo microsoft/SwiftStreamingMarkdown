@@ -103,7 +103,7 @@ class ParagraphUIView: UITextView {
     invalidateIntrinsicContentSize()
   }
 
-  func setParagraphContents(_ newContents: NSMutableAttributedString, lineSpacing: CGFloat? = nil, animatedByWord: Bool, fixCitationAccessibilityEnabled: Bool) {
+  func setParagraphContents(_ newContents: NSMutableAttributedString, lineSpacing: CGFloat? = nil, animatedByWord: Bool) {
     // Keep the cached interface style up to date for citation preview rendering.
     // This runs on the main thread so it's safe to read traitCollection here.
     InlineCitationAttachment.updateInterfaceStyle(traitCollection.userInterfaceStyle)
@@ -131,14 +131,7 @@ class ParagraphUIView: UITextView {
     invalidateCachedSize()
     attributedText = finalString
 
-    if fixCitationAccessibilityEnabled {
-      configureAccessibility(for: finalString)
-    } else {
-      // When accessibility is disabled, still set basic accessibility label
-      // but skip custom actions and advanced accessibility features
-      accessibilityLabel = finalString.string
-      accessibilityCustomActions = nil
-    }
+    configureAccessibility(for: finalString)
 
     invalidateIntrinsicContentSize()
 

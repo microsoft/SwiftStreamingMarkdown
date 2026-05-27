@@ -78,9 +78,9 @@ extension Markdown.Link: InlineConvertible {
     self.plainText == InlineCitationConstants.citationMarkerValue
   }
 
-  private func isInlineCitation(fixURLDoubleEncoded: Bool) -> Bool {
+  private var isInlineCitation: Bool {
     guard let destination = self.destination,
-          let urlWithMarker = self.createURL(from: destination, fixDoubleEncoded: fixURLDoubleEncoded),
+          let urlWithMarker = self.createURL(from: destination),
           let components = URLComponents(url: urlWithMarker, resolvingAgainstBaseURL: true)
     else {
       return false
@@ -93,12 +93,8 @@ extension Markdown.Link: InlineConvertible {
     return queryParam != nil
   }
 
-  private func createURL(from string: String, fixDoubleEncoded: Bool) -> URL? {
-    if fixDoubleEncoded {
-      return URL.fromMixedEncodingString(string)
-    } else {
-      return URL(string: string)
-    }
+  private func createURL(from string: String) -> URL? {
+    return URL.fromMixedEncodingString(string)
   }
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
@@ -113,16 +109,16 @@ extension Markdown.Link: InlineConvertible {
     }
 
     guard let destination = self.destination,
-          let url = self.createURL(from: destination, fixDoubleEncoded: config.fixURLDoubleEncoded)
+          let url = self.createURL(from: destination)
     else {
       // Not a valid URL, return plain text
       return buildAttributedString()
     }
 
-    if self.isInlineCitation(fixURLDoubleEncoded: config.fixURLDoubleEncoded) {
+    if self.isInlineCitation {
       if self.isAttachmentCitation {
         // Extract title from URL query parameters for new attachment citation format
-        if let attachmentData = InlineAttachmentData(linkDestination: destination, fixURLDoubleEncoded: config.fixURLDoubleEncoded),
+        if let attachmentData = InlineAttachmentData(linkDestination: destination),
            let citationAttachment = InlineCitationAttachment(citationData: attachmentData) {
 
           // Create attributed string with the citation attachment

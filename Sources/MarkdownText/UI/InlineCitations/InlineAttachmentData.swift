@@ -18,17 +18,9 @@ struct InlineAttachmentData: Codable {
 
   /// Initialize from a citation link destination
   init?(
-    linkDestination: String,
-    fixURLDoubleEncoded: Bool = false
+    linkDestination: String
   ) {
-    let url: URL?
-    if fixURLDoubleEncoded {
-      url = URL.fromMixedEncodingString(linkDestination)
-    } else {
-      url = URL(string: linkDestination)
-    }
-
-    guard let url,
+    guard let url = URL.fromMixedEncodingString(linkDestination),
           let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
           let title = components.queryItems?.first(
             where: { $0.name == InlineCitationConstants.citationTitleParam }

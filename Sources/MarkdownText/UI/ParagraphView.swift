@@ -20,7 +20,7 @@ struct ParagraphView: UIViewRepresentable {
     let openUrlFunction = openURL.callAsFunction(_:)
     let view = ParagraphUIViewCache.shared.createOrReuseParagraphUIView(contents: contents, lineSpacing: lineSpacing)
     view.onUrlTap = openUrlFunction
-    view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false, fixCitationAccessibilityEnabled: config.fixCitationAccessibilityEnabled)
+    view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
     view.setTextContextMenu(textContextMenu)
 
     if config.shouldAnimateText {
@@ -36,7 +36,7 @@ struct ParagraphView: UIViewRepresentable {
   func updateUIView(_ view: ParagraphUIView, context: Context) {
     if view.paragraphContents != contents || view.lineSpacing != lineSpacing {
       let shouldAnimate = view.window != nil && config.shouldAnimateText // only animate when visible
-      view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate, fixCitationAccessibilityEnabled: config.fixCitationAccessibilityEnabled)
+      view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
     }
     view.setTextContextMenu(textContextMenu)
   }
