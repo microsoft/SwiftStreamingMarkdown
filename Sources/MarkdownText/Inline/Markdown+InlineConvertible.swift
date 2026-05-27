@@ -120,36 +120,6 @@ extension Markdown.Link: InlineConvertible {
       return buildAttributedString()
     }
 
-    // Handle copilot action links (`copilot-action://` and `ca://`) as inline attributed text.
-    // Rendered as regular text with a dotted underline so the text wraps naturally
-    // with the paragraph, unlike NSTextAttachment which is an atomic inline element.
-    // Tap handling works via the existing textView(_:shouldInteractWith URL:) delegate.
-    if url.isCopilotActionLink {
-      // Validate URL structure - action URLs must have a host (action name)
-      // to ensure well-formed action links. Malformed URLs fall back to regular link styling.
-      guard url.host != nil else {
-        return buildAttributedString()
-      }
-
-      // Get text color from container to match paragraph text (not accent link color)
-      let textColor: UIColor
-      if let containerColor = container[.foregroundColor] as? UIColor {
-        textColor = containerColor
-      } else {
-        textColor = config.paragraphStyle.textColor
-      }
-
-      // Set link attribute to enable tap handling via shouldInteractWith URL: delegate
-      container[.link] = url
-      // Dotted underline to visually distinguish from regular hyperlinks
-      container[.underlineStyle] = NSUnderlineStyle.single.union(.patternDot).rawValue
-      // Lighter underline color
-      container[.underlineColor] = config.inlineStyle.actionLinkUnderlineColor
-      // Use paragraph text color instead of accent link color
-      container[.foregroundColor] = textColor
-      return buildAttributedString()
-    }
-
     if self.isInlineCitation(fixURLDoubleEncoded: config.fixURLDoubleEncoded) {
       if self.isAttachmentCitation {
         // Extract title from URL query parameters for new attachment citation format

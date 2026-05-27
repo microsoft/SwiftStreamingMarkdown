@@ -243,16 +243,6 @@ class ParagraphUIView: UITextView {
         let actionName = String.openCitation(citationLabel: citationData.accessibilityLabel)
         let action = makeAccessibilityAction(name: actionName, url: citationData.url)
         actions.append(action)
-      } else if let linkURL = attrs[.link] as? URL,
-                linkURL.isCopilotActionLink {
-        // Handle copilot action links rendered as inline attributed text
-        let linkText = attributedString.attributedSubstring(from: range).string
-        labelComponents.append(linkText)
-
-        // Create accessibility action for copilot action links
-        let actionName = String.openCopilotActionLink(linkLabel: linkText)
-        let action = makeAccessibilityAction(name: actionName, url: linkURL)
-        actions.append(action)
       } else {
         // Add the regular text for this range
         let substring = attributedString.attributedSubstring(from: range)
