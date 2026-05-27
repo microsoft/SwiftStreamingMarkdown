@@ -412,6 +412,19 @@ struct LatexAttachmentData: Codable {
   let darkTextColor: String
 }
 
+extension LatexAttachmentData {
+  var resolvedTextColor: UIColor {
+    let fallback = UIColor(Color.Theme.Foreground.Primary.Primary750)
+    guard let lightColor = UIColor(hex: lightTextColor),
+          let darkColor = UIColor(hex: darkTextColor) else {
+      return fallback
+    }
+    return UIColor { trait in
+      trait.userInterfaceStyle == .dark ? darkColor : lightColor
+    }
+  }
+}
+
 final class LatexViewProvider: NSTextAttachmentViewProvider {
   private let latex: String
   private let fontSize: CGFloat
@@ -430,7 +443,7 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
       if let attachmentData = try? Self.jsonDecoder.decode(LatexAttachmentData.self, from: data) {
         tempLatex = attachmentData.latex
         tempFontSize = attachmentData.fontSize
-        tempTextColor = Self.resolveTextColor(from: attachmentData)
+        tempTextColor = attachmentData.resolvedTextColor
       }
     }
     latex = tempLatex
@@ -443,17 +456,6 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
                location: location)
 
     tracksTextAttachmentViewBounds = true
-  }
-
-  private static func resolveTextColor(from attachmentData: LatexAttachmentData) -> UIColor {
-    let fallback = UIColor(Color.Theme.Foreground.Primary.Primary750)
-    guard let lightColor = UIColor(hex: attachmentData.lightTextColor),
-          let darkColor = UIColor(hex: attachmentData.darkTextColor) else {
-      return fallback
-    }
-    return UIColor { trait in
-      trait.userInterfaceStyle == .dark ? darkColor : lightColor
-    }
   }
 
   override func loadView() {
