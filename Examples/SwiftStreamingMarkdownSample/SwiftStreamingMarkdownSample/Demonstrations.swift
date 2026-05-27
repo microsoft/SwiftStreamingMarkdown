@@ -6,6 +6,7 @@ import Foundation
 import SwiftUI
 
 enum Demonstration: String, CaseIterable, Identifiable, Hashable {
+  case kitchenSink = "Kitchen Sink"
   case multiParagraph = "Multi-paragraph"
   case tables = "Tables"
   case math = "Math"
@@ -14,6 +15,8 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
 
   var subtitle: String {
     switch self {
+    case .kitchenSink:
+      "Every supported feature, plus unsupported markdown fallbacks"
     case .multiParagraph:
       "Excerpts from famous novels"
     case .tables:
@@ -25,6 +28,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
 
   var fixtureFileName: String {
     switch self {
+    case .kitchenSink: "kitchen-sink"
     case .multiParagraph: "multi-paragraph"
     case .tables: "tables"
     case .math: "math"

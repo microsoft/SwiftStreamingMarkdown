@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		032FB97FBD7123A985B62BBA /* StreamedMarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7200307CBBC827028382E /* StreamedMarkdownView.swift */; };
 		12849B8411B570808F7C0D9E /* SampleSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A45AA973D9144DE0D48543 /* SampleSettings.swift */; };
+		2D1E3427023CC475891E5315 /* kitchen-sink.md in Resources */ = {isa = PBXBuildFile; fileRef = 2C5E33E5B93545D59228B2F4 /* kitchen-sink.md */; };
 		39F8622C57A2EC533E5F01ED /* multi-paragraph.md in Resources */ = {isa = PBXBuildFile; fileRef = 73868F0AE9190348E3D3EE91 /* multi-paragraph.md */; };
 		3BD5E8772A1ADCDC6317394E /* SwiftStreamingMarkdownSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0E14572A252D91CC6C003 /* SwiftStreamingMarkdownSampleApp.swift */; };
 		428AF75D6DBD4E50617840AD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B03975E1FF0CB8AA3A2FE2D /* SettingsView.swift */; };
@@ -25,6 +26,7 @@
 		0B03975E1FF0CB8AA3A2FE2D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		14F0E14572A252D91CC6C003 /* SwiftStreamingMarkdownSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftStreamingMarkdownSampleApp.swift; sourceTree = "<group>"; };
 		15DD7907F19D2CA79901A84A /* DemonstrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemonstrationView.swift; sourceTree = "<group>"; };
+		2C5E33E5B93545D59228B2F4 /* kitchen-sink.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "kitchen-sink.md"; sourceTree = "<group>"; };
 		30223D57057CAC0D908A98C6 /* SwiftStreamingMarkdownSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftStreamingMarkdownSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A45AA973D9144DE0D48543 /* SampleSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSettings.swift; sourceTree = "<group>"; };
 		73868F0AE9190348E3D3EE91 /* multi-paragraph.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "multi-paragraph.md"; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 		2B080EC39033283C09F6AF34 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				2C5E33E5B93545D59228B2F4 /* kitchen-sink.md */,
 				F32331634603C9C746B42997 /* math.md */,
 				73868F0AE9190348E3D3EE91 /* multi-paragraph.md */,
 				D51631C4D1BDAFE7CAEFF13E /* tables.md */,
@@ -175,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E87D871D9C2E90AC3D9C8D15 /* Assets.xcassets in Resources */,
+				2D1E3427023CC475891E5315 /* kitchen-sink.md in Resources */,
 				BC9708592DBCF60366FA41A7 /* math.md in Resources */,
 				39F8622C57A2EC533E5F01ED /* multi-paragraph.md in Resources */,
 				8EF6F43D15E068CC5642CC95 /* tables.md in Resources */,

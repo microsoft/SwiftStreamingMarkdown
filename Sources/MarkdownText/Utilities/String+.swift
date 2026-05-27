@@ -48,16 +48,6 @@ extension String {
       ), citationLabel)
   }
 
-  static func openActionLink(linkLabel: String) -> String {
-    return String(format:
-      NSLocalizedString(
-        "a11y_open_action_link",
-        bundle: .module,
-        value: "Activate %@",
-        comment: "Accessibility action to activate a copilot action link"
-      ), linkLabel)
-  }
-
   static func markdownList(length: String) -> String {
     return String(format:
       NSLocalizedString(

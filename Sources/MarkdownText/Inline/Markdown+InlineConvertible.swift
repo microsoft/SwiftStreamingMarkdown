@@ -101,22 +101,6 @@ extension Markdown.Link: InlineConvertible {
     }
   }
 
-  /// Checks if this link uses the `copilot-action://` URL scheme.
-  ///
-  /// Copilot action links are special action links that trigger in-app actions rather than opening external URLs.
-  /// They are rendered with dotted underlines to visually distinguish them from regular hyperlinks,
-  /// using the paragraph text color instead of the accent link color.
-  ///
-  /// - Returns: `true` if the link's destination has the `copilot-action` scheme (case-insensitive).
-  private var isCopilotActionLink: Bool {
-    guard let destination = self.destination,
-          let url = URL(string: destination)
-    else {
-      return false
-    }
-    return url.isCopilotActionLink
-  }
-
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     var container = attributeContainer
 
@@ -129,40 +113,9 @@ extension Markdown.Link: InlineConvertible {
     }
 
     guard let destination = self.destination,
-          let url = self.createURL(from: destination, fixDoubleEncoded: config.fixURLDoubleEncoded),
-          var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+          let url = self.createURL(from: destination, fixDoubleEncoded: config.fixURLDoubleEncoded)
     else {
       // Not a valid URL, return plain text
-      return buildAttributedString()
-    }
-
-    // Handle copilot action links (copilot-action:// scheme) as inline attributed text.
-    // Rendered as regular text with a dotted underline so the text wraps naturally
-    // with the paragraph, unlike NSTextAttachment which is an atomic inline element.
-    // Tap handling works via the existing textView(_:shouldInteractWith URL:) delegate.
-    if self.isCopilotActionLink {
-      // Validate URL structure - copilot-action:// URLs must have a host (action name)
-      // to ensure well-formed action links. Malformed URLs fall back to regular link styling.
-      guard url.host != nil else {
-        return buildAttributedString()
-      }
-
-      // Get text color from container to match paragraph text (not accent link color)
-      let textColor: UIColor
-      if let containerColor = container[.foregroundColor] as? UIColor {
-        textColor = containerColor
-      } else {
-        textColor = config.paragraphStyle.textColor
-      }
-
-      // Set link attribute to enable tap handling via shouldInteractWith URL: delegate
-      container[.link] = url
-      // Dotted underline to visually distinguish from regular hyperlinks
-      container[.underlineStyle] = NSUnderlineStyle.single.union(.patternDot).rawValue
-      // Lighter underline color
-      container[.underlineColor] = config.inlineStyle.actionLinkUnderlineColor
-      // Use paragraph text color instead of accent link color
-      container[.foregroundColor] = textColor
       return buildAttributedString()
     }
 
