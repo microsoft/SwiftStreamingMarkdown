@@ -113,8 +113,7 @@ extension Markdown.Link: InlineConvertible {
     }
 
     guard let destination = self.destination,
-          let url = self.createURL(from: destination, fixDoubleEncoded: config.fixURLDoubleEncoded),
-          var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+          let url = self.createURL(from: destination, fixDoubleEncoded: config.fixURLDoubleEncoded)
     else {
       // Not a valid URL, return plain text
       return buildAttributedString()
