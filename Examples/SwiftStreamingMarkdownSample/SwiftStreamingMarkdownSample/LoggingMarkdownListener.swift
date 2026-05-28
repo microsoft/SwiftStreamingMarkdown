@@ -20,6 +20,14 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     await presentShareSheet(for: content)
   }
 
+  func onContextMenuAppear(id: String) async {
+    print("[MarkdownListener] onContextMenuAppear(id: \(id))")
+  }
+
+  func onContextMenuTap(id: String) async {
+    print("[MarkdownListener] onContextMenuTap(id: \(id))")
+  }
+
   @MainActor
   private func presentCopyConfirmation() {
     guard let presenter = topPresentingViewController() else {

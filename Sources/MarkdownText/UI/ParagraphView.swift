@@ -7,7 +7,7 @@ import SwiftUI
 struct ParagraphView: UIViewRepresentable {
   @Environment(\.openURL) var openURL
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
-  @Environment(\.textContextMenu) var textContextMenu: TextContextMenu?
+  @Environment(\.markdownController) var markdownController: MarkdownController?
 
   var contents: NSMutableAttributedString
   var lineSpacing: CGFloat?
@@ -21,7 +21,8 @@ struct ParagraphView: UIViewRepresentable {
     let view = ParagraphUIViewCache.shared.createOrReuseParagraphUIView(contents: contents, lineSpacing: lineSpacing)
     view.onUrlTap = openUrlFunction
     view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
-    view.setTextContextMenu(textContextMenu)
+    view.setTextContextMenu(config.textContextMenu)
+    view.setMarkdownController(markdownController)
 
     if config.shouldAnimateText {
       view.alpha = 0
@@ -38,7 +39,8 @@ struct ParagraphView: UIViewRepresentable {
       let shouldAnimate = view.window != nil && config.shouldAnimateText // only animate when visible
       view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
     }
-    view.setTextContextMenu(textContextMenu)
+    view.setTextContextMenu(config.textContextMenu)
+    view.setMarkdownController(markdownController)
   }
 
   // If we don't implement this function, the snapshot tests will fail with incorrect sizing.

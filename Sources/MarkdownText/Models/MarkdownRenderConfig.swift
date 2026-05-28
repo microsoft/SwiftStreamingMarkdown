@@ -14,6 +14,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public let paragraphStyle: MarkdownTextStyle
   public let tableStyle: MarkdownTableTextStyle
   public let inlineStyle: MarkdownInlineTextStyle
+  public let textContextMenu: TextContextMenu?
 
   public struct MarkdownTextStyle: Hashable, Sendable {
     public let textFont: Typography
@@ -130,7 +131,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       codeBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
       actionLinkUnderlineColor: UIColor(Color.Theme.Foreground.Primary.Primary650),
       codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header)
-    )
+    ),
+    textContextMenu: TextContextMenu? = nil
   ) {
     self.shouldAnimateText = shouldAnimateText
     self.blockQuoteStyle = blockQuoteStyle
@@ -139,6 +141,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     self.paragraphStyle = paragraphStyle
     self.tableStyle = tableStyle
     self.inlineStyle = inlineStyle
+    self.textContextMenu = textContextMenu
   }
 
   public init(copyFrom config: MarkdownRenderConfig, shouldAnimateText: Bool) {
@@ -149,7 +152,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       orderedListStyle: config.orderedListStyle,
       paragraphStyle: config.paragraphStyle,
       tableStyle: config.tableStyle,
-      inlineStyle: config.inlineStyle
+      inlineStyle: config.inlineStyle,
+      textContextMenu: config.textContextMenu
     )
   }
 

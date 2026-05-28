@@ -46,7 +46,6 @@ public struct DocumentView: View {
 extension EnvironmentValues {
   @Entry public var markdownConfig: MarkdownRenderConfig = .default
   @Entry public var markdownController: MarkdownController?
-  @Entry public var textContextMenu: TextContextMenu?
 }
 
 #if DEBUG
