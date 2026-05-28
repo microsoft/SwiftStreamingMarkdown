@@ -6,7 +6,7 @@ import AsyncExtensions
 import Foundation
 
 public protocol MarkdownListener {
-  func onRender(markdown: RenderableDocument, metadata: MarkdownMetadata?) async
+  func onRender(markdown: RenderableDocument) async
   func onTableCopyTap(content: String) async
   func onTableDownloadTap(content: String) async
   func onContextMenuAppear(id: String, selectedContent: String) async
@@ -16,13 +16,11 @@ public protocol MarkdownListener {
 public final class MarkdownController: ObservableObject {
 
   private let listener: MarkdownListener?
-  private let metadata: MarkdownMetadata?
   private let eventSubject = AsyncCurrentValueSubject<RenderableDocument?>(nil)
   private var listenerTask: Task<(), Error>!
 
-  public init(listener: MarkdownListener?, metadata: MarkdownMetadata?) {
+  public init(listener: MarkdownListener?) {
     self.listener = listener
-    self.metadata = metadata
   }
 
   public func onAppear(markdown: RenderableDocument) {
@@ -31,7 +29,7 @@ public final class MarkdownController: ObservableObject {
     }
     self.listenerTask = Task {
       for try await md in eventSubject.eraseToAnyAsyncSequence().compactMap({ $0 }) {
-        await listener.onRender(markdown: md, metadata: metadata)
+        await listener.onRender(markdown: md)
       }
     }
     eventSubject.send(markdown)

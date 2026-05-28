@@ -7,8 +7,8 @@ import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
-  func onRender(markdown: RenderableDocument, metadata: MarkdownMetadata?) async {
-    print("[MarkdownListener] onRender(metadata: \(metadata.map { String(describing: $0) } ?? "nil"))")
+  func onRender(markdown: RenderableDocument) async {
+    print("[MarkdownListener] onRender")
   }
 
   func onTableCopyTap(content: String) async {

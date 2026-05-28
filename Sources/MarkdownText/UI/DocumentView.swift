@@ -19,12 +19,11 @@ public struct DocumentView: View {
   public init(
     renderableDocument: RenderableDocument,
     config: MarkdownRenderConfig = .default,
-    metaData: MarkdownMetadata? = nil,
     listener: MarkdownListener? = nil
   ) {
     self.renderableDocument = renderableDocument
     self.config = config
-    self._controller = StateObject(wrappedValue: MarkdownController(listener: listener, metadata: metaData))
+    self._controller = StateObject(wrappedValue: MarkdownController(listener: listener))
   }
 
   public var body: some View {
