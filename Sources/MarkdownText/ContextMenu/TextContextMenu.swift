@@ -15,6 +15,8 @@ public struct TextContextMenu: Hashable, Sendable {
   public func buildUIMenu(textView: UITextView, selectedRange: NSRange, suggestedActions: [UIMenuElement], markdownController: MarkdownController?) -> UIMenu {
     var customMenu: [UIMenu] = []
 
+    let clampedRange = NSIntersectionRange(selectedRange, NSRange(location: 0, length: textView.attributedText.length))
+    let selectedText = textView.attributedText.attributedSubstring(from: clampedRange).string
     for group in menuGroups {
       var groupActions: [UIAction] = []
       for item in group.items {
@@ -23,7 +25,7 @@ public struct TextContextMenu: Hashable, Sendable {
           subtitle: item.subtitle,
           image: item.image?.withRenderingMode(.alwaysTemplate),
         ) { _ in
-          markdownController?.onContextMenuTap(id: item.id)
+          markdownController?.onContextMenuTap(id: item.id, selectedContent: selectedText)
         }
         groupActions.append(uiAction)
       }

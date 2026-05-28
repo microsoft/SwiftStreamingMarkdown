@@ -400,9 +400,11 @@ extension ParagraphUIView: UITextViewDelegate {
 
   func textView(_ textView: UITextView, willPresentEditMenuWith animator: any UIEditMenuInteractionAnimating) {
     guard let textContextMenu, let markdownController else { return }
+    let clampedRange = NSIntersectionRange(textView.selectedRange, NSRange(location: 0, length: textView.attributedText.length))
+    let selectedText = textView.attributedText.attributedSubstring(from: clampedRange).string
     for group in textContextMenu.menuGroups {
       for item in group.items {
-        markdownController.onContextMenuAppear(id: item.id)
+        markdownController.onContextMenuAppear(id: item.id, selectedContent: selectedText)
       }
     }
   }
