@@ -16,21 +16,18 @@ public struct DocumentView: View {
   let renderableDocument: RenderableDocument
   let horizontalPadding: CGFloat
   let config: MarkdownRenderConfig
-  let tableActions: TableActions?
 
   public init(
     renderableDocument: RenderableDocument,
     horizontalPadding: CGFloat,
     config: MarkdownRenderConfig = .default,
     metaData: MarkdownMetadata? = nil,
-    analytics: MarkdownListener? = nil,
-    tableActions: TableActions? = nil
+    listener: MarkdownListener? = nil
   ) {
     self.renderableDocument = renderableDocument
     self.horizontalPadding = horizontalPadding
     self.config = config
-    self.tableActions = tableActions
-    self._controller = StateObject(wrappedValue: MarkdownController(analytics: analytics, metadata: metaData))
+    self._controller = StateObject(wrappedValue: MarkdownController(listener: listener, metadata: metaData))
   }
 
   public var body: some View {
@@ -39,7 +36,7 @@ public struct DocumentView: View {
       horizontalPadding: horizontalPadding
     )
     .environment(\.markdownConfig, config)
-    .environment(\.tableActions, tableActions)
+    .environment(\.markdownController, controller)
     .task {
       controller.onAppear(markdown: renderableDocument)
     }
@@ -54,7 +51,7 @@ public struct DocumentView: View {
 
 extension EnvironmentValues {
   @Entry public var markdownConfig: MarkdownRenderConfig = .default
-  @Entry public var tableActions: TableActions?
+  @Entry public var markdownController: MarkdownController?
   @Entry public var textContextMenu: TextContextMenu?
 }
 

@@ -4,7 +4,7 @@
 
 import Foundation
 
-/// Key-value context for document analytics, parsed from JSON.
+/// Key-value context for the document listener, parsed from JSON.
 public struct MarkdownMetadata: Equatable, Sendable {
   public let values: [String: String]
 

@@ -12,7 +12,7 @@ enum RowContent: Equatable {
 
 struct TableView: View {
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
-  @Environment(\.tableActions) var tableActions: TableActions?
+  @Environment(\.markdownController) var controller: MarkdownController?
 
   let headings: [AttributedString]
   let rows: [[RowContent]]
@@ -132,7 +132,7 @@ struct TableView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      if tableActions != nil {
+      if controller != nil {
         scrollView.onTapGesture {
           withAnimation(.easeInOut(duration: 0.2)) {
             isExpanded.toggle()
@@ -186,7 +186,7 @@ struct TableView: View {
 
   private var tableCopyButton: some View {
     Button(action: {
-      tableActions?.onCopy(rawMarkdown)
+      controller?.onTableCopyTap(content: rawMarkdown)
       isCopyPressed = true
       withAnimation(.easeInOut(duration: 0.2)) {
         isCopyScaled = true
@@ -220,7 +220,7 @@ struct TableView: View {
 
   private var tableDownloadButton: some View {
     Button(action: {
-      tableActions?.onDownload(rawMarkdown)
+      controller?.onTableDownloadTap(content: rawMarkdown)
     }, label: {
       Image("downloadArrow", bundle: .module)
         .renderingMode(.template)

@@ -7,27 +7,29 @@ import Foundation
 
 public protocol MarkdownListener {
   func onRender(markdown: RenderableDocument, metadata: MarkdownMetadata?) async
+  func onTableCopyTap(content: String) async
+  func onTableDownloadTap(content: String) async
 }
 
 public final class MarkdownController: ObservableObject {
 
-  private let analytics: MarkdownListener?
+  private let listener: MarkdownListener?
   private let metadata: MarkdownMetadata?
   private let eventSubject = AsyncCurrentValueSubject<RenderableDocument?>(nil)
-  private var analyticsTask: Task<(), Error>!
+  private var listenerTask: Task<(), Error>!
 
-  public init(analytics: MarkdownListener?, metadata: MarkdownMetadata?) {
-    self.analytics = analytics
+  public init(listener: MarkdownListener?, metadata: MarkdownMetadata?) {
+    self.listener = listener
     self.metadata = metadata
   }
 
   public func onAppear(markdown: RenderableDocument) {
-    guard let analytics else {
+    guard let listener else {
       return
     }
-    self.analyticsTask = Task {
+    self.listenerTask = Task {
       for try await md in eventSubject.eraseToAnyAsyncSequence().compactMap({ $0 }) {
-        await analytics.onRender(markdown: md, metadata: metadata)
+        await listener.onRender(markdown: md, metadata: metadata)
       }
     }
     eventSubject.send(markdown)
@@ -38,6 +40,18 @@ public final class MarkdownController: ObservableObject {
   }
 
   public func onDisappear() {
-    analyticsTask?.cancel()
+    listenerTask?.cancel()
+  }
+  
+  public func onTableCopyTap(content: String) {
+    Task {
+      await listener?.onTableCopyTap(content: content)
+    }
+  }
+  
+  public func onTableDownloadTap(content: String) {
+    Task {
+      await listener?.onTableDownloadTap(content: content)
+    }
   }
 }
