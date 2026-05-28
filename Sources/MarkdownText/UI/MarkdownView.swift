@@ -12,19 +12,16 @@ import Equatable
 public struct MarkdownView: View {
 
   private let text: String
-  private let horizontalPadding: CGFloat
   private let config: MarkdownRenderConfig
   @StateObject var controller: MarkdownViewController
   @Environment(\.colorScheme) private var colorScheme
 
   public init(
     text: String,
-    horizontalPadding: CGFloat = 0,
     config: MarkdownRenderConfig = .default,
     listener: MarkdownListener? = nil
   ) {
     self.text = text
-    self.horizontalPadding = horizontalPadding
     self.config = config
     _controller = StateObject(wrappedValue: MarkdownViewController(config: config, listener: listener))
   }
@@ -32,9 +29,9 @@ public struct MarkdownView: View {
   public var body: some View {
     Group {
       if let renderable = controller.renderable {
-        DocumentView(renderableDocument: renderable, horizontalPadding: horizontalPadding, config: config, listener: controller.listener)
+        DocumentView(renderableDocument: renderable, config: config, listener: controller.listener)
       } else {
-        DocumentView(renderableDocument: .empty, horizontalPadding: horizontalPadding, config: config, listener: controller.listener)
+        DocumentView(renderableDocument: .empty, config: config, listener: controller.listener)
       }
     }
     .task(id: text) {

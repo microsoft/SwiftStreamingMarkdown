@@ -16,7 +16,6 @@ struct TableView: View {
 
   let headings: [AttributedString]
   let rows: [[RowContent]]
-  let horizontalPadding: CGFloat
   let columnMaxWidths: [Int: CGFloat]
 
   private let defaultMaxColumnWidth: CGFloat = 200
@@ -27,7 +26,7 @@ struct TableView: View {
 
   private let rawMarkdown: String
 
-  init(headings: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], horizontalPadding: CGFloat, columnMaxWidths: [Int: CGFloat] = [:], rawMarkdown: String = "") {
+  init(headings: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], columnMaxWidths: [Int: CGFloat] = [:], rawMarkdown: String = "") {
     self.headings = headings.map { AttributedString($0) }
     self.rows = rows.map { row in
       row.map { content in
@@ -39,7 +38,6 @@ struct TableView: View {
       }
     }
 
-    self.horizontalPadding = horizontalPadding
     self.columnMaxWidths = columnMaxWidths
     self.rawMarkdown = rawMarkdown
   }
@@ -147,7 +145,6 @@ struct TableView: View {
           tableCopyButton
           tableDownloadButton
         }
-        .padding(.horizontal, horizontalPadding)
         .padding(.top, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .transition(.opacity)
@@ -164,7 +161,6 @@ struct TableView: View {
             .stroke(Color.Theme.Stroke.Default.Default250, lineWidth: 1)
         )
         .cornerRadius(12)
-        .padding(.horizontal, horizontalPadding)
         .onWidthChange { newWidth in
           scrollWidth = newWidth
         }
@@ -429,8 +425,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
       .frame(maxHeight: .infinity)
     TableView(
       headings: tableViewHeadingMock,
-      rows: tableviewRowsMock,
-      horizontalPadding: 24.0
+      rows: tableviewRowsMock
     )
     Spacer()
       .frame(maxHeight: .infinity)
@@ -443,8 +438,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
       .frame(maxHeight: .infinity)
     TableView(
       headings: tableViewHeadingMock,
-      rows: [],
-      horizontalPadding: 24.0
+      rows: []
     )
     Spacer()
       .frame(maxHeight: .infinity)
@@ -486,8 +480,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 16.0
+      rows: rows
     )
     Spacer()
   }
@@ -524,8 +517,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 16.0
+      rows: rows
     )
     Spacer()
   }
@@ -563,8 +555,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 16.0
+      rows: rows
     )
     Spacer()
   }
@@ -614,8 +605,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 16.0
+      rows: rows
     )
     Spacer()
   }
@@ -665,8 +655,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 16.0
+      rows: rows
     )
     Spacer()
   }
@@ -688,8 +677,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   return VStack {
     TableView(
       headings: headings,
-      rows: rows,
-      horizontalPadding: 8.0
+      rows: rows
     )
     Spacer()
   }

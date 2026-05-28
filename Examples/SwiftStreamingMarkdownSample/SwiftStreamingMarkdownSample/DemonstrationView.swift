@@ -23,19 +23,18 @@ struct DemonstrationView: View {
         if preferStreamedMarkdown {
           StreamedMarkdownView(
             text: markdownText,
-            horizontalPadding: 16,
             config: streamedRenderConfig,
             chunkInterval: 0.2
           ).environmentObject(listener)
         } else {
           MarkdownView(
             text: markdownText,
-            horizontalPadding: 16,
             config: .default,
             listener: listener
           )
         }
       }
+      .padding(.horizontal, 16)
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.vertical, 16)
     }

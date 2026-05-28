@@ -8,7 +8,6 @@ import SwiftUI
 struct OrderedListView: View {
 
   let items: [MarkdownListItem]
-  var horizontalPadding: CGFloat
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
 
   var body: some View {
@@ -23,19 +22,17 @@ struct OrderedListView: View {
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment. This is to fix the mis-alignment when the view is rendered off-screen, e.g. snapshot.
               ListItemContentWrapper(paragraphContents: contents) {
-                SingleBlockView(renderable: firstChild,
-                                horizontalPadding: 0.0)
+                SingleBlockView(renderable: firstChild)
               }
               .accessibilityLabel(Text(markdownListAccessibilityLabel(for: contents.string, at: idx, length: items.count)))
             } else {
-              SingleBlockView(renderable: firstChild,
-                              horizontalPadding: 0.0)
+              SingleBlockView(renderable: firstChild)
             }
           }
           Spacer()
         }
         if items[idx].children.count > 1 {
-          BlockView(renderables: Array(items[idx].children.dropFirst()), horizontalPadding: horizontalPadding)
+          BlockView(renderables: Array(items[idx].children.dropFirst()))
             .padding([.leading], 0)
         }
       }
@@ -108,6 +105,6 @@ func markdownListAccessibilityLabel(for item: String, at index: Int, length: Int
     MarkdownListItem(children: [.paragraph(id: "\(i)", content: NSMutableAttributedString(string: "item \(i + 1)"))], startsWithBold: false)
   }
   return ScrollView {
-    OrderedListView(items: items, horizontalPadding: 0)
+    OrderedListView(items: items)
   }
 })

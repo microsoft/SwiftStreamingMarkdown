@@ -14,27 +14,21 @@ public struct DocumentView: View {
   @StateObject var controller: MarkdownController
 
   let renderableDocument: RenderableDocument
-  let horizontalPadding: CGFloat
   let config: MarkdownRenderConfig
 
   public init(
     renderableDocument: RenderableDocument,
-    horizontalPadding: CGFloat,
     config: MarkdownRenderConfig = .default,
     metaData: MarkdownMetadata? = nil,
     listener: MarkdownListener? = nil
   ) {
     self.renderableDocument = renderableDocument
-    self.horizontalPadding = horizontalPadding
     self.config = config
     self._controller = StateObject(wrappedValue: MarkdownController(listener: listener, metadata: metaData))
   }
 
   public var body: some View {
-    BlockView(
-      renderables: renderableDocument.renderables,
-      horizontalPadding: horizontalPadding
-    )
+    BlockView(renderables: renderableDocument.renderables)
     .environment(\.markdownConfig, config)
     .environment(\.markdownController, controller)
     .task {

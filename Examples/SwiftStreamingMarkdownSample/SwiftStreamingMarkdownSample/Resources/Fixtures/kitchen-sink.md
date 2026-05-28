@@ -160,7 +160,8 @@ struct PreviewRow: View {
   let markdown: String
 
   var body: some View {
-    MarkdownView(text: markdown, horizontalPadding: 16)
+    MarkdownView(text: markdown)
+      .padding(.horizontal, 16)
   }
 }
 ```

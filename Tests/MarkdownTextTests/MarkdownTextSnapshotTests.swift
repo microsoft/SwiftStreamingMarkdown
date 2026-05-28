@@ -35,7 +35,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -54,7 +54,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -71,7 +71,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -105,7 +105,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -127,7 +127,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -154,7 +154,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -181,7 +181,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -208,7 +208,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -220,7 +220,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -237,7 +237,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     print(document.debugDescription())
     let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: .init())
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
     assert(view)
 
@@ -543,7 +543,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: config)
+      DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -558,7 +558,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: config)
+      DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }
     assert(view)
   }
@@ -575,7 +575,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
     let view = CanvasView {
-      DocumentView(renderableDocument: renderables, horizontalPadding: 24, config: config)
+      DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }
     assert(view)
   }

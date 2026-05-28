@@ -9,7 +9,6 @@ struct UnorderedListView: View {
 
   let items: [MarkdownListItem]
   let nestedLevel: Int
-  var horizontalPadding: CGFloat
 
   var body: some View {
     VStack(alignment: .leading, spacing: 8, content: {
@@ -20,17 +19,17 @@ struct UnorderedListView: View {
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment
               ListItemContentWrapper(paragraphContents: contents) {
-                SingleBlockView(renderable: firstChild, horizontalPadding: 0.0)
+                SingleBlockView(renderable: firstChild)
               }
               .accessibilityLabel(Text(markdownListAccessibilityLabel(for: contents.string, at: idx, length: items.count)))
             } else {
-              SingleBlockView(renderable: firstChild, horizontalPadding: 0.0)
+              SingleBlockView(renderable: firstChild)
             }
           }
           Spacer()
         }
         if items[idx].children.count > 1 {
-          BlockView(renderables: Array(items[idx].children.dropFirst()), horizontalPadding: horizontalPadding)
+          BlockView(renderables: Array(items[idx].children.dropFirst()))
             .padding([.leading], 0)
         }
       }
@@ -79,6 +78,5 @@ extension VerticalAlignment {
                                            content: NSMutableAttributedString(string: "item 3, this is a very long item with a lot of texts. it may create a multi-line paragraph."))],
                      startsWithBold: false)
   ],
-  nestedLevel: 0,
-  horizontalPadding: 0).padding()
+  nestedLevel: 0).padding()
 })

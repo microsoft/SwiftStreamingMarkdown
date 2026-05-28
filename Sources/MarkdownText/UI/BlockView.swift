@@ -8,20 +8,16 @@ import SwiftUI
 
 struct BlockView: View {
 
-  var horizontalPadding: CGFloat
   let renderables: [MarkdownRenderable]
 
-  init(renderables: [MarkdownRenderable], horizontalPadding: CGFloat) {
+  init(renderables: [MarkdownRenderable]) {
     self.renderables = renderables
-    self.horizontalPadding = horizontalPadding
   }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 30) {
       ForEach(renderables) { renderable in
-        SingleBlockView(
-          renderable: renderable,
-          horizontalPadding: horizontalPadding)
+        SingleBlockView(renderable: renderable)
       }
     }
   }
@@ -32,11 +28,9 @@ struct SingleBlockView: View {
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
 
   let renderable: MarkdownRenderable
-  let horizontalPadding: CGFloat
 
-  init(renderable: MarkdownRenderable, horizontalPadding: CGFloat) {
+  init(renderable: MarkdownRenderable) {
     self.renderable = renderable
-    self.horizontalPadding = horizontalPadding
   }
 
   var body: some View {
@@ -45,7 +39,6 @@ struct SingleBlockView: View {
       case .heading(_, _, let contents):
         HStack(spacing: 0) {
           ParagraphView(contents: contents)
-            .padding(.horizontal, horizontalPadding)
             .transition(.opacity)
             .accessibilityAddTraits(.isHeader)
           Spacer()
@@ -57,37 +50,28 @@ struct SingleBlockView: View {
             .transition(.opacity)
           Spacer()
         }
-        .padding(.horizontal, horizontalPadding)
       case .latex(_, let latexString):
         ScrollView(.horizontal) {
           HStack(spacing: 0) {
             BlockMathView(latex: latexString, color: Color(config.paragraphStyle.textColor))
             Spacer()
           }
-          .padding(.horizontal, horizontalPadding)
         }.scrollIndicators(.hidden)
       case .orderedList(_, let items):
-        OrderedListView(items: items, horizontalPadding: horizontalPadding)
-          .padding(.horizontal, horizontalPadding)
+        OrderedListView(items: items)
       case .unorderedList(_, let items, let nestedLevel):
-        UnorderedListView(items: items,
-                          nestedLevel: nestedLevel,
-                          horizontalPadding: horizontalPadding)
-          .padding(.horizontal, horizontalPadding)
+        UnorderedListView(items: items, nestedLevel: nestedLevel)
       case .codeBlock(_, let language, let code):
         CodeBlockView(language: language ?? "",
                       code: code)
-          .padding(.horizontal, horizontalPadding)
       case .thematicBreak:
         ThematicBreakView()
       case .table(_, let headers, let rows, let rawMarkdown):
         TableView(headings: headers,
                   rows: rows,
-                  horizontalPadding: horizontalPadding,
                   rawMarkdown: rawMarkdown)
       case .blockQuote(_, let item):
         BlockQuoteView(item: item)
-          .padding(.horizontal, horizontalPadding)
       }
     }
   }

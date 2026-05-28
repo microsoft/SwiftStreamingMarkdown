@@ -30,7 +30,7 @@ final class OrderedListViewTests: SnapshotTestCase {
       MarkdownListItem(children: renderables, startsWithBold: false)
     }
     let view = CanvasView {
-      OrderedListView(items: items, horizontalPadding: 0)
+      OrderedListView(items: items)
     }
 
     assert(view)
@@ -59,7 +59,7 @@ final class OrderedListViewTests: SnapshotTestCase {
 
     // Test that the view renders without crashing (validates extractFirstFont works with citations)
     let view = CanvasView {
-      OrderedListView(items: items, horizontalPadding: 0)
+      OrderedListView(items: items)
     }
 
     assert(view)

@@ -7,7 +7,6 @@ import SwiftUI
 
 struct StreamedMarkdownView: View {
   let text: String
-  let horizontalPadding: CGFloat
   let config: MarkdownRenderConfig
   let chunkSize: Int
   let chunkInterval: TimeInterval
@@ -17,13 +16,11 @@ struct StreamedMarkdownView: View {
 
   init(
     text: String,
-    horizontalPadding: CGFloat = 0,
     config: MarkdownRenderConfig = .default,
     chunkSize: Int = 48,
     chunkInterval: TimeInterval = 0.2
   ) {
     self.text = text
-    self.horizontalPadding = horizontalPadding
     self.config = config
     self.chunkSize = chunkSize
     self.chunkInterval = chunkInterval
@@ -39,7 +36,6 @@ struct StreamedMarkdownView: View {
   var body: some View {
     DocumentView(
       renderableDocument: controller.streamedText,
-      horizontalPadding: horizontalPadding,
       config: config,
       listener: listener
     )

@@ -52,8 +52,7 @@ final class TableViewSnapshotTests: SnapshotTestCase {
       VStack(alignment: .leading) {
         TableView(
           headings: [NSMutableAttributedString(string: "Header")],
-          rows: [[NSMutableAttributedString(attributedString: attributedString)]],
-          horizontalPadding: 1
+          rows: [[NSMutableAttributedString(attributedString: attributedString)]]
         )
       }
     }

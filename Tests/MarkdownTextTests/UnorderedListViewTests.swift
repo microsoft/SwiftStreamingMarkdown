@@ -30,8 +30,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
       MarkdownListItem(children: [results[2][0]],
                        startsWithBold: false)
     ],
-    nestedLevel: 0,
-    horizontalPadding: 0).padding()
+    nestedLevel: 0).padding()
 
     let view = CanvasView {
       unorderedListView
@@ -62,8 +61,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
       MarkdownListItem(children: [results[2][0]],
                        startsWithBold: false)
     ],
-    nestedLevel: 0,
-    horizontalPadding: 0).padding()
+    nestedLevel: 0).padding()
 
     let view = CanvasView {
       unorderedListView

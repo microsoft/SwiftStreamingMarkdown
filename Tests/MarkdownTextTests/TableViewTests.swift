@@ -19,8 +19,7 @@ final class TableViewTests: SnapshotTestCase {
 
     let tableView = TableView(
       headings: tableViewHeadingMock,
-      rows: tableviewRowsMock,
-      horizontalPadding: 24.0
+      rows: tableviewRowsMock
     )
 
     let view = canvasView(tableView: tableView)
@@ -33,8 +32,7 @@ final class TableViewTests: SnapshotTestCase {
 
     let tableView = TableView(
       headings: tableViewHeadingMock,
-      rows: try rows(boldText: false),
-      horizontalPadding: 24.0
+      rows: try rows(boldText: false)
     )
 
     let view = canvasView(tableView: tableView)
@@ -48,7 +46,6 @@ final class TableViewTests: SnapshotTestCase {
     let tableView = TableView(
       headings: tableViewHeadingMock,
       rows: try rows(boldText: false),
-      horizontalPadding: 24.0,
       columnMaxWidths: [0: 300, tableViewHeadingMock.count - 1: 250]
     )
 
@@ -70,8 +67,7 @@ final class TableViewTests: SnapshotTestCase {
 
     let tableView = TableView(
       headings: headings,
-      rows: try rows(boldText: true),
-      horizontalPadding: 24.0
+      rows: try rows(boldText: true)
     )
 
     let view = canvasView(tableView: tableView)
