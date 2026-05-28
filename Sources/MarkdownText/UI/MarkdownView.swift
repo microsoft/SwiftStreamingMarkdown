@@ -4,9 +4,11 @@
 
 import Foundation
 import SwiftUI
+import Equatable
 
 /// This is a view that is able to both parse and render markdown with default configuration.
 /// Use this view instead of `DocumentView` if you don't want to perform the parsing yourself.
+@Equatable
 public struct MarkdownView: View {
 
   private let text: String
@@ -18,20 +20,21 @@ public struct MarkdownView: View {
   public init(
     text: String,
     horizontalPadding: CGFloat = 0,
-    config: MarkdownRenderConfig = .default
+    config: MarkdownRenderConfig = .default,
+    listener: MarkdownListener? = nil
   ) {
     self.text = text
     self.horizontalPadding = horizontalPadding
     self.config = config
-    _controller = StateObject(wrappedValue: MarkdownViewController(config: config))
+    _controller = StateObject(wrappedValue: MarkdownViewController(config: config, listener: listener))
   }
 
   public var body: some View {
     Group {
       if let renderable = controller.renderable {
-        DocumentView(renderableDocument: renderable, horizontalPadding: horizontalPadding, config: config)
+        DocumentView(renderableDocument: renderable, horizontalPadding: horizontalPadding, config: config, listener: controller.listener)
       } else {
-        DocumentView(renderableDocument: .empty, horizontalPadding: horizontalPadding, config: config)
+        DocumentView(renderableDocument: .empty, horizontalPadding: horizontalPadding, config: config, listener: controller.listener)
       }
     }
     .task(id: text) {
@@ -46,9 +49,12 @@ public final class MarkdownViewController: ObservableObject {
 
   private let config: MarkdownRenderConfig
   private let parser = MarkdownParserImpl()
+  
+  let listener: MarkdownListener?
 
-  public init(config: MarkdownRenderConfig = .default) {
+  public init(config: MarkdownRenderConfig = .default, listener: MarkdownListener? = nil) {
     self.config = config
+    self.listener = listener
   }
 
   func parse(text: String, colorScheme: ColorScheme) async {

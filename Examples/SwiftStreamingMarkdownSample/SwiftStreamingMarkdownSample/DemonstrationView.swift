@@ -11,6 +11,7 @@ struct DemonstrationView: View {
 
   let demonstration: Demonstration
   let markdownText: String
+  @StateObject var listener = LoggingMarkdownListener()
 
   private var streamedRenderConfig: MarkdownRenderConfig {
     MarkdownRenderConfig(copyFrom: .default, shouldAnimateText: true)
@@ -25,12 +26,13 @@ struct DemonstrationView: View {
             horizontalPadding: 16,
             config: streamedRenderConfig,
             chunkInterval: 0.2
-          )
+          ).environmentObject(listener)
         } else {
           MarkdownView(
             text: markdownText,
             horizontalPadding: 16,
-            config: .default
+            config: .default,
+            listener: listener
           )
         }
       }
