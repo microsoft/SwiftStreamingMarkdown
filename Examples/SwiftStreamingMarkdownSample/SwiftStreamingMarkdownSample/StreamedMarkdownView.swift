@@ -39,7 +39,8 @@ struct StreamedMarkdownView: View {
     DocumentView(
       renderableDocument: controller.streamedText,
       horizontalPadding: horizontalPadding,
-      config: config
+      config: config,
+      listener: LoggingMarkdownListener()
     )
     .task {
       await controller.startStreaming(text: text)
