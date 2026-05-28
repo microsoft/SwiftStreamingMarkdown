@@ -397,6 +397,15 @@ extension ParagraphUIView: UITextViewDelegate {
       markdownController: markdownController
     )
   }
+
+  func textView(_ textView: UITextView, willPresentEditMenuWith animator: any UIEditMenuInteractionAnimating) {
+    guard let textContextMenu, let markdownController else { return }
+    for group in textContextMenu.menuGroups {
+      for item in group.items {
+        markdownController.onContextMenuAppear(id: item.id)
+      }
+    }
+  }
 }
 
 fileprivate extension NSMutableAttributedString {
