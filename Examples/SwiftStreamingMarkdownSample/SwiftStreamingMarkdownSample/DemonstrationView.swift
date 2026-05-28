@@ -14,7 +14,10 @@ struct DemonstrationView: View {
   @StateObject var listener = LoggingMarkdownListener()
 
   private var streamedRenderConfig: MarkdownRenderConfig {
-    MarkdownRenderConfig(copyFrom: .default, shouldAnimateText: true)
+    MarkdownRenderConfig
+      .default
+      .withTextContextMenu(value: demonstration.customContextMenu)
+      .withShouldAnimateText(value: true)
   }
 
   var body: some View {

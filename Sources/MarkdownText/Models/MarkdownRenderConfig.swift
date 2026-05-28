@@ -144,19 +144,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     self.textContextMenu = textContextMenu
   }
 
-  public init(copyFrom config: MarkdownRenderConfig, shouldAnimateText: Bool) {
-    self.init(
-      shouldAnimateText: shouldAnimateText,
-      blockQuoteStyle: config.blockQuoteStyle,
-      headingStyle: config.headingStyle,
-      orderedListStyle: config.orderedListStyle,
-      paragraphStyle: config.paragraphStyle,
-      tableStyle: config.tableStyle,
-      inlineStyle: config.inlineStyle,
-      textContextMenu: config.textContextMenu
-    )
-  }
-
   public static let `default` = MarkdownRenderConfig(shouldAnimateText: false)
 
   public static let chainOfThought = MarkdownRenderConfig(
@@ -177,4 +164,110 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
                        actionLinkUnderlineColor: UIColor(Color.Theme.Foreground.Primary.Primary650),
                        codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header))
   )
+}
+
+extension MarkdownRenderConfig {
+  public func withShouldAnimateText(value: Bool) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: value,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withBlockQuoteStyle(value: MarkdownTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: value,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withHeadingStyle(value: MarkdownHeadingTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: value,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withOrderedListStyle(value: MarkdownTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: value,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withParagraphStyle(value: MarkdownTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: value,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withTableStyle(value: MarkdownTableTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: value,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withInlineStyle(value: MarkdownInlineTextStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: value,
+      textContextMenu: textContextMenu
+    )
+  }
+
+  public func withTextContextMenu(value: TextContextMenu?) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: value
+    )
+  }
 }
