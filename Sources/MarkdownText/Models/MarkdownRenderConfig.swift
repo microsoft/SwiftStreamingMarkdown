@@ -145,25 +145,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   public static let `default` = MarkdownRenderConfig(shouldAnimateText: false)
-
-  public static let chainOfThought = MarkdownRenderConfig(
-    shouldAnimateText: true,
-    blockQuoteStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
-    headingStyle: .init(h1Font: .extraSmall, h2Font: .extraSmall, h3Font: .extraSmall, h4Font: .extraSmall, h5Font: .extraSmall, h6Font: .extraSmall, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
-    orderedListStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
-    paragraphStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, textColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
-    tableStyle: .init(textFont: .extraSmall, boldTextFont: .extraSmallStrong, headerTextColor: UIColor(Color.Theme.Foreground.Primary.Primary550), regularTextColor: UIColor(Color.Theme.Foreground.Primary.Primary550)),
-    inlineStyle: .init(emphasisTextFont: .extraSmall,
-                       boldTextFont: .extraSmallStrong,
-                       boldTextColor: UIColor(Color.Theme.Foreground.Primary.Primary550),
-                       linkTextFont: .extraSmall,
-                       linkTextColor: UIColor(Color.Theme.Foreground.Primary.Primary550),
-                       codeTextFont: .code,
-                       codeTextColor: UIColor(Color.Theme.Foreground.Primary.Primary550),
-                       codeBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
-                       actionLinkUnderlineColor: UIColor(Color.Theme.Foreground.Primary.Primary650),
-                       codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header))
-  )
 }
 
 extension MarkdownRenderConfig {
