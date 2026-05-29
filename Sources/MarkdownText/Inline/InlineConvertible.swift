@@ -8,7 +8,7 @@ import SwiftUI
 typealias NSAttributeContainer = [NSAttributedString.Key: Any]
 
 extension NSAttributedString.Key {
-  static let typography = NSAttributedString.Key("copilot.typography")
+  static let typography = NSAttributedString.Key("markdown.textFonts")
 }
 
 /// Have a inline Markdown node conform to this if it can be converted into an `AttributedString`

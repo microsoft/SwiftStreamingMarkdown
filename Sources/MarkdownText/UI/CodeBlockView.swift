@@ -74,12 +74,12 @@ public struct CodeBlockView: View {
       HStack(alignment: .top) {
         if #available(iOS 16.1, *) {  // Minimum version for HighlightSwift
           Text(attributedString ?? AttributedString(code))
-            .font(Typography.code)
+            .font(Typography.codeTextFonts)
             .transition(.opacity)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
           Text(code)
-            .font(Typography.code)
+            .font(Typography.codeTextFonts)
             .foregroundStyle(Color.Theme.Component.CodeBlock.Foreground.FunctionParameter)
             .transition(.opacity)
         }
@@ -97,7 +97,7 @@ public struct CodeBlockView: View {
     VStack(spacing: 0) {
       HStack(alignment: .top) {
         Text(language)
-          .font(Typography.small)
+          .font(Typography.smallTextFonts)
           .foregroundStyle(Color.Static.Stone.Stone350)
         Spacer()
         HStack(alignment: .firstTextBaseline, spacing: 6.0) {
@@ -106,7 +106,7 @@ public struct CodeBlockView: View {
             .foregroundStyle(Color.Static.Stone.Stone350)
           Text(copied ? String.codeCopiedLabel : String.codeCopyLabel)
             .accessibilityAddTraits(.isButton)
-            .font(Typography.small)
+            .font(Typography.smallTextFonts)
             .foregroundStyle(Color.Static.Stone.Stone350)
             .onTapGesture {
               copied = true

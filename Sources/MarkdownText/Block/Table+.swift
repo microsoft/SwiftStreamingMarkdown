@@ -11,10 +11,10 @@ extension Markdown.Table: BlockConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
     var bodyContainer = attributeContainer
     var headerContainer = attributeContainer
-    bodyContainer[.font] = config.tableStyle.textFont.uiFont
-    bodyContainer[.typography] = config.tableStyle.textFont
-    headerContainer[.font] = config.tableStyle.boldTextFont.uiFont
-    headerContainer[.typography] = config.tableStyle.boldTextFont
+    bodyContainer[.font] = config.tableStyle.textFonts.normal
+    bodyContainer[.typography] = config.tableStyle.textFonts.bold
+    headerContainer[.font] = config.tableStyle.textFonts.bold ?? config.tableStyle.textFonts.normal
+    headerContainer[.typography] = config.tableStyle.textFonts.bold
     let headerCells = self
       .head
       .children

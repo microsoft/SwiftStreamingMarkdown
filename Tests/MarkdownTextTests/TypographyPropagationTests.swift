@@ -4,6 +4,7 @@
 
 import Markdown
 @testable import SwiftStreamingMarkdown
+import UIKit
 import XCTest
 
 @MainActor
@@ -23,18 +24,16 @@ final class TypographyPropagationTests: XCTestCase {
     // Convert the heading to renderable
     let config = MarkdownRenderConfig.default
     // Headings use different typography based on level.
-    // Level 1 usually maps to extraLarge or similar in the rendering logic.
-    let baseTypography = Typography.extraLarge // This is the expected base for H1
+    // Level 1 maps to extraLargeTextFonts in the rendering logic.
+    let headingFonts = Typography.extraLargeTextFonts
 
     let renderable = heading.convert(attributeContainer: .init(), config: config, colorScheme: .light)
 
     if case .heading(_, let level, let attributedString) = renderable {
       XCTAssertEqual(level, 1)
 
-      // The attributed string should have the .typography attribute set to extraLarge
-      // and for the italic part, it should be extraLargeItalic
-
-      let fullRange = NSRange(location: 0, length: attributedString.length)
+      // The attributed string should have the .font attribute set to extraLarge normal
+      // and for the italic part, it should be extraLarge italic.
 
       // Find the range of "header" (which is italicized)
       let string = attributedString.string
@@ -45,13 +44,12 @@ final class TypographyPropagationTests: XCTestCase {
       let nsHeaderRange = NSRange(headerRange, in: string)
 
       // Check attribute for "This is a "
-      let regularPartRange = NSRange(location: 0, length: nsHeaderRange.location)
-      let regularTypography = attributedString.attribute(.typography, at: 0, effectiveRange: nil) as? Typography
-      XCTAssertEqual(regularTypography, baseTypography)
+      let regularFont = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(regularFont, headingFonts.normal)
 
       // Check attribute for "header"
-      let italicTypography = attributedString.attribute(.typography, at: nsHeaderRange.location, effectiveRange: nil) as? Typography
-      XCTAssertEqual(italicTypography, .extraLargeItalic)
+      let italicFont = attributedString.attribute(.font, at: nsHeaderRange.location, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(italicFont, headingFonts.italic)
     } else {
       XCTFail("Renderable should be a heading")
     }
@@ -77,8 +75,8 @@ final class TypographyPropagationTests: XCTestCase {
       }
       let nsRange = NSRange(strongItalicRange, in: string)
 
-      let typography = attributedString.attribute(.typography, at: nsRange.location, effectiveRange: nil) as? Typography
-      XCTAssertEqual(typography, .baseStrongItalic)
+      let font = attributedString.attribute(.font, at: nsRange.location, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(font, Typography.baseTextFonts.boldItalic)
     } else {
       XCTFail("Renderable should be a paragraph")
     }

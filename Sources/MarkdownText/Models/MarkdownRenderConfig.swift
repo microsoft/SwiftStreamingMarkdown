@@ -17,29 +17,25 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public let textContextMenu: TextContextMenu?
 
   public struct MarkdownTextStyle: Hashable, Sendable {
-    public let textFont: Typography
-    public let boldTextFont: Typography
+    public let textFonts: TextFonts
     public let textColor: UIColor
 
-    public init(textFont: Typography, boldTextFont: Typography, textColor: UIColor) {
-      self.textFont = textFont
-      self.boldTextFont = boldTextFont
+    public init(textFonts: TextFonts, textColor: UIColor) {
+      self.textFonts = textFonts
       self.textColor = textColor
     }
   }
 
   public struct MarkdownTableTextStyle: Hashable, Sendable {
-    public let textFont: Typography
-    public let boldTextFont: Typography
+    public let textFonts: TextFonts
     public let headerTextColor: UIColor
     public let regularTextColor: UIColor
     public let headerBackgroundColor: UIColor
     public let borderColor: UIColor
     public let actionButtonColor: UIColor
 
-    public init(textFont: Typography, boldTextFont: Typography, headerTextColor: UIColor, regularTextColor: UIColor, headerBackgroundColor: UIColor, borderColor: UIColor, actionButtonColor: UIColor) {
-      self.textFont = textFont
-      self.boldTextFont = boldTextFont
+    public init(textFonts: TextFonts, headerTextColor: UIColor, regularTextColor: UIColor, headerBackgroundColor: UIColor, borderColor: UIColor, actionButtonColor: UIColor) {
+      self.textFonts = textFonts
       self.headerTextColor = headerTextColor
       self.regularTextColor = regularTextColor
       self.headerBackgroundColor = headerBackgroundColor
@@ -49,15 +45,15 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   public struct MarkdownHeadingTextStyle: Hashable, Sendable {
-    public let h1Font: Typography
-    public let h2Font: Typography
-    public let h3Font: Typography
-    public let h4Font: Typography
-    public let h5Font: Typography
-    public let h6Font: Typography
+    public let h1Font: TextFonts
+    public let h2Font: TextFonts
+    public let h3Font: TextFonts
+    public let h4Font: TextFonts
+    public let h5Font: TextFonts
+    public let h6Font: TextFonts
     public let textColor: UIColor
 
-    public init(h1Font: Typography, h2Font: Typography, h3Font: Typography, h4Font: Typography, h5Font: Typography, h6Font: Typography, textColor: UIColor) {
+    public init(h1Font: TextFonts, h2Font: TextFonts, h3Font: TextFonts, h4Font: TextFonts, h5Font: TextFonts, h6Font: TextFonts, textColor: UIColor) {
       self.h1Font = h1Font
       self.h2Font = h2Font
       self.h3Font = h3Font
@@ -69,8 +65,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   public struct MarkdownInlineTextStyle: Hashable, Sendable {
-    public let emphasisTextFont: Typography
-    public let boldTextFont: Typography
     public let boldTextColor: UIColor
     public let linkTextFont: Typography
     public let linkTextColor: UIColor
@@ -79,9 +73,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     public let codeBackgroundColor: UIColor
     public let codeUnderlineColor: UIColor
 
-    public init(emphasisTextFont: Typography, boldTextFont: Typography, boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, codeUnderlineColor: UIColor) {
-      self.emphasisTextFont = emphasisTextFont
-      self.boldTextFont = boldTextFont
+    public init(boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, codeUnderlineColor: UIColor) {
       self.boldTextColor = boldTextColor
       self.linkTextFont = linkTextFont
       self.linkTextColor = linkTextColor
@@ -95,32 +87,28 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public init(
     shouldAnimateText: Bool = false,
     blockQuoteStyle: MarkdownTextStyle = .init(
-      textFont: Typography.base,
-      boldTextFont: Typography.baseStrong,
+      textFonts: Typography.baseTextFonts,
       textColor: UIColor(Color.Theme.Foreground.Primary.Primary750)
     ),
     headingStyle: MarkdownHeadingTextStyle = .init(
-      h1Font: .extraLarge,
-      h2Font: .large,
-      h3Font: .medium,
-      h4Font: .medium,
-      h5Font: .medium,
-      h6Font: .medium,
+      h1Font: Typography.extraLargeTextFonts,
+      h2Font: Typography.largeTextFonts,
+      h3Font: Typography.mediumTextFonts,
+      h4Font: Typography.mediumTextFonts,
+      h5Font: Typography.mediumTextFonts,
+      h6Font: Typography.mediumTextFonts,
       textColor: UIColor(Color.Theme.Foreground.Primary.Primary750)
     ),
     orderedListStyle: MarkdownTextStyle = .init(
-      textFont: .base,
-      boldTextFont: .baseStrong,
+      textFonts: Typography.baseTextFonts,
       textColor: UIColor(Color.Theme.Foreground.Primary.Primary450)
     ),
     paragraphStyle: MarkdownTextStyle = .init(
-      textFont: .base,
-      boldTextFont: .baseStrong,
+      textFonts: Typography.baseTextFonts,
       textColor: UIColor(Color.Theme.Foreground.Primary.Primary750)
     ),
     tableStyle: MarkdownTableTextStyle = .init(
-      textFont: .small,
-      boldTextFont: .smallStrong,
+      textFonts: Typography.smallTextFonts,
       headerTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
       regularTextColor: UIColor(Color.Theme.Foreground.Primary.Primary800),
       headerBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
@@ -128,8 +116,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       actionButtonColor: UIColor(Color.Theme.Component.Button.Foreground.Rest)
     ),
     inlineStyle: MarkdownInlineTextStyle = .init(
-      emphasisTextFont: .baseItalic,
-      boldTextFont: .baseStrong,
       boldTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
       linkTextFont: .base,
       linkTextColor: UIColor(Color.Theme.Accent.Accent600),

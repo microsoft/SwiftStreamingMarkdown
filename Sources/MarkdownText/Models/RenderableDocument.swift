@@ -29,9 +29,9 @@ public struct RenderableDocument: Equatable, Sendable {
     let content = NSMutableAttributedString(
       string: plainText,
       attributes: [
-        .font: config.paragraphStyle.textFont.uiFont,
+        .font: config.paragraphStyle.textFonts.normal,
         .foregroundColor: config.paragraphStyle.textColor,
-        .kern: config.paragraphStyle.textFont.preferredLetterSpacing
+        .kern: config.paragraphStyle.textFonts.preferredLetterSpacing
       ]
     )
     self.init(renderables: [.paragraph(id: UUID().uuidString, content: content)])

@@ -19,14 +19,12 @@ extension Markdown.Emphasis: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
-    if let currentTypography = attributeContainer[.typography] as? Typography {
-      let italicTypography = currentTypography.italicVariant
-      newContainer[.typography] = italicTypography
-      newContainer[.font] = italicTypography.uiFont
-      newContainer[.kern] = italicTypography.preferredLetterSpacing
+        
+    if let currentTextFonts = attributeContainer[.typography] as? TextFonts {
+      let currentFont = attributeContainer[.font] as? UIFont
+      newContainer[.font] = currentFont.map { currentTextFonts.italicize(font: $0) } ?? currentTextFonts.italic
     } else {
-      newContainer[.font] = config.inlineStyle.emphasisTextFont.uiFont
-      newContainer[.kern] = config.inlineStyle.emphasisTextFont.preferredLetterSpacing
+      newContainer[.font] = config.paragraphStyle.textFonts.italic
     }
     self.inlineConvertibleChildren.forEach { convertible in
       str.append(convertible.convert(attributeContainer: newContainer, config: config, colorScheme: colorScheme))
@@ -40,14 +38,11 @@ extension Markdown.Strong: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
-    if let currentTypography = attributeContainer[.typography] as? Typography {
-      let boldTypography = currentTypography.boldVariant
-      newContainer[.typography] = boldTypography
-      newContainer[.font] = boldTypography.uiFont
-      newContainer[.kern] = boldTypography.preferredLetterSpacing
+    if let currentTextFonts = attributeContainer[.typography] as? TextFonts {
+      let currentFont = attributeContainer[.font] as? UIFont
+      newContainer[.font] = currentFont.map { currentTextFonts.bold(font: $0) } ?? currentTextFonts.bold
     } else {
-      newContainer[.font] = config.inlineStyle.boldTextFont.uiFont
-      newContainer[.kern] = config.inlineStyle.boldTextFont.preferredLetterSpacing
+      newContainer[.font] = config.paragraphStyle.textFonts.bold
     }
     if self.parent is Paragraph && self.indexInParent == 0 && self.parent?.parent is ListItem && parent?.indexInParent == 0 {
       newContainer[.foregroundColor] = config.inlineStyle.boldTextColor
@@ -171,7 +166,7 @@ extension Markdown.InlineCode: InlineConvertible {
         .code
         .dropFirst(LaTexPreProcessorImpl.inlineCodePrefix.count)
         .dropLast(LaTexPreProcessorImpl.inlineCodeSuffix.count))
-      let font = attributeContainer[NSAttributedString.Key.font] as? UIFont ?? config.paragraphStyle.textFont.uiFont
+      let font = attributeContainer[NSAttributedString.Key.font] as? UIFont ?? config.paragraphStyle.textFonts.normal
       let textColor = config.paragraphStyle.textColor
       let lightHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)).toHexString()
       let darkHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)).toHexString()

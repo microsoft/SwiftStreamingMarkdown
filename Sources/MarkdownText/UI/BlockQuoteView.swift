@@ -59,7 +59,7 @@ struct QuoteTextView: View {
 
   var body: some View {
     Text(text)
-      .font(config.blockQuoteStyle.textFont)
+      .font(config.blockQuoteStyle.textFonts)
       .foregroundStyle(Color(config.blockQuoteStyle.textColor))
       .padding(.vertical, 4.0)
       .fixedSize(horizontal: false, vertical: true)

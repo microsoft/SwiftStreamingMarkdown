@@ -10,9 +10,9 @@ extension Paragraph: BlockConvertible {
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
     var container = attributeContainer
-    container[.font] = config.paragraphStyle.textFont.uiFont
-    container[.typography] = config.paragraphStyle.textFont
-    container[.kern] = config.paragraphStyle.textFont.preferredLetterSpacing
+    container[.font] = config.paragraphStyle.textFonts.normal
+    container[.typography] = config.paragraphStyle.textFonts
+    container[.kern] = config.paragraphStyle.textFonts.preferredLetterSpacing
     container[.foregroundColor] = config.paragraphStyle.textColor
     let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config, colorScheme: colorScheme)
     return MarkdownRenderable.paragraph(id: self.id, content: paragraphContent)
@@ -51,7 +51,7 @@ extension BlockMarkup {
           // Apply baseline offset to the attachment using the font from config
           attachmentString.addAttribute(
             .baselineOffset,
-            value: config.paragraphStyle.textFont.uiFont.descender,
+            value: config.paragraphStyle.textFonts.normal.descender,
             range: NSRange(location: 0, length: attachmentString.length)
           )
 

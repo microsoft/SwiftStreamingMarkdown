@@ -15,7 +15,7 @@ struct OrderedListView: View {
       ForEach(0..<items.count, id: \.self) { idx in
         HStack(alignment: .centerOfFirstLine, spacing: 11) {
           Text(verbatim: "\(idx+1).")
-            .font(config.orderedListStyle.boldTextFont)
+            .font(config.orderedListStyle.textFonts, bold: true)
             .foregroundStyle(Color(config.orderedListStyle.textColor))
             .transition(.opacity)
           if let firstChild = items[idx].children.first {

@@ -7,13 +7,10 @@ import Markdown
 import SwiftUI
 
 extension Heading: BlockConvertible {
-  private static let fonts = [Typography.extraLarge,
-                              Typography.large
-  ]
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
     var newContainer = attributeContainer
-    let headingFont: Typography
+    let headingFont: TextFonts
     switch level {
     case 1:
       headingFont = config.headingStyle.h1Font
@@ -30,7 +27,7 @@ extension Heading: BlockConvertible {
     default:
       headingFont = config.headingStyle.h6Font
     }
-    newContainer[.font] = headingFont.uiFont
+    newContainer[.font] = headingFont.normal
     newContainer[.typography] = headingFont
     newContainer[.kern] = headingFont.preferredLetterSpacing
     newContainer[.foregroundColor] = config.headingStyle.textColor

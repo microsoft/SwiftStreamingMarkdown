@@ -122,67 +122,82 @@ public enum Typography: CaseIterable, Sendable {
     default: 0.0
     }
   }
-
-  /// Returns the bold variant of the current typography.
-  public var boldVariant: Typography {
-    return switch self {
-    case .extraLarge: .extraLargeStrong
-    case .extraLargeItalic: .extraLargeStrongItalic
-
-    case .large: .largeStrong
-    case .largeItalic: .largeStrongItalic
-
-    case .medium: .mediumStrong
-    case .mediumItalic: .mediumStrongItalic
-
-    case .base: .baseStrong
-    case .baseItalic: .baseStrongItalic
-
-    case .small: .smallStrong
-    case .smallItalic: .smallStrongItalic
-
-    case .extraSmall: .extraSmallStrong
-    case .extraSmallItalic: .extraSmallStrongItalic
-
-    case .extraLargeStrong, .extraLargeStrongItalic,
-         .largeStrong, .largeStrongItalic,
-         .mediumStrong, .mediumStrongItalic,
-         .baseStrong, .baseStrongItalic,
-         .smallStrong, .smallStrongItalic,
-         .extraSmallStrong, .extraSmallStrongItalic,
-         .code, .tripleExtraSmallCustom450: self
-    }
+  
+  public static var extraLargeTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.extraLarge.uiFont,
+      italic: Typography.extraLargeItalic.uiFont,
+      bold: Typography.extraLargeStrong.uiFont,
+      boldItalic: Typography.extraLargeStrongItalic.uiFont,
+      preferredLetterSpacing: -0.28,
+      preferredLineHeight: 32.0
+    )
   }
 
-  /// Returns the italic variant of the current typography.
-  public var italicVariant: Typography {
-    return switch self {
-    case .extraLarge: .extraLargeItalic
-    case .extraLargeStrong: .extraLargeStrongItalic
+  public static var largeTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.large.uiFont,
+      italic: Typography.largeItalic.uiFont,
+      bold: Typography.largeStrong.uiFont,
+      boldItalic: Typography.largeStrongItalic.uiFont,
+      preferredLetterSpacing: -0.24,
+      preferredLineHeight: 32.0
+    )
+  }
 
-    case .large: .largeItalic
-    case .largeStrong: .largeStrongItalic
+  public static var mediumTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.medium.uiFont,
+      italic: Typography.mediumItalic.uiFont,
+      bold: Typography.mediumStrong.uiFont,
+      boldItalic: Typography.mediumStrongItalic.uiFont,
+      preferredLetterSpacing: -0.2,
+      preferredLineHeight: 26.0
+    )
+  }
 
-    case .medium: .mediumItalic
-    case .mediumStrong: .mediumStrongItalic
+  public static var baseTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.base.uiFont,
+      italic: Typography.baseItalic.uiFont,
+      bold: Typography.baseStrong.uiFont,
+      boldItalic: Typography.baseStrongItalic.uiFont,
+      preferredLetterSpacing: 0.0,
+      preferredLineHeight: 26.0
+    )
+  }
 
-    case .base: .baseItalic
-    case .baseStrong: .baseStrongItalic
+  public static var smallTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.small.uiFont,
+      italic: Typography.smallItalic.uiFont,
+      bold: Typography.smallStrong.uiFont,
+      boldItalic: Typography.smallStrongItalic.uiFont,
+      preferredLetterSpacing: 0.0,
+      preferredLineHeight: 20.0
+    )
+  }
 
-    case .small: .smallItalic
-    case .smallStrong: .smallStrongItalic
+  public static var extraSmallTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.extraSmall.uiFont,
+      italic: Typography.extraSmallItalic.uiFont,
+      bold: Typography.extraSmallStrong.uiFont,
+      boldItalic: Typography.extraSmallStrongItalic.uiFont,
+      preferredLetterSpacing: 0.0,
+      preferredLineHeight: 20.0
+    )
+  }
 
-    case .extraSmall: .extraSmallItalic
-    case .extraSmallStrong: .extraSmallStrongItalic
-
-    case .extraLargeItalic, .extraLargeStrongItalic,
-         .largeItalic, .largeStrongItalic,
-         .mediumItalic, .mediumStrongItalic,
-         .baseItalic, .baseStrongItalic,
-         .smallItalic, .smallStrongItalic,
-         .extraSmallItalic, .extraSmallStrongItalic,
-         .code, .tripleExtraSmallCustom450: self
-    }
+  public static var codeTextFonts: TextFonts {
+    return TextFonts(
+      normal: Typography.code.uiFont,
+      italic: nil,
+      bold: nil,
+      boldItalic: nil,
+      preferredLetterSpacing: -0.12,
+      preferredLineHeight: 20.0
+    )
   }
 }
 
@@ -201,12 +216,22 @@ extension View {
   /// Set both the font and the preferred line height if different from the font's line height.
   /// - Parameter font: The font
   /// - Returns: The modified view
-  public func font(_ font: Typography) -> some View {
-    self
-      .font(font.font)
+  public func font(_ font: TextFonts, bold: Bool = false, italic: Bool = false) -> some View {
+    let fontToUse: UIFont?
+    if bold && italic {
+      fontToUse = font.boldItalic
+    } else if bold {
+      fontToUse = font.bold
+    } else if italic {
+      fontToUse = font.italic
+    } else {
+      fontToUse = font.normal
+    }
+    return self
+      .font(Font(fontToUse ?? font.normal))
       .kerning(font.preferredLetterSpacing)
       .if(
-        font.preferredLineHeight > font.uiFont.lineHeight,
-        content: { $0.lineSpacing(font.preferredLineHeight - font.uiFont.lineHeight)})
+        font.preferredLineHeight > font.normal.lineHeight,
+        content: { $0.lineSpacing(font.preferredLineHeight - font.normal.lineHeight)})
   }
 }
