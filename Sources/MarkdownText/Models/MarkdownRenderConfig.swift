@@ -66,14 +66,14 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
   public struct MarkdownInlineTextStyle: Hashable, Sendable {
     public let boldTextColor: UIColor
-    public let linkTextFont: Typography
+    public let linkTextFont: UIFont
     public let linkTextColor: UIColor
-    public let codeTextFont: Typography
+    public let codeTextFont: UIFont
     public let codeTextColor: UIColor
     public let codeBackgroundColor: UIColor
     public let codeUnderlineColor: UIColor
 
-    public init(boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, codeUnderlineColor: UIColor) {
+    public init(boldTextColor: UIColor, linkTextFont: UIFont, linkTextColor: UIColor, codeTextFont: UIFont, codeTextColor: UIColor, codeBackgroundColor: UIColor, codeUnderlineColor: UIColor) {
       self.boldTextColor = boldTextColor
       self.linkTextFont = linkTextFont
       self.linkTextColor = linkTextColor
@@ -117,9 +117,9 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     ),
     inlineStyle: MarkdownInlineTextStyle = .init(
       boldTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
-      linkTextFont: .base,
+      linkTextFont: Typography.baseTextFonts.normal,
       linkTextColor: UIColor(Color.Theme.Accent.Accent600),
-      codeTextFont: .code,
+      codeTextFont: Typography.codeTextFonts.normal,
       codeTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
       codeBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
       codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header)

@@ -130,8 +130,7 @@ extension Markdown.Link: InlineConvertible {
     } else {
       // Is a real link, provided as markdown
       container[.link] = url
-      container[.font] = config.inlineStyle.linkTextFont.uiFont
-      container[.kern] = config.inlineStyle.linkTextFont.preferredLetterSpacing
+      container[.font] = config.inlineStyle.linkTextFont
       container[.foregroundColor] = config.inlineStyle.linkTextColor
       container[.underlineStyle] = []
       return buildAttributedString()
@@ -183,7 +182,7 @@ extension Markdown.InlineCode: InlineConvertible {
       }
     }
     var container = attributeContainer
-    container[.font] = config.inlineStyle.codeTextFont.uiFont
+    container[.font] = config.inlineStyle.codeTextFont
     container[.foregroundColor] = config.inlineStyle.codeTextColor
     container[.backgroundColor] = config.inlineStyle.codeBackgroundColor
     container[.underlineStyle] =  NSUnderlineStyle.patternDot.rawValue

@@ -12,7 +12,9 @@ extension Paragraph: BlockConvertible {
     var container = attributeContainer
     container[.font] = config.paragraphStyle.textFonts.normal
     container[.typography] = config.paragraphStyle.textFonts
-    container[.kern] = config.paragraphStyle.textFonts.preferredLetterSpacing
+    if let kern = config.paragraphStyle.textFonts.preferredLetterSpacing {
+      container[.kern] = kern
+    }
     container[.foregroundColor] = config.paragraphStyle.textColor
     let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config, colorScheme: colorScheme)
     return MarkdownRenderable.paragraph(id: self.id, content: paragraphContent)

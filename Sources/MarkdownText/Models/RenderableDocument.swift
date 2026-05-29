@@ -26,14 +26,14 @@ public struct RenderableDocument: Equatable, Sendable {
   }
 
   public init(plainText: String, config: MarkdownRenderConfig) {
-    let content = NSMutableAttributedString(
-      string: plainText,
-      attributes: [
-        .font: config.paragraphStyle.textFonts.normal,
-        .foregroundColor: config.paragraphStyle.textColor,
-        .kern: config.paragraphStyle.textFonts.preferredLetterSpacing
-      ]
-    )
+    var attributes: [NSAttributedString.Key: Any] = [
+      .font: config.paragraphStyle.textFonts.normal,
+      .foregroundColor: config.paragraphStyle.textColor
+    ]
+    if let kern = config.paragraphStyle.textFonts.preferredLetterSpacing {
+      attributes[.kern] = kern
+    }
+    let content = NSMutableAttributedString(string: plainText, attributes: attributes)
     self.init(renderables: [.paragraph(id: UUID().uuidString, content: content)])
   }
 

@@ -29,7 +29,9 @@ extension Heading: BlockConvertible {
     }
     newContainer[.font] = headingFont.normal
     newContainer[.typography] = headingFont
-    newContainer[.kern] = headingFont.preferredLetterSpacing
+    if let kern = headingFont.preferredLetterSpacing {
+      newContainer[.kern] = kern
+    }
     newContainer[.foregroundColor] = config.headingStyle.textColor
     let paragraphContent = buildParagraphContent(container: newContainer, config: config, colorScheme: colorScheme)
     return .heading(id: self.id, level: self.level, content: paragraphContent)

@@ -9,10 +9,10 @@ public struct TextFonts: Hashable, Sendable {
   public let italic: UIFont?
   public let bold: UIFont?
   public let boldItalic: UIFont?
-  public let preferredLetterSpacing: CGFloat
-  public let preferredLineHeight: CGFloat
+  public let preferredLetterSpacing: CGFloat?
+  public let preferredLineHeight: CGFloat?
 
-  public init(normal: UIFont, italic: UIFont?, bold: UIFont?, boldItalic: UIFont?, preferredLetterSpacing: CGFloat, preferredLineHeight: CGFloat) {
+  public init(normal: UIFont, italic: UIFont?, bold: UIFont?, boldItalic: UIFont?, preferredLetterSpacing: CGFloat?, preferredLineHeight: CGFloat?) {
     self.normal = normal
     self.italic = italic
     self.bold = bold

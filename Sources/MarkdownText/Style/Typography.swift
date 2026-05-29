@@ -227,11 +227,13 @@ extension View {
     } else {
       fontToUse = font.normal
     }
+    let letterSpacing = font.preferredLetterSpacing
+    let extraLineSpacing: CGFloat? = font.preferredLineHeight.flatMap { lineHeight in
+      lineHeight > font.normal.lineHeight ? lineHeight - font.normal.lineHeight : nil
+    }
     return self
       .font(Font(fontToUse ?? font.normal))
-      .kerning(font.preferredLetterSpacing)
-      .if(
-        font.preferredLineHeight > font.normal.lineHeight,
-        content: { $0.lineSpacing(font.preferredLineHeight - font.normal.lineHeight)})
+      .if(letterSpacing != nil, content: { $0.kerning(letterSpacing ?? 0) })
+      .if(extraLineSpacing != nil, content: { $0.lineSpacing(extraLineSpacing ?? 0) })
   }
 }
