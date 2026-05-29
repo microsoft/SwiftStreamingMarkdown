@@ -11,7 +11,6 @@ extension Paragraph: BlockConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
     var container = attributeContainer
     container[.font] = config.paragraphStyle.textFont.uiFont
-    container[.typography] = config.paragraphStyle.textFont
     container[.kern] = config.paragraphStyle.textFont.preferredLetterSpacing
     container[.foregroundColor] = config.paragraphStyle.textColor
     let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config, colorScheme: colorScheme)

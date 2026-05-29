@@ -19,15 +19,8 @@ extension Markdown.Emphasis: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
-    if let currentTypography = attributeContainer[.typography] as? Typography {
-      let italicTypography = currentTypography.italicVariant
-      newContainer[.typography] = italicTypography
-      newContainer[.font] = italicTypography.uiFont
-      newContainer[.kern] = italicTypography.preferredLetterSpacing
-    } else {
-      newContainer[.font] = config.inlineStyle.emphasisTextFont.uiFont
-      newContainer[.kern] = config.inlineStyle.emphasisTextFont.preferredLetterSpacing
-    }
+    let ambientFont = (attributeContainer[.font] as? UIFont) ?? config.paragraphStyle.textFont.uiFont
+    newContainer[.font] = config.inlineStyle.emphasisTextFont[ambientFont] ?? ambientFont
     self.inlineConvertibleChildren.forEach { convertible in
       str.append(convertible.convert(attributeContainer: newContainer, config: config, colorScheme: colorScheme))
     }
@@ -40,15 +33,8 @@ extension Markdown.Strong: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
-    if let currentTypography = attributeContainer[.typography] as? Typography {
-      let boldTypography = currentTypography.boldVariant
-      newContainer[.typography] = boldTypography
-      newContainer[.font] = boldTypography.uiFont
-      newContainer[.kern] = boldTypography.preferredLetterSpacing
-    } else {
-      newContainer[.font] = config.inlineStyle.boldTextFont.uiFont
-      newContainer[.kern] = config.inlineStyle.boldTextFont.preferredLetterSpacing
-    }
+    let ambientFont = (attributeContainer[.font] as? UIFont) ?? config.paragraphStyle.textFont.uiFont
+    newContainer[.font] = config.inlineStyle.boldTextFont[ambientFont] ?? ambientFont
     if self.parent is Paragraph && self.indexInParent == 0 && self.parent?.parent is ListItem && parent?.indexInParent == 0 {
       newContainer[.foregroundColor] = config.inlineStyle.boldTextColor
     }

@@ -45,13 +45,12 @@ final class TypographyPropagationTests: XCTestCase {
       let nsHeaderRange = NSRange(headerRange, in: string)
 
       // Check attribute for "This is a "
-      let regularPartRange = NSRange(location: 0, length: nsHeaderRange.location)
-      let regularTypography = attributedString.attribute(.typography, at: 0, effectiveRange: nil) as? Typography
-      XCTAssertEqual(regularTypography, baseTypography)
+      let regularFont = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(regularFont, baseTypography.uiFont)
 
       // Check attribute for "header"
-      let italicTypography = attributedString.attribute(.typography, at: nsHeaderRange.location, effectiveRange: nil) as? Typography
-      XCTAssertEqual(italicTypography, .extraLargeItalic)
+      let italicFont = attributedString.attribute(.font, at: nsHeaderRange.location, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(italicFont, Typography.extraLargeItalic.uiFont)
     } else {
       XCTFail("Renderable should be a heading")
     }
@@ -77,8 +76,8 @@ final class TypographyPropagationTests: XCTestCase {
       }
       let nsRange = NSRange(strongItalicRange, in: string)
 
-      let typography = attributedString.attribute(.typography, at: nsRange.location, effectiveRange: nil) as? Typography
-      XCTAssertEqual(typography, .baseStrongItalic)
+      let font = attributedString.attribute(.font, at: nsRange.location, effectiveRange: nil) as? UIFont
+      XCTAssertEqual(font, Typography.baseStrongItalic.uiFont)
     } else {
       XCTFail("Renderable should be a paragraph")
     }

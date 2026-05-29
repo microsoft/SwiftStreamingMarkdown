@@ -12,9 +12,7 @@ extension Markdown.Table: BlockConvertible {
     var bodyContainer = attributeContainer
     var headerContainer = attributeContainer
     bodyContainer[.font] = config.tableStyle.textFont.uiFont
-    bodyContainer[.typography] = config.tableStyle.textFont
     headerContainer[.font] = config.tableStyle.boldTextFont.uiFont
-    headerContainer[.typography] = config.tableStyle.boldTextFont
     let headerCells = self
       .head
       .children

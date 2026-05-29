@@ -63,8 +63,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   public struct MarkdownInlineTextStyle: Hashable, Sendable {
-    public let emphasisTextFont: Typography
-    public let boldTextFont: Typography
+    public let emphasisTextFont: [UIFont: UIFont]
+    public let boldTextFont: [UIFont: UIFont]
     public let boldTextColor: UIColor
     public let linkTextFont: Typography
     public let linkTextColor: UIColor
@@ -74,7 +74,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     public let actionLinkUnderlineColor: UIColor
     public let codeUnderlineColor: UIColor
 
-    public init(emphasisTextFont: Typography, boldTextFont: Typography, boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, actionLinkUnderlineColor: UIColor, codeUnderlineColor: UIColor) {
+    public init(emphasisTextFont: [UIFont: UIFont], boldTextFont: [UIFont: UIFont], boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, actionLinkUnderlineColor: UIColor, codeUnderlineColor: UIColor) {
       self.emphasisTextFont = emphasisTextFont
       self.boldTextFont = boldTextFont
       self.boldTextColor = boldTextColor
@@ -121,8 +121,14 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       regularTextColor: UIColor(Color.Theme.Foreground.Primary.Primary800)
     ),
     inlineStyle: MarkdownInlineTextStyle = .init(
-      emphasisTextFont: .baseItalic,
-      boldTextFont: .baseStrong,
+      emphasisTextFont: Dictionary(
+        Typography.allCases.map { ($0.uiFont, $0.italicVariant.uiFont) },
+        uniquingKeysWith: { first, _ in first }
+      ),
+      boldTextFont: Dictionary(
+        Typography.allCases.map { ($0.uiFont, $0.boldVariant.uiFont) },
+        uniquingKeysWith: { first, _ in first }
+      ),
       boldTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
       linkTextFont: .base,
       linkTextColor: UIColor(Color.Theme.Accent.Accent600),

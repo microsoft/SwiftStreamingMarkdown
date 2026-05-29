@@ -31,7 +31,6 @@ extension Heading: BlockConvertible {
       headingFont = config.headingStyle.h6Font
     }
     newContainer[.font] = headingFont.uiFont
-    newContainer[.typography] = headingFont
     newContainer[.kern] = headingFont.preferredLetterSpacing
     newContainer[.foregroundColor] = config.headingStyle.textColor
     let paragraphContent = buildParagraphContent(container: newContainer, config: config, colorScheme: colorScheme)

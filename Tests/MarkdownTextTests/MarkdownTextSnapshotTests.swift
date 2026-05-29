@@ -498,20 +498,20 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     }
     XCTAssertEqual(level, 1)
 
-    // Check that "italic" has italic typography
+    // Check that "italic" has italic font
     let italicRange = (headingContent.string as NSString).range(of: "italic")
-    let italicTypography = headingContent.attribute(.typography, at: italicRange.location, effectiveRange: nil) as? Typography
-    XCTAssertEqual(italicTypography, Typography.extraLarge.italicVariant)
+    let italicFont = headingContent.attribute(.font, at: italicRange.location, effectiveRange: nil) as? UIFont
+    XCTAssertEqual(italicFont, Typography.extraLarge.italicVariant.uiFont)
 
-    // Check that "bold" has bold typography
+    // Check that "bold" has bold font
     let boldRange = (headingContent.string as NSString).range(of: "bold")
-    let boldTypography = headingContent.attribute(.typography, at: boldRange.location, effectiveRange: nil) as? Typography
-    XCTAssertEqual(boldTypography, Typography.extraLarge.boldVariant)
+    let boldFont = headingContent.attribute(.font, at: boldRange.location, effectiveRange: nil) as? UIFont
+    XCTAssertEqual(boldFont, Typography.extraLarge.boldVariant.uiFont)
 
-    // Check that "both" has bold typography (since nested Strong(Emphasis) result in boldVariant)
+    // Check that "both" has bold-italic font (since nested Strong(Emphasis) result in boldVariant.italicVariant)
     let bothRange = (headingContent.string as NSString).range(of: "both")
-    let bothTypography = headingContent.attribute(.typography, at: bothRange.location, effectiveRange: nil) as? Typography
-    XCTAssertEqual(bothTypography, Typography.extraLarge.boldVariant.italicVariant)
+    let bothFont = headingContent.attribute(.font, at: bothRange.location, effectiveRange: nil) as? UIFont
+    XCTAssertEqual(bothFont, Typography.extraLarge.boldVariant.italicVariant.uiFont)
 
     // 2. Inspect Paragraph
     guard case let .paragraph(_, paragraphContent) = renderables[1] else {
@@ -521,14 +521,14 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
 
     // Check "nested " (part of **nested *italic* inside**)
     let nestedRange = (paragraphContent.string as NSString).range(of: "nested ")
-    let nestedTypography = paragraphContent.attribute(.typography, at: nestedRange.location, effectiveRange: nil) as? Typography
-    XCTAssertEqual(nestedTypography, Typography.base.boldVariant)
+    let nestedFont = paragraphContent.attribute(.font, at: nestedRange.location, effectiveRange: nil) as? UIFont
+    XCTAssertEqual(nestedFont, Typography.base.boldVariant.uiFont)
 
     // Check "italic" (nested inside bold)
     let nestedItalicRange = (paragraphContent.string as NSString).range(of: "italic")
-    let nestedItalicTypography = paragraphContent.attribute(.typography, at: nestedItalicRange.location, effectiveRange: nil) as? Typography
+    let nestedItalicFont = paragraphContent.attribute(.font, at: nestedItalicRange.location, effectiveRange: nil) as? UIFont
     // Typography.base.boldVariant.italicVariant -> returns italic version of that size per current design
-    XCTAssertEqual(nestedItalicTypography, Typography.base.boldVariant.italicVariant)
+    XCTAssertEqual(nestedItalicFont, Typography.base.boldVariant.italicVariant.uiFont)
   }
 
   func testBlockLatexWithCustomColor() async throws {
