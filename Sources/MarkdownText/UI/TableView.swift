@@ -49,7 +49,7 @@ struct TableView: View {
   private func headerView(colIdx: Int) -> some View {
     HStack(spacing: 0) {
       Text(headings[colIdx])
-        .foregroundStyle(Color.Theme.Foreground.Primary.Primary750)
+        .foregroundStyle(Color(config.tableStyle.headerTextColor))
         .lineLimit(nil)
         .multilineTextAlignment(.leading)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -61,8 +61,8 @@ struct TableView: View {
     }
     .padding(12)
     .id("\(colIdx)-heading")
-    .background(Color.Theme.Component.Table.Background.Header)
-    .applyHeaderBorder(colIndex: colIdx, colCount: headings.count)
+    .background(Color(config.tableStyle.headerBackgroundColor))
+    .applyHeaderBorder(colIndex: colIdx, colCount: headings.count, color: Color(config.tableStyle.borderColor))
   }
 
   @ViewBuilder
@@ -107,11 +107,11 @@ struct TableView: View {
       .frame(maxHeight: .infinity)
       .padding(12)
       .id("\(colIdx)-\(rowIdx)")
-      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows)
+      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows, color: Color(config.tableStyle.borderColor))
     case .text(let attributedString):
       HStack(spacing: 0) {
         Text(attributedString)
-          .foregroundStyle(Color.Theme.Foreground.Primary.Primary800)
+          .foregroundStyle(Color(config.tableStyle.regularTextColor))
           .lineLimit(nil)
           .multilineTextAlignment(.leading)
           .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -124,7 +124,7 @@ struct TableView: View {
       .frame(maxHeight: .infinity)
       .padding(12)
       .id("\(colIdx)-\(rowIdx)")
-      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows)
+      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows, color: Color(config.tableStyle.borderColor))
     }
   }
 
@@ -158,7 +158,7 @@ struct TableView: View {
         .overlay(
           RoundedRectangle(cornerRadius: 12)
             .inset(by: 0.5)
-            .stroke(Color.Theme.Stroke.Default.Default250, lineWidth: 1)
+            .stroke(Color(config.tableStyle.borderColor), lineWidth: 1)
         )
         .cornerRadius(12)
         .onWidthChange { newWidth in
@@ -198,13 +198,13 @@ struct TableView: View {
       ZStack {
         Image("Copy", bundle: .module)
           .renderingMode(.template)
-          .foregroundStyle(Color.Theme.Component.Button.Foreground.Rest)
+          .foregroundStyle(Color(config.tableStyle.actionButtonColor))
           .frame(width: 20, height: 20)
           .opacity(isCopyPressed ? 0.0 : 1.0)
 
         Image("CopyFilled", bundle: .module)
           .renderingMode(.template)
-          .foregroundStyle(Color.Theme.Component.Button.Foreground.Pressed)
+          .foregroundStyle(Color(config.tableStyle.actionButtonColor))
           .frame(width: 20, height: 20)
           .opacity(isCopyPressed ? 1.0 : 0.0)
       }
@@ -220,7 +220,7 @@ struct TableView: View {
     }, label: {
       Image("downloadArrow", bundle: .module)
         .renderingMode(.template)
-        .foregroundStyle(Color.Theme.Component.Button.Foreground.Rest)
+        .foregroundStyle(Color(config.tableStyle.actionButtonColor))
         .frame(width: 20, height: 20)
         .padding(2)
     })
@@ -231,15 +231,15 @@ struct TableView: View {
 
 extension View {
 
-  func applyHeaderBorder(colIndex: Int, colCount: Int) -> some View {
+  func applyHeaderBorder(colIndex: Int, colCount: Int, color: Color) -> some View {
     var edges: [Edge] = [.bottom]
     if colIndex != colCount - 1 {
       edges.append(.trailing)
     }
-    return border(width: 1, edges: edges, color: Color.Theme.Stroke.Default.Default250)
+    return border(width: 1, edges: edges, color: color)
   }
 
-  func applyCellBorder(colIndex: Int, colCount: Int, rowIndex: Int, rowCount: Int) -> some View {
+  func applyCellBorder(colIndex: Int, colCount: Int, rowIndex: Int, rowCount: Int, color: Color) -> some View {
     var edges: [Edge] = []
     if rowIndex < rowCount - 1 {
       edges.append(.bottom)
@@ -247,7 +247,7 @@ extension View {
     if colIndex < colCount - 1 {
       edges.append(.trailing)
     }
-    return border(width: 1, edges: edges, color: Color.Theme.Stroke.Default.Default250)
+    return border(width: 1, edges: edges, color: color)
   }
 
   @ViewBuilder
@@ -333,7 +333,7 @@ extension TableView {
     // Apply typography theming for table cells
     let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
     let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
-    let themeColor = UIColor(Color.Theme.Foreground.Primary.Primary800)
+    let themeColor = config.tableStyle.regularTextColor
 
     // Apply theme color to text that doesn't already have a foreground color
     mutableAttributedString.enumerateAttribute(.foregroundColor, in: fullRange, options: []) { existingColor, range, _ in

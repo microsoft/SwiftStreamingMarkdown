@@ -33,12 +33,18 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     public let boldTextFont: Typography
     public let headerTextColor: UIColor
     public let regularTextColor: UIColor
+    public let headerBackgroundColor: UIColor
+    public let borderColor: UIColor
+    public let actionButtonColor: UIColor
 
-    public init(textFont: Typography, boldTextFont: Typography, headerTextColor: UIColor, regularTextColor: UIColor) {
+    public init(textFont: Typography, boldTextFont: Typography, headerTextColor: UIColor, regularTextColor: UIColor, headerBackgroundColor: UIColor, borderColor: UIColor, actionButtonColor: UIColor) {
       self.textFont = textFont
       self.boldTextFont = boldTextFont
       self.headerTextColor = headerTextColor
       self.regularTextColor = regularTextColor
+      self.headerBackgroundColor = headerBackgroundColor
+      self.borderColor = borderColor
+      self.actionButtonColor = actionButtonColor
     }
   }
 
@@ -118,7 +124,10 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       textFont: .small,
       boldTextFont: .smallStrong,
       headerTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
-      regularTextColor: UIColor(Color.Theme.Foreground.Primary.Primary800)
+      regularTextColor: UIColor(Color.Theme.Foreground.Primary.Primary800),
+      headerBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
+      borderColor: UIColor(Color.Theme.Stroke.Default.Default250),
+      actionButtonColor: UIColor(Color.Theme.Component.Button.Foreground.Rest)
     ),
     inlineStyle: MarkdownInlineTextStyle = .init(
       emphasisTextFont: .baseItalic,
