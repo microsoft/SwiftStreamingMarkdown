@@ -25,14 +25,14 @@ public struct TextFonts: Hashable, Sendable {
 extension TextFonts {
   
   public func italicize(font: UIFont) -> UIFont? {
-    if font == bold {
+    if font == bold || font == boldItalic {
       return self.boldItalic
     }
     return self.italic
   }
   
   public func bold(font: UIFont) -> UIFont? {
-    if font == italic {
+    if font == italic || font == boldItalic {
       return self.boldItalic
     }
     return self.bold
