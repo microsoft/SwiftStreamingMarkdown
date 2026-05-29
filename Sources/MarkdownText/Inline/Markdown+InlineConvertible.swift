@@ -24,7 +24,7 @@ extension Markdown.Emphasis: InlineConvertible {
       let currentFont = attributeContainer[.font] as? UIFont
       newContainer[.font] = currentFont.map { currentTextFonts.italicize(font: $0) } ?? currentTextFonts.italic
     } else {
-      newContainer[.font] = config.paragraphStyle.textFonts.italic
+      newContainer[.font] = config.paragraphStyle.textFonts.italic ?? config.paragraphStyle.textFonts.normal
     }
     self.inlineConvertibleChildren.forEach { convertible in
       str.append(convertible.convert(attributeContainer: newContainer, config: config, colorScheme: colorScheme))
