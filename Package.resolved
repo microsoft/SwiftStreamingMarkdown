@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ordo-one/equatable",
       "state" : {
-        "revision" : "63e597c07e1e0622e6c8f2b33c972525a444c8eb",
-        "version" : "1.0.10"
+        "revision" : "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+        "version" : "1.4.1"
       }
     },
     {
