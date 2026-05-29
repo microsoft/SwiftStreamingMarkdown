@@ -11,6 +11,15 @@ public struct TextFonts: Hashable, Sendable {
   public let boldItalic: UIFont?
   public let preferredLetterSpacing: CGFloat
   public let preferredLineHeight: CGFloat
+
+  public init(normal: UIFont, italic: UIFont?, bold: UIFont?, boldItalic: UIFont?, preferredLetterSpacing: CGFloat, preferredLineHeight: CGFloat) {
+    self.normal = normal
+    self.italic = italic
+    self.bold = bold
+    self.boldItalic = boldItalic
+    self.preferredLetterSpacing = preferredLetterSpacing
+    self.preferredLineHeight = preferredLineHeight
+  }
 }
 
 extension TextFonts {
