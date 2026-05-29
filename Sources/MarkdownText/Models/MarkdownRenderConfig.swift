@@ -77,10 +77,9 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     public let codeTextFont: Typography
     public let codeTextColor: UIColor
     public let codeBackgroundColor: UIColor
-    public let actionLinkUnderlineColor: UIColor
     public let codeUnderlineColor: UIColor
 
-    public init(emphasisTextFont: Typography, boldTextFont: Typography, boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, actionLinkUnderlineColor: UIColor, codeUnderlineColor: UIColor) {
+    public init(emphasisTextFont: Typography, boldTextFont: Typography, boldTextColor: UIColor, linkTextFont: Typography, linkTextColor: UIColor, codeTextFont: Typography, codeTextColor: UIColor, codeBackgroundColor: UIColor, codeUnderlineColor: UIColor) {
       self.emphasisTextFont = emphasisTextFont
       self.boldTextFont = boldTextFont
       self.boldTextColor = boldTextColor
@@ -89,7 +88,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       self.codeTextFont = codeTextFont
       self.codeTextColor = codeTextColor
       self.codeBackgroundColor = codeBackgroundColor
-      self.actionLinkUnderlineColor = actionLinkUnderlineColor
       self.codeUnderlineColor = codeUnderlineColor
     }
   }
@@ -138,7 +136,6 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       codeTextFont: .code,
       codeTextColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
       codeBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
-      actionLinkUnderlineColor: UIColor(Color.Theme.Foreground.Primary.Primary650),
       codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header)
     ),
     textContextMenu: TextContextMenu? = nil
