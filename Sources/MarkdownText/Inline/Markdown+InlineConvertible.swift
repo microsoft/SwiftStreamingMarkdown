@@ -42,7 +42,7 @@ extension Markdown.Strong: InlineConvertible {
       let currentFont = attributeContainer[.font] as? UIFont
       newContainer[.font] = currentFont.map { currentTextFonts.bold(font: $0) } ?? currentTextFonts.bold
     } else {
-      newContainer[.font] = config.paragraphStyle.textFonts.bold
+      newContainer[.font] = config.paragraphStyle.textFonts.bold ?? config.paragraphStyle.textFonts.normal
     }
     if self.parent is Paragraph && self.indexInParent == 0 && self.parent?.parent is ListItem && parent?.indexInParent == 0 {
       newContainer[.foregroundColor] = config.inlineStyle.boldTextColor
