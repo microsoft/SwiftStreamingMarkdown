@@ -15,7 +15,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
     .package(url: "https://github.com/ordo-one/equatable", exact: "1.0.10"),
-    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.18.1"),
+    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.2"),
     .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
     .package(url: "https://github.com/appstefan/highlightswift", revision: "99c431b38a1444a5fd6a4978307fbbefe3a7af53"),
     .package(url: "https://github.com/exyte/SVGView.git", exact: "1.0.6"),
