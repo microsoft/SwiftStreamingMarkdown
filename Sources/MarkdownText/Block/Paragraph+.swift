@@ -39,7 +39,7 @@ extension BlockMarkup {
         // Create citation attachment directly during parsing (as suggested by @hanzhouli_microsoft)
         let attachmentData = InlineAttachmentData(linkDestination: destination)
         if let attachmentData = attachmentData,
-           let attachment = InlineCitationAttachment(citationData: attachmentData) {
+           let attachment = InlineCitationAttachment(citationData: attachmentData, citationConfig: config.citationConfig) {
           let attachmentString = NSMutableAttributedString(attachment: attachment)
 
           // Add link attribute for accessibility activation (space key)

@@ -15,6 +15,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public let tableStyle: MarkdownTableTextStyle
   public let inlineStyle: MarkdownInlineTextStyle
   public let textContextMenu: TextContextMenu?
+  public let citationConfig: CitationConfig
 
   public struct MarkdownTextStyle: Hashable, Sendable {
     public let textFonts: TextFonts
@@ -83,6 +84,24 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       self.codeUnderlineColor = codeUnderlineColor
     }
   }
+  
+  public struct CitationConfig: Hashable, Sendable {
+    public let font: UIFont
+    public let textColor: UIColor
+    public let backgroundColor: UIColor
+    
+    public init(font: UIFont, textColor: UIColor, backgroundColor: UIColor) {
+      self.font = font
+      self.textColor = textColor
+      self.backgroundColor = backgroundColor
+    }
+
+    public static let `default` = CitationConfig(
+      font: InlineCitationConstants.attachmentCitationUIFont,
+      textColor: UIColor(InlineCitationConstants.attachmentTextColor),
+      backgroundColor: UIColor(InlineCitationConstants.attachmentBackgroundColor)
+    )
+  }
 
   public init(
     shouldAnimateText: Bool = false,
@@ -124,7 +143,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       codeBackgroundColor: UIColor(Color.Theme.Component.Table.Background.Header),
       codeUnderlineColor: UIColor(Color.Theme.Component.CodeBlock.Foreground.Header)
     ),
-    textContextMenu: TextContextMenu? = nil
+    textContextMenu: TextContextMenu? = nil,
+    citationConfig: CitationConfig = .default
   ) {
     self.shouldAnimateText = shouldAnimateText
     self.blockQuoteStyle = blockQuoteStyle
@@ -134,6 +154,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     self.tableStyle = tableStyle
     self.inlineStyle = inlineStyle
     self.textContextMenu = textContextMenu
+    self.citationConfig = citationConfig
   }
 
   public static let `default` = MarkdownRenderConfig(shouldAnimateText: false)

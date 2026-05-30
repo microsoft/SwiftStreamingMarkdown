@@ -37,9 +37,9 @@ public enum InlineCitationConstants {
   /// Used by both `AttachmentCitationLabel` (live UIView) and
   /// `InlineCitationAttachment.renderCitationImage` (static image fallback)
   /// to ensure visual consistency.
-  static let attachmentCitationUIFont = Typography.tripleExtraSmallCustom450.uiFont
+  public static let attachmentCitationUIFont = Typography.tripleExtraSmallCustom450.uiFont
   static let attachmentTextInsets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
   static let attachmentCornerRadius: CGFloat = 6
-  static let attachmentTextColor = Color.Theme.Foreground.Primary.Primary750
-  static let attachmentBackgroundColor = Color.Theme.Overlay.Black.Black5
+  public static let attachmentTextColor = Color.Theme.Foreground.Primary.Primary750
+  public static let attachmentBackgroundColor = Color.Theme.Overlay.Black.Black5
 }

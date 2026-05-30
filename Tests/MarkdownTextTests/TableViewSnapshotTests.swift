@@ -25,10 +25,10 @@ final class TableViewSnapshotTests: SnapshotTestCase {
     let citationURL = "\(baseURL)?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=\(text)&citationFullTitle=\(text)"
 
     guard let citationData = InlineAttachmentData(linkDestination: citationURL),
-          let attachment = InlineCitationAttachment(citationData: citationData) else {
+          let attachment = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
       XCTFail("Failed to create citation attachment for text: \(text)")
       // Return a minimal attachment as fallback (though test will fail)
-      return InlineCitationAttachment(payload: Data())
+      return InlineCitationAttachment(payload: Data(), citationConfig: .default)
     }
     return attachment
   }

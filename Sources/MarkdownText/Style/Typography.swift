@@ -98,31 +98,6 @@ public enum Typography: CaseIterable, Sendable {
     return Font(uiFont)
   }
 
-  /// Line height preferred by design system, may be different from the font's intrinsic line height.
-  public var preferredLineHeight: CGFloat {
-    return switch self {
-    case .code: 20.0
-    case .tripleExtraSmallCustom450: 14.0
-
-    case .extraLarge, .extraLargeStrong, .extraLargeItalic, .extraLargeStrongItalic: 32.0
-    case .large, .largeStrong, .largeItalic, .largeStrongItalic: 32.0
-    case .medium, .mediumStrong, .mediumItalic, .mediumStrongItalic: 26.0
-    case .base, .baseStrong, .baseItalic, .baseStrongItalic: 26.0
-    case .small, .smallStrong, .smallItalic, .smallStrongItalic: 20.0
-    case .extraSmall, .extraSmallStrong, .extraSmallItalic, .extraSmallStrongItalic: 20.0
-    }
-  }
-
-  public var preferredLetterSpacing: CGFloat {
-    return switch self {
-    case .code: -0.12
-    case .extraLarge, .extraLargeStrong, .extraLargeItalic, .extraLargeStrongItalic: -0.28
-    case .large, .largeStrong, .largeItalic, .largeStrongItalic: -0.24
-    case .medium, .mediumStrong, .mediumItalic, .mediumStrongItalic: -0.2
-    default: 0.0
-    }
-  }
-  
   public static var extraLargeTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.extraLarge.uiFont,
@@ -208,32 +183,5 @@ private extension UIFont {
       return self
     }
     return UIFont(descriptor: descriptor, size: pointSize)
-  }
-}
-
-extension View {
-
-  /// Set both the font and the preferred line height if different from the font's line height.
-  /// - Parameter font: The font
-  /// - Returns: The modified view
-  public func font(_ font: TextFonts, bold: Bool = false, italic: Bool = false) -> some View {
-    let fontToUse: UIFont?
-    if bold && italic {
-      fontToUse = font.boldItalic
-    } else if bold {
-      fontToUse = font.bold
-    } else if italic {
-      fontToUse = font.italic
-    } else {
-      fontToUse = font.normal
-    }
-    let letterSpacing = font.preferredLetterSpacing
-    let extraLineSpacing: CGFloat? = font.preferredLineHeight.flatMap { lineHeight in
-      lineHeight > font.normal.lineHeight ? lineHeight - font.normal.lineHeight : nil
-    }
-    return self
-      .font(Font(fontToUse ?? font.normal))
-      .if(letterSpacing != nil, content: { $0.kerning(letterSpacing ?? 0) })
-      .if(extraLineSpacing != nil, content: { $0.lineSpacing(extraLineSpacing ?? 0) })
   }
 }

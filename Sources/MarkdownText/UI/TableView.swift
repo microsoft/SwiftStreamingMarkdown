@@ -450,11 +450,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   guard let citationData1 = InlineAttachmentData(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Research&citationFullTitle=Research%20Study"
   ),
-    let citation1 = InlineCitationAttachment(citationData: citationData1),
+    let citation1 = InlineCitationAttachment(citationData: citationData1, citationConfig: .default),
     let citationData2 = InlineAttachmentData(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Analysis&citationFullTitle=Data%20Analysis"
     ),
-    let citation2 = InlineCitationAttachment(citationData: citationData2) else {
+    let citation2 = InlineCitationAttachment(citationData: citationData2, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
   }
 
@@ -491,11 +491,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   guard let nflCitationData = InlineAttachmentData(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=NFL&citationFullTitle=National%20Football%20League"
   ),
-    let nflCitation = InlineCitationAttachment(citationData: nflCitationData),
+    let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
     let espnCitationData = InlineAttachmentData(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
     ),
-    let espnCitation = InlineCitationAttachment(citationData: espnCitationData) else {
+    let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
   }
 
@@ -528,11 +528,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   guard let nflCitationData = InlineAttachmentData(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=NFL&citationFullTitle=National%20Football%20League"
   ),
-    let nflCitation = InlineCitationAttachment(citationData: nflCitationData),
+    let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
     let espnCitationData = InlineAttachmentData(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
     ),
-    let espnCitation = InlineCitationAttachment(citationData: espnCitationData) else {
+    let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
       .preferredColorScheme(.dark)
   }
@@ -567,7 +567,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   guard let citationData = InlineAttachmentData(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Source&citationFullTitle=Primary%20Source"
   ),
-    let citation = InlineCitationAttachment(citationData: citationData) else {
+    let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
   }
 
@@ -616,7 +616,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
   guard let citationData = InlineAttachmentData(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Source&citationFullTitle=Primary%20Source"
   ),
-    let citation = InlineCitationAttachment(citationData: citationData) else {
+    let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
       .preferredColorScheme(.dark)
   }

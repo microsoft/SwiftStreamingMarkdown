@@ -24,7 +24,7 @@ struct ParagraphViewTests {
     let citationURL = "\(baseURL)?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=\(title)&citationFullTitle=\(title)"
 
     guard let citationData = InlineAttachmentData(linkDestination: citationURL),
-          let attachment = InlineCitationAttachment(citationData: citationData) else {
+          let attachment = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
       return NSMutableAttributedString(string: "")
     }
 

@@ -15,6 +15,12 @@ final class InlineCitationAttachment: NSTextAttachment {
   /// The decoded citation data - available immediately without JSON parsing
   private(set) var citationData: InlineAttachmentData?
 
+  /// Styling resolved from the active `CitationConfig`. Exposed so the live
+  /// label provider can mirror the same look as the precomputed preview image.
+  let font: UIFont
+  let textColor: UIColor
+  let backgroundColor: UIColor
+
   // MARK: - Interface style tracking
 
   /// Latest interface style, used by `image` to pick between the precomputed
@@ -60,18 +66,28 @@ final class InlineCitationAttachment: NSTextAttachment {
 
   /// Called during markdown parsing (background queue). Rasterizes both
   /// light/dark previews here so the getter never does work on the main thread.
-  init(payload: Data) {
+  init(payload: Data, citationConfig: MarkdownRenderConfig.CitationConfig) {
     let decoded = try? JSONDecoder().decode(InlineAttachmentData.self, from: payload)
     let citationData = (decoded?.type == .citation) ? decoded : nil
     self.citationData = citationData
 
+    self.font = citationConfig.font
+    self.textColor = citationConfig.textColor
+    self.backgroundColor = citationConfig.backgroundColor
+
     if let title = citationData?.title {
       self.lightPreviewImage = Self.renderCitationImage(
         title: title,
+        font: self.font,
+        textColor: self.textColor,
+        backgroundColor: self.backgroundColor,
         traitCollection: UITraitCollection(userInterfaceStyle: .light)
       )
       self.darkPreviewImage = Self.renderCitationImage(
         title: title,
+        font: self.font,
+        textColor: self.textColor,
+        backgroundColor: self.backgroundColor,
         traitCollection: UITraitCollection(userInterfaceStyle: .dark)
       )
     } else {
@@ -83,56 +99,39 @@ final class InlineCitationAttachment: NSTextAttachment {
   }
 
   /// Create citation attachment directly from data struct
-  convenience init?(citationData: InlineAttachmentData) {
+  convenience init?(citationData: InlineAttachmentData, citationConfig: MarkdownRenderConfig.CitationConfig) {
     guard citationData.type == .citation,
           let payload = try? JSONEncoder().encode(citationData) else {
       return nil
     }
-    self.init(payload: payload)
+    self.init(payload: payload, citationConfig: citationConfig)
   }
 
   required init?(coder: NSCoder) {
-    self.citationData = nil
-    self.lightPreviewImage = nil
-    self.darkPreviewImage = nil
-    super.init(coder: coder)
-    // Reconstruct citationData from archived contents to support NSCoding
-    // round-trips (copy/paste, accessibility).
-    if let data = self.contents,
-       let decoded = try? JSONDecoder().decode(InlineAttachmentData.self, from: data),
-       decoded.type == .citation {
-      self.citationData = decoded
-      // NSCoding is a cold path (paste, accessibility snapshots), not the
-      // streaming render path, so rendering on this thread is acceptable.
-      self.lightPreviewImage = Self.renderCitationImage(
-        title: decoded.title,
-        traitCollection: UITraitCollection(userInterfaceStyle: .light)
-      )
-      self.darkPreviewImage = Self.renderCitationImage(
-        title: decoded.title,
-        traitCollection: UITraitCollection(userInterfaceStyle: .dark)
-      )
-    }
+    return nil
   }
 
   // MARK: - Preview Image Rendering
 
   /// Thread-safe citation-label rendering using Core Graphics. Shares styling
   /// constants with `AttachmentCitationLabel` for visual consistency.
-  private static func renderCitationImage(title: String, traitCollection: UITraitCollection) -> UIImage {
+  private static func renderCitationImage(
+    title: String,
+    font: UIFont,
+    textColor: UIColor,
+    backgroundColor: UIColor,
+    traitCollection: UITraitCollection
+  ) -> UIImage {
     let textInsets = InlineCitationConstants.attachmentTextInsets
-    let font = InlineCitationConstants.attachmentCitationUIFont
     let cornerRadius = InlineCitationConstants.attachmentCornerRadius
     // Resolve dynamic colors for the current appearance (light/dark mode).
-    let textColor = UIColor(InlineCitationConstants.attachmentTextColor)
-      .resolvedColor(with: traitCollection)
-    let backgroundColor = UIColor(InlineCitationConstants.attachmentBackgroundColor)
-      .resolvedColor(with: traitCollection)
+    let resolvedTextColor = textColor.resolvedColor(with: traitCollection)
+    let resolvedBackgroundColor = backgroundColor.resolvedColor(with: traitCollection)
 
     // Measure text size using NSAttributedString (thread-safe)
     let attributes: [NSAttributedString.Key: Any] = [
       .font: font,
-      .foregroundColor: textColor
+      .foregroundColor: resolvedTextColor
     ]
     let textSize = (title as NSString).size(withAttributes: attributes)
     let totalSize = CGSize(
@@ -144,7 +143,7 @@ final class InlineCitationAttachment: NSTextAttachment {
     return renderer.image { _ in
       let rect = CGRect(origin: .zero, size: totalSize)
       let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
-      backgroundColor.setFill()
+      resolvedBackgroundColor.setFill()
       path.fill()
 
       let textRect = CGRect(

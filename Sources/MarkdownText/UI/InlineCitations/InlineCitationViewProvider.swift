@@ -11,14 +11,17 @@ private final class AttachmentCitationLabel: UILabel {
   // MARK: Initialization
 
   init(
-    title: String
+    title: String,
+    font: UIFont,
+    textColor: UIColor,
+    backgroundColor: UIColor
   ) {
     super.init(frame: .zero)
-    self.backgroundColor = UIColor(InlineCitationConstants.attachmentBackgroundColor)
+    self.backgroundColor = backgroundColor
     self.layer.cornerRadius = InlineCitationConstants.attachmentCornerRadius
     self.layer.masksToBounds = true
-    self.font = InlineCitationConstants.attachmentCitationUIFont
-    self.textColor = UIColor(InlineCitationConstants.attachmentTextColor)
+    self.font = font
+    self.textColor = textColor
     self.textAlignment = .center
     self.numberOfLines = 1
     self.text = title
@@ -73,6 +76,11 @@ final class InlineCitationViewProvider: NSTextAttachmentViewProvider {
       return
     }
 
-    self.view = AttachmentCitationLabel(title: data.title)
+    self.view = AttachmentCitationLabel(
+      title: data.title,
+      font: attachment.font,
+      textColor: attachment.textColor,
+      backgroundColor: attachment.backgroundColor
+    )
   }
 }

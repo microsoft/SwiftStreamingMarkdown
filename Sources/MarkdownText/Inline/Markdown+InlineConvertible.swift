@@ -114,7 +114,7 @@ extension Markdown.Link: InlineConvertible {
       if self.isAttachmentCitation {
         // Extract title from URL query parameters for new attachment citation format
         if let attachmentData = InlineAttachmentData(linkDestination: destination),
-           let citationAttachment = InlineCitationAttachment(citationData: attachmentData) {
+           let citationAttachment = InlineCitationAttachment(citationData: attachmentData, citationConfig: config.citationConfig) {
 
           // Create attributed string with the citation attachment
           let attributedString = NSMutableAttributedString()
