@@ -31,15 +31,12 @@ public enum InlineCitationConstants {
   public static let citationIdParam = "citationId"
   public static let citationChatItemIdParam = "chatItemId"
 
-  // MARK: - Shared Styling
+  // MARK: - Shared Layout
 
-  /// Shared styling constants for citation label rendering.
+  /// Shared layout constants for citation label rendering.
   /// Used by both `AttachmentCitationLabel` (live UIView) and
   /// `InlineCitationAttachment.renderCitationImage` (static image fallback)
   /// to ensure visual consistency.
-  public static let attachmentCitationUIFont = Typography.tripleExtraSmallCustom450.uiFont
   static let attachmentTextInsets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
   static let attachmentCornerRadius: CGFloat = 6
-  public static let attachmentTextColor = Color.Theme.Foreground.Primary.Primary750
-  public static let attachmentBackgroundColor = Color.Theme.Overlay.Black.Black5
 }

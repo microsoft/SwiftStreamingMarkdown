@@ -97,9 +97,9 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     }
 
     public static let `default` = CitationConfig(
-      font: InlineCitationConstants.attachmentCitationUIFont,
-      textColor: UIColor(InlineCitationConstants.attachmentTextColor),
-      backgroundColor: UIColor(InlineCitationConstants.attachmentBackgroundColor)
+      font: Typography.tripleExtraSmallCustom450.uiFont,
+      textColor: UIColor(Color.Theme.Foreground.Primary.Primary750),
+      backgroundColor: UIColor(Color.Theme.Overlay.Black.Black5)
     )
   }
 

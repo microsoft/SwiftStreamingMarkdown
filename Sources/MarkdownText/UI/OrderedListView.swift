@@ -59,9 +59,11 @@ struct ListItemContentWrapper<Content: View>: View {
   }
 
   private func extractFirstFont() -> UIFont {
-    // First check if the first character is a citation attachment
-    if hasFirstCharacterCitationAttachment(in: paragraphContents) {
-      return InlineCitationConstants.attachmentCitationUIFont
+    // First check if the first character is a citation attachment - use its
+    // own font so the alignment guide matches the actual rendered glyph,
+    // not a stale default.
+    if let citation = firstCharacterCitationAttachment(in: paragraphContents) {
+      return citation.font
     }
     // Otherwise, look for regular font attributes
     if let font = firstUIFont(in: paragraphContents) {
@@ -70,11 +72,9 @@ struct ListItemContentWrapper<Content: View>: View {
     return Typography.base.uiFont
   }
 
-  private func hasFirstCharacterCitationAttachment(in attributedString: NSAttributedString) -> Bool {
-    guard attributedString.length > 0 else { return false }
-
-    // Check if the first character is a citation attachment
-    return attributedString.attribute(.attachment, at: 0, effectiveRange: nil) is InlineCitationAttachment
+  private func firstCharacterCitationAttachment(in attributedString: NSAttributedString) -> InlineCitationAttachment? {
+    guard attributedString.length > 0 else { return nil }
+    return attributedString.attribute(.attachment, at: 0, effectiveRange: nil) as? InlineCitationAttachment
   }
 
   private func firstUIFont(in attributedString: NSAttributedString) -> UIFont? {
