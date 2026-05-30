@@ -38,7 +38,7 @@ extension BlockMarkup {
          link.isInlineCitation {
 
         // Create citation attachment directly during parsing (as suggested by @hanzhouli_microsoft)
-        let attachmentData = InlineAttachmentData(linkDestination: destination)
+        let attachmentData = CitationCoder.default.decode(linkDestination: destination)
         if let attachmentData = attachmentData,
            let attachment = InlineCitationAttachment(citationData: attachmentData, citationConfig: config.citationConfig) {
           let attachmentString = NSMutableAttributedString(attachment: attachment)

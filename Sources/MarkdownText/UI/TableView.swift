@@ -447,11 +447,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 
 #Preview("Table with Citations", body: {
   // Create citation attachments safely
-  guard let citationData1 = InlineAttachmentData(
+  guard let citationData1 = CitationCoder.default.decode(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Research&citationFullTitle=Research%20Study"
   ),
     let citation1 = InlineCitationAttachment(citationData: citationData1, citationConfig: .default),
-    let citationData2 = InlineAttachmentData(
+    let citationData2 = CitationCoder.default.decode(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Analysis&citationFullTitle=Data%20Analysis"
     ),
     let citation2 = InlineCitationAttachment(citationData: citationData2, citationConfig: .default) else {
@@ -488,11 +488,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 
 #Preview("Citation Only Cells", body: {
   // Create citation with NFL (known rendering issue case)
-  guard let nflCitationData = InlineAttachmentData(
+  guard let nflCitationData = CitationCoder.default.decode(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=NFL&citationFullTitle=National%20Football%20League"
   ),
     let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
-    let espnCitationData = InlineAttachmentData(
+    let espnCitationData = CitationCoder.default.decode(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
     ),
     let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
@@ -525,11 +525,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 
 #Preview("Citation Only - Dark Mode", body: {
   // Create citation with NFL (known rendering issue case)
-  guard let nflCitationData = InlineAttachmentData(
+  guard let nflCitationData = CitationCoder.default.decode(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=NFL&citationFullTitle=National%20Football%20League"
   ),
     let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
-    let espnCitationData = InlineAttachmentData(
+    let espnCitationData = CitationCoder.default.decode(
       linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
     ),
     let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
@@ -564,7 +564,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 
 #Preview("Table with Mixed Content", body: {
   // Create citation safely (NO LaTeX to avoid iosMath bundle issues)
-  guard let citationData = InlineAttachmentData(
+  guard let citationData = CitationCoder.default.decode(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Source&citationFullTitle=Primary%20Source"
   ),
     let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
@@ -613,7 +613,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 
 #Preview("Mixed Content - Dark Mode", body: {
   // Create citation safely (NO LaTeX to avoid iosMath bundle issues)
-  guard let citationData = InlineAttachmentData(
+  guard let citationData = CitationCoder.default.decode(
     linkDestination: "http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Source&citationFullTitle=Primary%20Source"
   ),
     let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {

@@ -113,9 +113,10 @@ extension Markup {
 
     case let link as Markdown.Link:
       // Handle attachment citations by extracting title from URL parameters
-      if link.plainText == InlineCitationConstants.citationMarkerValue,
-         let destination = link.destination,
-         let attachmentData = InlineAttachmentData(linkDestination: destination) {
+      if let destination = link.destination,
+         let url = URL.fromMixedEncodingString(destination),
+         CitationCoder.default.isCitation(linkText: link.plainText, url: url),
+         let attachmentData = CitationCoder.default.decode(linkDestination: destination) {
         return attachmentData.title
       }
 

@@ -38,7 +38,7 @@ final class OrderedListViewTests: SnapshotTestCase {
 
   @MainActor
   func testOrderedListViewWithCitations() async throws {
-    let citationMarker = InlineCitationConstants.citationMarkerValue
+    let citationMarker = CitationCoder.default.citationMarker
     let textWithCitations: [String] = [
       "First item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationFullTitle=ESPN%20Sports)",
       "Second item [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=Google&citationFullTitle=Google%20Search) with citation",

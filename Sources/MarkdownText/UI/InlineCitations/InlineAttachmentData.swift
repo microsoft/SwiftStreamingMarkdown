@@ -16,25 +16,10 @@ struct InlineAttachmentData: Codable {
   let accessibilityLabel: String
   let url: URL
 
-  /// Initialize from a citation link destination
-  init?(
-    linkDestination: String
-  ) {
-    guard let url = URL.fromMixedEncodingString(linkDestination),
-          let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-          let title = components.queryItems?.first(
-            where: { $0.name == InlineCitationConstants.citationTitleParam }
-          )?.value,
-          let accessibilityLabel = components.queryItems?.first(
-            where: { $0.name == InlineCitationConstants.citationFullTitleParam }
-          )?.value
-    else {
-      return nil
-    }
-
-    self.type = .citation
-    self.url = url
+  init(type: AttachmentType, title: String, accessibilityLabel: String, url: URL) {
+    self.type = type
     self.title = title
     self.accessibilityLabel = accessibilityLabel
+    self.url = url
   }
 }
