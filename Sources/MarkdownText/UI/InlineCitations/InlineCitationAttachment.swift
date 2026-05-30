@@ -54,6 +54,14 @@ final class InlineCitationAttachment: NSTextAttachment {
   /// pair so a `set` call does not clobber `contents`/`fileType`.
   private var assignedImage: UIImage?
 
+  // MARK: - Shared Layout
+
+  /// Layout constants shared between the live `AttachmentCitationLabel` (in
+  /// `InlineCitationViewProvider`) and the static image rasterized by
+  /// `renderCitationImage`, so the two renderings stay visually identical.
+  static let textInsets = UIEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
+  static let cornerRadius: CGFloat = 6
+
   override var image: UIImage? {
     get {
       if let assignedImage { return assignedImage }
@@ -122,8 +130,8 @@ final class InlineCitationAttachment: NSTextAttachment {
     backgroundColor: UIColor,
     traitCollection: UITraitCollection
   ) -> UIImage {
-    let textInsets = InlineCitationConstants.attachmentTextInsets
-    let cornerRadius = InlineCitationConstants.attachmentCornerRadius
+    let textInsets = Self.textInsets
+    let cornerRadius = Self.cornerRadius
     // Resolve dynamic colors for the current appearance (light/dark mode).
     let resolvedTextColor = textColor.resolvedColor(with: traitCollection)
     let resolvedBackgroundColor = backgroundColor.resolvedColor(with: traitCollection)

@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 private final class AttachmentCitationLabel: UILabel {
-  private let textInsets = InlineCitationConstants.attachmentTextInsets
+  private let textInsets = InlineCitationAttachment.textInsets
 
   // MARK: Initialization
 
@@ -18,7 +18,7 @@ private final class AttachmentCitationLabel: UILabel {
   ) {
     super.init(frame: .zero)
     self.backgroundColor = backgroundColor
-    self.layer.cornerRadius = InlineCitationConstants.attachmentCornerRadius
+    self.layer.cornerRadius = InlineCitationAttachment.cornerRadius
     self.layer.masksToBounds = true
     self.font = font
     self.textColor = textColor

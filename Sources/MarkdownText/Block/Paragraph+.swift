@@ -32,7 +32,8 @@ extension BlockMarkup {
       }
 
       let stringPart = convertible.convert(attributeContainer: container, config: config, colorScheme: colorScheme)
-      if let link = child as? Markdown.Link,
+      if config.citationConfig.isEnabled,
+         let link = child as? Markdown.Link,
          let destination = link.destination,
          link.isInlineCitation {
 
