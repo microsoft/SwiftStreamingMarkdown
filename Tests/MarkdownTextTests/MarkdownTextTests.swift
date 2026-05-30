@@ -41,7 +41,7 @@ final class MarkdownTextTests: XCTestCase {
     }
 
     // Verify this is NOT an attachment citation (it's a regular citation)
-    XCTAssertFalse(link.isAttachmentCitation, "Link should NOT be detected as attachment citation")
+    XCTAssertFalse(link.isInlineCitation, "Link should NOT be detected as attachment citation")
 
     // Test the convert method directly
     let attributeContainer: [NSAttributedString.Key: Any] = [:]
@@ -90,7 +90,7 @@ final class MarkdownTextTests: XCTestCase {
     }
 
     // Verify this is an attachment citation
-    XCTAssertTrue(link.isAttachmentCitation, "Link should be detected as attachment citation")
+    XCTAssertTrue(link.isInlineCitation, "Link should be detected as attachment citation")
 
     // Test the convert method directly - this should expose the bug
     let attributeContainer: [NSAttributedString.Key: Any] = [:]
@@ -146,7 +146,7 @@ final class MarkdownTextTests: XCTestCase {
     }
 
     // Verify this is an attachment citation (UUID in link text)
-    XCTAssertTrue(link.isAttachmentCitation, "Link should be detected as attachment citation")
+    XCTAssertTrue(link.isInlineCitation, "Link should be detected as attachment citation")
 
     // Test the convert method - should return empty for malformed attachment citations
     let attributeContainer: [NSAttributedString.Key: Any] = [:]

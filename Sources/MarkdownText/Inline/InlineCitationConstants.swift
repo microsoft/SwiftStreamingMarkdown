@@ -16,8 +16,7 @@ public enum InlineCitationConstants {
    - query params:
       - citationMarkerQueryParam = citationMarkerValue
       - citationTitleParam = the title to display
-      - citationIdParam = comma separated array of citation ids
-      - citationChatItemIdParam = chat item id the citation belongs to
+      - citationFullTitleParam = the full title to display
 
    [citationMarkerValue](url?queryParams)
 
@@ -28,8 +27,6 @@ public enum InlineCitationConstants {
   public static let citationMarkerValue = "9F742443-6C92-4C44-BF58-8F5A7C53B6F1"
   public static let citationTitleParam = "citationTitle"
   public static let citationFullTitleParam = "citationFullTitle"
-  public static let citationIdParam = "citationId"
-  public static let citationChatItemIdParam = "chatItemId"
 
   // MARK: - Shared Layout
 

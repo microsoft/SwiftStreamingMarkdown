@@ -34,7 +34,7 @@ extension BlockMarkup {
       let stringPart = convertible.convert(attributeContainer: container, config: config, colorScheme: colorScheme)
       if let link = child as? Markdown.Link,
          let destination = link.destination,
-         link.isAttachmentCitation {
+         link.isInlineCitation {
 
         // Create citation attachment directly during parsing (as suggested by @hanzhouli_microsoft)
         let attachmentData = InlineAttachmentData(linkDestination: destination)
