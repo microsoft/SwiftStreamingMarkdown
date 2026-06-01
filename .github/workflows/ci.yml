@@ -18,6 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Run SwiftLint
+        run: swiftlint --strict
+
       - name: Run package tests with xcodebuild
         run: |
           xcodebuild test \
