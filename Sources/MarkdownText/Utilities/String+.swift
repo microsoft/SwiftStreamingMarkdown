@@ -22,10 +22,10 @@ extension String {
     }
   }
 
-  public func markdownToPlainText(removeHeading: Bool = false) async -> String {
+  public func markdownToPlainText(removeHeading: Bool = false, coder: CitationCoder = .default) async -> String {
     let markdownParser = MarkdownParserImpl()
     let document = await markdownParser.parse(text: self)
-    return document.extractPlainText(removeHeading: removeHeading)
+    return document.extractPlainText(removeHeading: removeHeading, coder: coder)
   }
 
   static func itemPositionInTable(rowIndex: Int, totalRow: Int, columnIndex: Int, totalColumn: Int) -> String {
@@ -76,11 +76,11 @@ extension String {
 }
 
 extension Markdown.Document {
-  func extractPlainText(removeHeading: Bool) -> String {
+  func extractPlainText(removeHeading: Bool, coder: CitationCoder = .default) -> String {
     var result = ""
 
     for child in children {
-      result += child.extractPlainText(removeHeading: removeHeading)
+      result += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       result += "\n\n"
     }
 
@@ -90,7 +90,7 @@ extension Markdown.Document {
 
 extension Markup {
   /// Recursively extracts plain text from any markdown element
-  func extractPlainText(removeHeading: Bool) -> String {
+  func extractPlainText(removeHeading: Bool, coder: CitationCoder = .default) -> String {
     // Handle specific markup types
     switch self {
     case let text as Markdown.Text:
@@ -102,7 +102,7 @@ extension Markup {
     case let paragraph as Paragraph:
       // Extract text from paragraph children to handle attachment citations
       return paragraph.children.map {
-        $0.extractPlainText(removeHeading: removeHeading)
+        $0.extractPlainText(removeHeading: removeHeading, coder: coder)
       }.joined()
 
     case let codeBlock as CodeBlock:
@@ -115,43 +115,43 @@ extension Markup {
       // Handle attachment citations by extracting title from URL parameters
       if let destination = link.destination,
          let url = URL.fromMixedEncodingString(destination),
-         CitationCoder.default.isCitation(linkText: link.plainText, url: url),
-         let attachmentData = CitationCoder.default.decode(linkDestination: destination) {
+         coder.isCitation(linkText: link.plainText, url: url),
+         let attachmentData = coder.decode(linkDestination: destination) {
         return attachmentData.title
       }
 
       // For regular links, extract the link text content, not the URL
       var linkText = ""
       for child in link.children {
-        linkText += child.extractPlainText(removeHeading: removeHeading)
+        linkText += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return linkText.isEmpty ? (link.destination ?? "") : linkText
 
     case let emphasis as Markdown.Emphasis:
       var text = ""
       for child in emphasis.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
     case let strong as Markdown.Strong:
       var text = ""
       for child in strong.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
     case let strikethrough as Markdown.Strikethrough:
       var text = ""
       for child in strikethrough.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
     case let listItem as ListItem:
       var text = ""
       for child in listItem.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
@@ -159,7 +159,7 @@ extension Markup {
       var text = ""
       for (index, child) in orderedList.children.enumerated() {
         if let listItem = child as? ListItem {
-          text += "\(index + 1). \(listItem.extractPlainText(removeHeading: removeHeading))\n"
+          text += "\(index + 1). \(listItem.extractPlainText(removeHeading: removeHeading, coder: coder))\n"
         }
       }
       return text
@@ -168,7 +168,7 @@ extension Markup {
       var text = ""
       for child in unorderedList.children {
         if let listItem = child as? ListItem {
-          text += "• \(listItem.extractPlainText(removeHeading: removeHeading))\n"
+          text += "• \(listItem.extractPlainText(removeHeading: removeHeading, coder: coder))\n"
         }
       }
       return text
@@ -176,7 +176,7 @@ extension Markup {
     case let blockQuote as BlockQuote:
       var text = ""
       for child in blockQuote.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
@@ -185,7 +185,7 @@ extension Markup {
       // Extract table headers
       for cell in table.head.children {
         if let tableCell = cell as? Markdown.Table.Cell {
-          text += tableCell.extractPlainText(removeHeading: removeHeading) + "\t"
+          text += tableCell.extractPlainText(removeHeading: removeHeading, coder: coder) + "\t"
         }
       }
       text += "\n"
@@ -195,7 +195,7 @@ extension Markup {
         if let tableRow = row as? Markdown.Table.Row {
           for cell in tableRow.children {
             if let tableCell = cell as? Markdown.Table.Cell {
-              text += tableCell.extractPlainText(removeHeading: removeHeading) + "\t"
+              text += tableCell.extractPlainText(removeHeading: removeHeading, coder: coder) + "\t"
             }
           }
           text += "\n"
@@ -206,7 +206,7 @@ extension Markup {
     case let tableCell as Markdown.Table.Cell:
       var text = ""
       for child in tableCell.children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
 
@@ -223,7 +223,7 @@ extension Markup {
       // For any other markup type, recursively process children
       var text = ""
       for child in children {
-        text += child.extractPlainText(removeHeading: removeHeading)
+        text += child.extractPlainText(removeHeading: removeHeading, coder: coder)
       }
       return text
     }

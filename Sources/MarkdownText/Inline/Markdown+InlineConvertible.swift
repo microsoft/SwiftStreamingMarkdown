@@ -70,15 +70,15 @@ extension Markdown.Strikethrough: InlineConvertible {
 
 extension Markdown.Link: InlineConvertible {
   /// True when this link is a citation that should render as an attachment
-  /// bubble. Delegates to `CitationCoder` so the marker/query-param format
-  /// lives in one place.
-  var isInlineCitation: Bool {
+  /// bubble. Delegates to the supplied `CitationCoder` so the marker /
+  /// query-param format is configurable per render.
+  func isInlineCitation(coder: CitationCoder) -> Bool {
     guard let destination = self.destination,
           let url = self.createURL(from: destination)
     else {
       return false
     }
-    return CitationCoder.default.isCitation(linkText: self.plainText, url: url)
+    return coder.isCitation(linkText: self.plainText, url: url)
   }
 
   private func createURL(from string: String) -> URL? {
@@ -103,9 +103,10 @@ extension Markdown.Link: InlineConvertible {
       return buildAttributedString()
     }
 
-    if config.citationConfig.isEnabled, self.isInlineCitation {
+    let coder = config.citationConfig.coder
+    if config.citationConfig.isEnabled, self.isInlineCitation(coder: coder) {
       // Extract title from URL query parameters for new attachment citation format
-      if let attachmentData = CitationCoder.default.decode(linkDestination: destination),
+      if let attachmentData = coder.decode(linkDestination: destination),
          let citationAttachment = InlineCitationAttachment(citationData: attachmentData, citationConfig: config.citationConfig) {
 
         // Create attributed string with the citation attachment

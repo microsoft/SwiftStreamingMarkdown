@@ -10,22 +10,22 @@ import Foundation
 /// text together with the query-parameter names that carry the citation's
 /// display title and accessibility label, so downstream apps can change
 /// the on-the-wire format without touching the rendering pipeline.
-final class CitationCoder: Sendable {
+public struct CitationCoder: Hashable, Sendable {
 
   /// Literal string that appears as the link text of a citation
   /// (`[<citationMarker>](<url>)`) and as the value of the
   /// `citationMarkerQueryParam` query item on the URL.
-  let citationMarker: String
+  public let citationMarker: String
   /// Name of the query param whose value must equal `citationMarker` for the
   /// URL to be recognized as a citation.
-  let citationMarkerQueryParam: String
+  public let citationMarkerQueryParam: String
   /// Name of the query param that carries the citation's user-visible title.
-  let citationTextQueryParam: String
+  public let citationTextQueryParam: String
   /// Name of the query param that carries the citation's accessibility label
   /// (typically a longer, more descriptive form of the title).
-  let citationA11yTextQueryParam: String
+  public let citationA11yTextQueryParam: String
 
-  init(
+  public init(
     citationMarker: String,
     citationMarkerQueryParam: String,
     citationTextQueryParam: String,
@@ -82,7 +82,7 @@ final class CitationCoder: Sendable {
 
 extension CitationCoder {
   /// Default coder using the historical query-param names and marker UUID.
-  static let `default` = CitationCoder(
+  public static let `default` = CitationCoder(
     citationMarker: "9F742443-6C92-4C44-BF58-8F5A7C53B6F1",
     citationMarkerQueryParam: "citationMarker",
     citationTextQueryParam: "citationTitle",

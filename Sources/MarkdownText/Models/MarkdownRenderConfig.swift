@@ -87,12 +87,20 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   
   public struct CitationConfig: Hashable, Sendable {
     public let isEnabled: Bool
+    public let coder: CitationCoder
     public let font: UIFont
     public let textColor: UIColor
     public let backgroundColor: UIColor
 
-    public init(isEnabled: Bool = true, font: UIFont, textColor: UIColor, backgroundColor: UIColor) {
+    public init(
+      isEnabled: Bool = true,
+      coder: CitationCoder = .default,
+      font: UIFont,
+      textColor: UIColor,
+      backgroundColor: UIColor
+    ) {
       self.isEnabled = isEnabled
+      self.coder = coder
       self.font = font
       self.textColor = textColor
       self.backgroundColor = backgroundColor
