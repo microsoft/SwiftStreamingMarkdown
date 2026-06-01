@@ -181,5 +181,6 @@ Please follow the responsible-disclosure process described in
 
 ## License
 
-SwiftStreamingMarkdown is released under the [MIT License](LICENSE). Bundled
-third-party software and their licenses are listed in [NOTICE](NOTICE).
+SwiftStreamingMarkdown is released under the [MIT License](LICENSE). Dependencies
+are declared in [`Package.swift`](Package.swift); each upstream ships its own
+license terms via Swift Package Manager.

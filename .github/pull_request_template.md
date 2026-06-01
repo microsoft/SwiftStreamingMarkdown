@@ -10,5 +10,5 @@
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes are reflected in `NOTICE`.
+- [ ] Third-party dependency changes (adds, removes, version bumps) are reflected in `Package.swift` with an updated purpose comment.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.

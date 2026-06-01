@@ -21,7 +21,7 @@ changes; they will be called out explicitly in this file.
 ### Changed
 - `MarkdownParseOption.LatexMatching` is now configurable per-parse; the
   default matches the prior all-rules behavior.
-- Repository documentation: README, CODE_OF_CONDUCT, and NOTICE added for
+- Repository documentation: README and CODE_OF_CONDUCT added for
   open-source readiness.
 
 ### Removed (internal, no public API impact)
