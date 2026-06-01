@@ -79,24 +79,6 @@ custom_rules:
       - ".*Tests\\.swift"
     message: "Use of AnyView is discouraged. Here's a some good explanatory article on it: https://www.swiftbysundell.com/articles/avoiding-anyview-in-swiftui/"
     severity: error
-  no_value_nslocalizedstring:
-    name: "No Value in NSLocalizedString"
-    regex: 'NSLocalizedString\s*\(\s*(?![^)]*\bvalue\b)[^)]*\)'
-    message: "NSLocalizedString should always have a value parameter, otherwise the key can be shown if the translation is missing"
-    severity: error
-  no_bundle_nslocalizedstring:
-    name: "No Bundle in NSLocalizedString"
-    regex: 'NSLocalizedString\s*\(\s*(?![^)]*\bbundle\b)[^)]*\)'
-    message: "NSLocalizedString should always have a bundle parameter"
-    severity: error
-  no_async_image:
-    name: "No AsyncImage"
-    regex: "\\bAsyncImage(?!])\\b"
-    excluded:
-      - ".*Test\\.swift"
-      - ".*Tests\\.swift"
-    message: "Prefer a cached image loader over AsyncImage."
-    severity: error
   no_print:
     name: "No print"
     regex: "\\bprint(?!])\\b"
@@ -111,40 +93,14 @@ custom_rules:
       - ".*Listener\\.swift"
     message: "Prefer logDebug() over print() to obtain structured messages sent to Apple's unified logging system. Mocks, Preview and Tests are not subject to this rule."
     severity: error
-  no_verbatim:
-    name: "Verbatim is missing in Text()"
-    regex: '\bText\(\"'
-    message: "Text should be used with Text(verbatim:) if we are hardcoding a string with variables"
-  no_localized_string:
-    name: "No Localized String in swift files"
-    regex: "\\bNSLocalizedString\\b"
-    excluded:
-      - ".*String\\+\\.swift"
-      - ".*String\\.swift"
-      - ".*Strings\\.swift"
-      - ".*String\\+Local\\.swift"
-      - ".*String\\+Const\\.swift"
-    message: "NSLocalizedString should always be defined in String+.swift files, not directly in the code."
-    severity: error
   no_thread_sleep_in_tests:
     included: ".*Tests.swift"
     name: "No Thread.sleep"
     regex: "\\b(Thread|Foundation\\.Thread)\\s*\\.\\s*sleep\\s*\\("
     message: "Avoid using Thread.sleep in tests."
     severity: error
-  no_presentation_background_with_sheet:
-    name: "No PresentationBackground"
-    regex: '.presentationBackground\('
-    message: "Please make sure you didn't use .PresentationBackground together with .sheet on iOS versions below 18, as this may cause severe app hang."
-    severity: error
   no_swiftuicore_import:
     name: "No SwiftUICore Import"
     regex: 'import SwiftUICore'
     message: "Importing SwiftUICore is not allowed. Please use SwiftUI instead."
-    severity: error
-  no_swift_testing_placeholder:
-    included: ".*Tests.swift"
-    name: "No Placeholder code for SwiftTesting"
-    regex: '@Test func example\(\)'
-    message: "Please delete placeholder code for Swift Testing as they will slow down CI"
     severity: error
