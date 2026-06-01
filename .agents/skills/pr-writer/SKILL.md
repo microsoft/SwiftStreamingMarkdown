@@ -108,7 +108,7 @@ The repo template (`.github/pull_request_template.md`) has three sections plus a
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes (adds, removes, version bumps) are reflected in `Package.swift` with an updated purpose comment.
+- [ ] Third-party dependency changes (adds, removes, version bumps) are intentional and reviewed.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ```
 
@@ -171,7 +171,7 @@ Closes #42
 
 - [x] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [x] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [x] Third-party dependency changes (adds, removes, version bumps) are reflected in `Package.swift` with an updated purpose comment. (no dependency changes)
+- [x] Third-party dependency changes (adds, removes, version bumps) are intentional and reviewed. (no dependency changes)
 - [x] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ```
 
@@ -201,7 +201,7 @@ Return two parts:
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes (adds, removes, version bumps) are reflected in `Package.swift` with an updated purpose comment.
+- [ ] Third-party dependency changes (adds, removes, version bumps) are intentional and reviewed.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ````
 
