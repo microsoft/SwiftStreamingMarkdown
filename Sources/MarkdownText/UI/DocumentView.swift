@@ -9,8 +9,6 @@ import SwiftUI
 
 @Equatable
 public struct DocumentView: View {
-  @Environment(\.colorScheme) var colorScheme
-
   @StateObject var controller: MarkdownController
 
   let renderableDocument: RenderableDocument

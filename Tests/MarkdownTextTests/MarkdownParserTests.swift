@@ -41,7 +41,7 @@ final class MarkdownParserTests: XCTestCase {
     """
 
     let document = await parser.parse(text: text)
-    let renderableDoc = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderableDoc = await RenderableDocument(document: document, config: .default)
 
     guard case let .table(_, headers, rows, rawMarkdown) = renderableDoc.renderables.first else {
       XCTFail("Expected markdown to render as a table")

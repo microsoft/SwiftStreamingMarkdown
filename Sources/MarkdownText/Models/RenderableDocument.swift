@@ -21,8 +21,8 @@ public struct RenderableDocument: Equatable, Sendable {
     return renderables.isEmpty
   }
 
-  public init(document: Document, config: MarkdownRenderConfig, colorScheme: ColorScheme) async {
-    self.renderables = document.convert(with: config, colorScheme: colorScheme)
+  public init(document: Document, config: MarkdownRenderConfig) async {
+    self.renderables = document.convert(with: config)
   }
 
   public init(plainText: String, config: MarkdownRenderConfig) {

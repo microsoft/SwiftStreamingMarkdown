@@ -8,7 +8,7 @@ import SwiftUI
 
 extension ThematicBreak: BlockConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     return MarkdownRenderable.thematicBreak(id: self.id)
   }
 }

@@ -23,7 +23,7 @@ final class OrderedListViewTests: SnapshotTestCase {
     var results: [[MarkdownRenderable]] = []
     for paragraph in text {
       let doc = await parser.parse(text: paragraph)
-      results.append(doc.convert(with: .default, colorScheme: .light))
+      results.append(doc.convert(with: .default))
     }
 
     let items: [MarkdownListItem] = results.map { renderables in
@@ -50,7 +50,7 @@ final class OrderedListViewTests: SnapshotTestCase {
     var results: [[MarkdownRenderable]] = []
     for paragraph in textWithCitations {
       let doc = await parser.parse(text: paragraph)
-      results.append(doc.convert(with: .default, colorScheme: .light))
+      results.append(doc.convert(with: .default))
     }
 
     let items: [MarkdownListItem] = results.map { renderables in

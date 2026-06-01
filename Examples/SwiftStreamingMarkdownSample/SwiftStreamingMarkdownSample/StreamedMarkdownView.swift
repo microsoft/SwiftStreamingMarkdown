@@ -71,7 +71,7 @@ final class StreamedMarkdownViewController: ObservableObject {
       let endIndex = text.index(startIndex, offsetBy: chunkSize, limitedBy: text.endIndex) ?? text.endIndex
       let textToParse = text[text.startIndex..<endIndex]
       let document = await parser.parse(text: String(textToParse))
-      let renderableDocument = await RenderableDocument(document: document, config: config, colorScheme: .light)
+      let renderableDocument = await RenderableDocument(document: document, config: config)
       await MainActor.run {
         self.streamedText = renderableDocument
       }

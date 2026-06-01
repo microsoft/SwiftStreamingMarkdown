@@ -8,7 +8,7 @@ import SwiftUI
 
 extension Paragraph: BlockConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     var container = attributeContainer
     container[.font] = config.paragraphStyle.textFonts.normal
     container[.typography] = config.paragraphStyle.textFonts
@@ -16,14 +16,14 @@ extension Paragraph: BlockConvertible {
       container[.kern] = kern
     }
     container[.foregroundColor] = config.paragraphStyle.textColor
-    let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config, colorScheme: colorScheme)
+    let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config)
     return MarkdownRenderable.paragraph(id: self.id, content: paragraphContent)
   }
 }
 
 extension BlockMarkup {
 
-  func buildParagraphContent(container: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func buildParagraphContent(container: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let result = NSMutableAttributedString()
 
     for child in self.children {
@@ -31,7 +31,6 @@ extension BlockMarkup {
         continue
       }
 
-      let stringPart = convertible.convert(attributeContainer: container, config: config, colorScheme: colorScheme)
       let coder = config.citationConfig.coder
       if config.citationConfig.isEnabled,
          let link = child as? Markdown.Link,
@@ -63,6 +62,7 @@ extension BlockMarkup {
           result.append(attachmentString)
         }
       } else {
+        let stringPart = convertible.convert(attributeContainer: container, config: config)
         result.append(stringPart)
       }
     }

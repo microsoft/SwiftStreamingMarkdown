@@ -13,9 +13,8 @@ protocol BlockConvertible {
   /// Convert into `MarkdownRenderable`
   /// - Parameter attributeContainer: The inherited attributes
   /// - Parameter config: The mark down rendering config used to override fonts & text color if needed.
-  /// - Parameter colorScheme: The color scheme used by the view. It's used to determine the font color during conversion.
   /// - Returns: A `MarkdownRenderable` that is ready to be rendered by Views.
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable
 }
 
 extension Markup {

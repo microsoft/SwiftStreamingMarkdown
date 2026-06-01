@@ -33,7 +33,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     """
 
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -52,7 +52,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     Isn't that great?
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -69,7 +69,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     ## Very *important* title \\( x = 0 \\)
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -103,7 +103,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     $$d_2 = d_1 - \\sigma \\sqrt{T}$$
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -125,7 +125,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     \\]
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -152,7 +152,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
       \\]
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -179,7 +179,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     Each equation is a cornerstone in its respective domain—geometry, algebra, complex analysis, calculus, and physics. Want to riff on these with a cosmic twist or dive deeper into their origins?
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -206,7 +206,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     """
 
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -218,7 +218,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     This paragraph contains a titled inline citation [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://www.microsoft.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=987&citationTitle=microsoft.com&citationFullTitle=microsoft.com&chatItemId=chatItemId). And here are more citations [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://www.microsoft.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId%3D1%2C2&citationTitle=microsoft.com%20%2B1&citationFullTitle=microsoft.com&chatItemId=chatItemId).
     """
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -235,7 +235,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     """
     let document = await parser.parse(text: text)
     print(document.debugDescription())
-    let renderables = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: .default)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
     }
@@ -253,7 +253,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
       paragraphStyle: .init(textFonts: Typography.baseTextFonts, textColor: .red)
     )
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: config)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }
@@ -268,7 +268,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
       paragraphStyle: .init(textFonts: Typography.baseTextFonts, textColor: .red)
     )
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: config)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }
@@ -285,7 +285,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
       paragraphStyle: .init(textFonts: Typography.baseTextFonts, textColor: .green)
     )
     let document = await parser.parse(text: text)
-    let renderables = await RenderableDocument(document: document, config: config, colorScheme: .light)
+    let renderables = await RenderableDocument(document: document, config: config)
     let view = CanvasView {
       DocumentView(renderableDocument: renderables, config: config).padding(.horizontal, 24)
     }

@@ -8,7 +8,7 @@ import SwiftUI
 
 extension Heading: BlockConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     var newContainer = attributeContainer
     let headingFont: TextFonts
     switch level {
@@ -33,7 +33,7 @@ extension Heading: BlockConvertible {
       newContainer[.kern] = kern
     }
     newContainer[.foregroundColor] = config.headingStyle.textColor
-    let paragraphContent = buildParagraphContent(container: newContainer, config: config, colorScheme: colorScheme)
+    let paragraphContent = buildParagraphContent(container: newContainer, config: config)
     return .heading(id: self.id, level: self.level, content: paragraphContent)
   }
 }

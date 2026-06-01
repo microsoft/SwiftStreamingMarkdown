@@ -18,9 +18,8 @@ protocol InlineConvertible {
   /// Render into an attributed string
   /// - Parameter attributeContainer: The existing attribtues inherited from parent element
   /// - Parameter config: The mark down rendering config used to override fonts & text color if needed.
-  /// - Parameter colorScheme: The color scheme of the view using. It's used to determine the font color during converstion.
   /// - Returns: The result attributed string
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString
 }
 
 extension NSMutableAttributedString {

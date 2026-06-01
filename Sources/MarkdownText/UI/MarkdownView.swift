@@ -14,7 +14,6 @@ public struct MarkdownView: View {
   private let text: String
   private let config: MarkdownRenderConfig
   @StateObject var controller: MarkdownViewController
-  @Environment(\.colorScheme) private var colorScheme
 
   public init(
     text: String,
@@ -35,7 +34,7 @@ public struct MarkdownView: View {
       }
     }
     .task(id: text) {
-      await controller.parse(text: text, colorScheme: colorScheme)
+      await controller.parse(text: text)
     }
   }
 }
@@ -54,9 +53,9 @@ public final class MarkdownViewController: ObservableObject {
     self.listener = listener
   }
 
-  func parse(text: String, colorScheme: ColorScheme) async {
+  func parse(text: String) async {
     let document = await parser.parse(text: text)
-    let renderable = await RenderableDocument(document: document, config: config, colorScheme: colorScheme)
+    let renderable = await RenderableDocument(document: document, config: config)
     await MainActor.run {
       self.renderable = renderable
     }

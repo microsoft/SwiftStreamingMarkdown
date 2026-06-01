@@ -47,8 +47,7 @@ final class MarkdownTextTests: XCTestCase {
     let attributeContainer: [NSAttributedString.Key: Any] = [:]
     let convertedString = link.convert(
       attributeContainer: attributeContainer,
-      config: .default,
-      colorScheme: .light
+      config: .default
     )
 
     // Regular citations should show the link text "Microsoft", not the internal marker
@@ -96,8 +95,7 @@ final class MarkdownTextTests: XCTestCase {
     let attributeContainer: [NSAttributedString.Key: Any] = [:]
     let convertedString = link.convert(
       attributeContainer: attributeContainer,
-      config: .default,
-      colorScheme: .light
+      config: .default
     )
 
     // Verify that we get an attachment, not plain text
@@ -152,8 +150,7 @@ final class MarkdownTextTests: XCTestCase {
     let attributeContainer: [NSAttributedString.Key: Any] = [:]
     let convertedString = link.convert(
       attributeContainer: attributeContainer,
-      config: .default,
-      colorScheme: .light
+      config: .default
     )
 
     // Should return empty string when attachment data extraction fails (better UX than showing UUID)
@@ -255,7 +252,7 @@ final class MarkdownTextTests: XCTestCase {
     """
 
     let document = await parser.parse(text: text)
-    let renderableDoc = await RenderableDocument(document: document, config: .default, colorScheme: .light)
+    let renderableDoc = await RenderableDocument(document: document, config: .default)
     let renderables = renderableDoc.renderables
 
     // Verify it parses without error

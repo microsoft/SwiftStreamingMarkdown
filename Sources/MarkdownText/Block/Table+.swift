@@ -8,7 +8,7 @@ import SwiftUI
 
 extension Markdown.Table: BlockConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     var bodyContainer = attributeContainer
     var headerContainer = attributeContainer
     bodyContainer[.font] = config.tableStyle.textFonts.normal
@@ -19,7 +19,7 @@ extension Markdown.Table: BlockConvertible {
       .head
       .children
       .compactMap { $0 as? Cell }
-      .map { $0.convert(attributeContainer: headerContainer, config: config, colorScheme: colorScheme) }
+      .map { $0.convert(attributeContainer: headerContainer, config: config) }
     let rows = self
       .body
       .children
@@ -28,7 +28,7 @@ extension Markdown.Table: BlockConvertible {
       .filter { $0.childCount == headerCells.count }
       .map { row in
         let cells = row.children.compactMap { $0 as? Cell }
-        return cells.map { $0.convert(attributeContainer: bodyContainer, config: config, colorScheme: colorScheme) }
+        return cells.map { $0.convert(attributeContainer: bodyContainer, config: config) }
       }
     // swift-markdown's MarkupFormatter.visitTable crashes with an array index
     // out of bounds when any body row has fewer columns than the header

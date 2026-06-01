@@ -8,9 +8,9 @@ import SwiftUI
 
 extension Markdown.Document {
 
-  func convert(with config: MarkdownRenderConfig, colorScheme: ColorScheme) -> [MarkdownRenderable] {
+  func convert(with config: MarkdownRenderConfig) -> [MarkdownRenderable] {
     return self
       .blockConvertibleChildren
-      .map { $0.convert(attributeContainer: NSAttributeContainer(), config: config, colorScheme: colorScheme) }
+      .map { $0.convert(attributeContainer: NSAttributeContainer(), config: config) }
   }
 }

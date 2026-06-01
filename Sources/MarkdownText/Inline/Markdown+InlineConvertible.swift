@@ -9,14 +9,14 @@ import UniformTypeIdentifiers
 
 extension Markdown.Text: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     return NSMutableAttributedString(string: self.string).mergingAttributes(attributeContainer)
   }
 }
 
 extension Markdown.Emphasis: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
         
@@ -27,7 +27,7 @@ extension Markdown.Emphasis: InlineConvertible {
       newContainer[.font] = config.paragraphStyle.textFonts.italic ?? config.paragraphStyle.textFonts.normal
     }
     self.inlineConvertibleChildren.forEach { convertible in
-      str.append(convertible.convert(attributeContainer: newContainer, config: config, colorScheme: colorScheme))
+      str.append(convertible.convert(attributeContainer: newContainer, config: config))
     }
     return str
   }
@@ -35,7 +35,7 @@ extension Markdown.Emphasis: InlineConvertible {
 
 extension Markdown.Strong: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
     if let currentTextFonts = attributeContainer[.typography] as? TextFonts {
@@ -48,7 +48,7 @@ extension Markdown.Strong: InlineConvertible {
       newContainer[.foregroundColor] = config.inlineStyle.boldTextColor
     }
     self.inlineConvertibleChildren.forEach { convertible in
-      str.append(convertible.convert(attributeContainer: newContainer, config: config, colorScheme: colorScheme))
+      str.append(convertible.convert(attributeContainer: newContainer, config: config))
     }
     return str
   }
@@ -56,13 +56,13 @@ extension Markdown.Strong: InlineConvertible {
 
 extension Markdown.Strikethrough: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var container = attributeContainer
     container[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
     container[.strikethroughColor] = container[.foregroundColor]
     self.inlineConvertibleChildren.forEach { convertible in
-      str.append(convertible.convert(attributeContainer: container, config: config, colorScheme: colorScheme))
+      str.append(convertible.convert(attributeContainer: container, config: config))
     }
     return str
   }
@@ -85,13 +85,13 @@ extension Markdown.Link: InlineConvertible {
     return URL.fromMixedEncodingString(string)
   }
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     var container = attributeContainer
 
     func buildAttributedString() -> NSMutableAttributedString {
       let str = NSMutableAttributedString()
       self.inlineConvertibleChildren.forEach { convertible in
-        str.append(convertible.convert(attributeContainer: container, config: config, colorScheme: colorScheme))
+        str.append(convertible.convert(attributeContainer: container, config: config))
       }
       return str
     }
@@ -130,14 +130,14 @@ extension Markdown.Link: InlineConvertible {
 
 extension Markdown.SoftBreak: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     return NSMutableAttributedString(string: "\n").mergingAttributes(attributeContainer)
   }
 }
 
 extension Markdown.LineBreak: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     return NSMutableAttributedString(string: "\n").mergingAttributes(attributeContainer)
   }
 }
@@ -148,7 +148,7 @@ extension Markdown.InlineCode: InlineConvertible {
     return self.code.hasPrefix(LaTexPreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(LaTexPreProcessorImpl.inlineCodeSuffix)
   }
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     var codeContent = self.code
     if self.isInlineLatex {
       codeContent = String(self
@@ -183,10 +183,10 @@ extension Markdown.InlineCode: InlineConvertible {
 
 extension Markdown.Table.Cell: InlineConvertible {
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> NSMutableAttributedString {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     self.inlineConvertibleChildren.forEach { convertible in
-      str.append(convertible.convert(attributeContainer: attributeContainer, config: config, colorScheme: colorScheme)
+      str.append(convertible.convert(attributeContainer: attributeContainer, config: config)
         .removingAllOccurrences(of: MarkdownConstants.openingInlineLatexMarker)
         .removingAllOccurrences(of: MarkdownConstants.closingInlineLatexMarker))
     }

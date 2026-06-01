@@ -7,7 +7,7 @@ import Markdown
 import SwiftUI
 
 extension CodeBlock: BlockConvertible {
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     if self.language == LaTexPreProcessorImpl.customCodeType {
       return .latex(id: self.id, content: self.code)
     } else {

@@ -20,7 +20,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
     var results: [[MarkdownRenderable]] = []
     for paragraph in paragraphs {
       let doc = await parser.parse(text: paragraph)
-      results.append(doc.convert(with: .default, colorScheme: .light))
+      results.append(doc.convert(with: .default))
     }
     let unorderedListView = UnorderedListView(items: [
       MarkdownListItem(children: [results[0][0]],
@@ -51,7 +51,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
     var results: [[MarkdownRenderable]] = []
     for paragraph in paragraphs {
       let doc = await parser.parse(text: paragraph)
-      results.append(doc.convert(with: .default, colorScheme: .light))
+      results.append(doc.convert(with: .default))
     }
     let unorderedListView = UnorderedListView(items: [
       MarkdownListItem(children: [results[0][0]],

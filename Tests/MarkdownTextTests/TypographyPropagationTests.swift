@@ -27,7 +27,7 @@ final class TypographyPropagationTests: XCTestCase {
     // Level 1 maps to extraLargeTextFonts in the rendering logic.
     let headingFonts = Typography.extraLargeTextFonts
 
-    let renderable = heading.convert(attributeContainer: .init(), config: config, colorScheme: .light)
+    let renderable = heading.convert(attributeContainer: .init(), config: config)
 
     if case .heading(_, let level, let attributedString) = renderable {
       XCTAssertEqual(level, 1)
@@ -65,7 +65,7 @@ final class TypographyPropagationTests: XCTestCase {
     }
 
     let config = MarkdownRenderConfig.default
-    let renderable = paragraph.convert(attributeContainer: .init(), config: config, colorScheme: .light)
+    let renderable = paragraph.convert(attributeContainer: .init(), config: config)
 
     if case .paragraph(_, let attributedString) = renderable {
       let string = attributedString.string

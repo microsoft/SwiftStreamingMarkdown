@@ -23,7 +23,7 @@ extension BlockQuote: BlockConvertible {
     return .nested(finalQuoteTypes)
   }
 
-  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig, colorScheme: ColorScheme) -> MarkdownRenderable {
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     .blockQuote(id: id, item: .init(quoteType: quoteTypes))
   }
 }
