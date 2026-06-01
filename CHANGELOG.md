@@ -21,8 +21,8 @@ changes; they will be called out explicitly in this file.
 ### Changed
 - `MarkdownParseOption.LatexMatching` is now configurable per-parse; the
   default matches the prior all-rules behavior.
-- Repository documentation: README, CONTRIBUTING, CODE_OF_CONDUCT, NOTICE,
-  and `docs/dependency-inventory.md` added for open-source readiness.
+- Repository documentation: README, CODE_OF_CONDUCT, NOTICE, and
+  `docs/dependency-inventory.md` added for open-source readiness.
 
 ### Removed (internal, no public API impact)
 - Demoted to `internal` (previously `public` but never used outside the

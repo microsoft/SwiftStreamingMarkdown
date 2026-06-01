@@ -6,18 +6,12 @@
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A high-performance streaming Markdown renderer for iOS, designed for chat-style
-UIs where the source text grows token-by-token. SwiftStreamingMarkdown re-parses
-and re-renders incremental input on every chunk without flickering, while still
-supporting the formatting you expect from a static Markdown renderer:
+A high-performance Markdown renderer for iOS, designed for both static markdown texts and LLM stream style where the source text grows token-by-token. 
 
-- Paragraphs, headings, ordered and unordered lists, tables, block quotes
-- Fenced code blocks with syntax highlighting via
-  [HighlightSwift](https://github.com/appstefan/highlightswift)
-- Inline and block LaTeX math via
+- Native inline and block LaTeX math rendering backed by
   [iosMath](https://github.com/maitbayev/iosMath)
-- Inline images and SVG attachments
-- Configurable inline citations with custom view providers
+- Support configurable inline citations UIs commonly seen from LLM outputs
+- Highly configurable text styles and iOS context menus
 - Streaming-friendly fade-in transitions for newly arrived glyphs
 - Built-in `MarkdownListener` hooks for analytics and interaction tracking
 
@@ -28,10 +22,6 @@ supporting the formatting you expect from a static Markdown renderer:
 | iOS | 16.0 |
 | Swift | 5.9 |
 | Xcode | 16.0 |
-
-LaTeX rendering and code-block syntax highlighting work on all supported
-versions; the streaming fade-in transition uses APIs that require iOS 18+ and
-falls back to a simple opacity transition on earlier versions.
 
 ## Installation
 
@@ -176,10 +166,10 @@ citations, math) is on the near-term roadmap; see
 
 ## Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for
-local setup, code style, and the pull-request process. Bug reports and
-feature requests go through the
-[issue templates](.github/ISSUE_TEMPLATE).
+Contributions are welcome! Bug reports and feature requests go through the
+[issue templates](.github/ISSUE_TEMPLATE). A dedicated `CONTRIBUTING.md`
+with local setup, code style, and the pull-request process is in progress
+and will land in a follow-up change.
 
 This project follows the
 [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
@@ -194,12 +184,3 @@ Please follow the responsible-disclosure process described in
 SwiftStreamingMarkdown is released under the [MIT License](LICENSE). Bundled
 third-party software and their licenses are listed in [NOTICE](NOTICE) and
 [`docs/dependency-inventory.md`](docs/dependency-inventory.md).
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or
-services. Authorized use of Microsoft trademarks or logos is subject to and
-must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must
-not cause confusion or imply Microsoft sponsorship. Any use of third-party
-trademarks or logos is subject to those third parties' policies.
