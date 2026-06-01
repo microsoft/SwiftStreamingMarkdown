@@ -161,8 +161,7 @@ in Xcode to run it on a simulator or device.
 
 API reference is currently generated from in-source doc-comments. A DocC
 catalog with curated articles (getting started, streaming, theming,
-citations, math) is on the near-term roadmap; see
-[CHANGELOG.md](CHANGELOG.md) for tracked work.
+citations, math) is on the near-term roadmap.
 
 ## Contributing
 
