@@ -37,3 +37,21 @@ In my younger and more vulnerable years my father gave me some advice that I've 
 Across summer evenings on Long Island, wealth appears as performance: lights, music, and rumor drifting over water. Yet beneath the glitter lies loneliness, misrecognition, and the stubborn force of the past.
 
 Nick's narration watches dreams harden into symbols, and symbols dissolve into tragedy. The green light, the valley of ashes, and the ceaseless parties all point to a single tension between reinvention and reality.
+
+## *念奴娇·赤壁怀古* (苏轼, 1082)
+
+大江东去，浪淘尽，千古风流人物。故垒西边，人道是、三国周郎赤壁。乱石穿空，惊涛拍岸，卷起千堆雪。江山如画，一时多少豪杰。
+
+遥想公瑾当年，小乔初嫁了，雄姿英发。羽扇纶巾，谈笑间、樯橹灰飞烟灭。故国神游，多情应笑我，早生华发。人生如梦，一尊还酹江月。
+
+苏轼谪居黄州时登临赤壁，借三国旧事遣怀。山水雄奇与英雄怀想交织，既见周郎风采，又见自身飘零。
+
+末句以一樽清酒酹江月，是祭奠也是释然。豪放词风之下，藏着难以言说的孤独。
+
+## *水浒传* (施耐庵, 元末明初)
+
+话说大宋仁宗天子在位，嘉祐三年三月三日五更三点，天子驾坐紫宸殿，受百官朝贺。但见祥云迷凤阁，瑞气罩龙楼。
+
+太平日久，文恬武嬉。东京汴梁繁华盖世，茶坊酒肆林立，勾栏瓦舍喧阗。然盛世之下，暗流涌动：一场瘟疫蔓延京畿，朝廷遣洪太尉前往龙虎山宣请张天师祈禳，由此引出"误走妖魔"的因果，为后文一百单八将的聚义埋下伏笔。
+
+施耐庵以史笔写市井，以传奇写英雄。江湖恩仇与庙堂兴废相互映照，让读者在快意恩仇之中，看见一个王朝由盛转衰的轨迹。
