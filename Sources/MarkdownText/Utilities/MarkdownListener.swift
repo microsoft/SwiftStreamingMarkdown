@@ -19,11 +19,11 @@ public final class MarkdownController: ObservableObject {
   private let eventSubject = AsyncCurrentValueSubject<RenderableDocument?>(nil)
   private var listenerTask: Task<(), Error>!
 
-  public init(listener: MarkdownListener?) {
+  init(listener: MarkdownListener?) {
     self.listener = listener
   }
 
-  public func onAppear(markdown: RenderableDocument) {
+  func onAppear(markdown: RenderableDocument) {
     guard let listener else {
       return
     }
@@ -35,33 +35,33 @@ public final class MarkdownController: ObservableObject {
     eventSubject.send(markdown)
   }
 
-  public func onChange(markdown: RenderableDocument) {
+  func onChange(markdown: RenderableDocument) {
     eventSubject.send(markdown)
   }
 
-  public func onDisappear() {
+  func onDisappear() {
     listenerTask?.cancel()
   }
   
-  public func onTableCopyTap(content: String) {
+  func onTableCopyTap(content: String) {
     Task {
       await listener?.onTableCopyTap(content: content)
     }
   }
   
-  public func onTableDownloadTap(content: String) {
+  func onTableDownloadTap(content: String) {
     Task {
       await listener?.onTableDownloadTap(content: content)
     }
   }
 
-  public func onContextMenuAppear(id: String, selectedContent: String) {
+  func onContextMenuAppear(id: String, selectedContent: String) {
     Task {
       await listener?.onContextMenuAppear(id: id, selectedContent: selectedContent)
     }
   }
 
-  public func onContextMenuTap(id: String, selectedContent: String) {
+  func onContextMenuTap(id: String, selectedContent: String) {
     Task {
       await listener?.onContextMenuTap(id: id, selectedContent: selectedContent)
     }

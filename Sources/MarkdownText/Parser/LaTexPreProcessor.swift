@@ -12,7 +12,6 @@ protocol LaTexPreProcessor {
 }
 
 extension LaTexPreProcessor {
-  /// Convenience overload that enables every supported matching rule.
   func process(input: String) -> String {
     return process(input: input, matchingRules: MarkdownParseOption.LatexMatching.allCases)
   }

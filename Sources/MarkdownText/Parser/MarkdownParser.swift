@@ -16,6 +16,10 @@ public protocol MarkdownParser {
 
 extension MarkdownParser {
 
+  /// Convenience overload that parses `text` with all options disabled and
+  /// returns only the parsed `Document`.
+  /// - Parameter text: The incoming text
+  /// - Returns: The parsed markdown `Document` tree
   public func parse(text: String) async -> Document {
     return await parse(text: text, option: .init(speculativeRewrite: false)).document
   }

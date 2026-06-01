@@ -6,11 +6,6 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-/// Custom `NSTextAttachment` for citations with pre-decoded data.
-///
-/// Light/dark preview images are rendered once at init on the markdown parse
-/// queue, so the `image` getter (called by TextKit on the main thread) never
-/// rasterizes. Fixes the watchdog hang tracked by Sentry issue 6963759451.
 final class InlineCitationAttachment: NSTextAttachment {
   /// The decoded citation data - available immediately without JSON parsing
   private(set) var citationData: InlineAttachmentData?

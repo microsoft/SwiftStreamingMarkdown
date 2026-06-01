@@ -4,6 +4,7 @@
 
 import Markdown
 
+/// The built-in `MarkdownParser` implementation.
 public final class MarkdownParserImpl: MarkdownParser {
 
   private let rewriters: [MarkupPostParsingRewriter] = [
@@ -13,10 +14,12 @@ public final class MarkdownParserImpl: MarkdownParser {
 
   private let latexPreprocessor: LaTexPreProcessor
 
+  /// Create a new parser instance using the default LaTeX preprocessor.
   public init() {
     self.latexPreprocessor = LaTexPreProcessorImpl()
   }
 
+  /// Parse `text` into a `MarkdownParseResult`. See `MarkdownParser.parse(text:option:)`.
   public func parse(text: String, option: MarkdownParseOption) async -> MarkdownParseResult {
     let targetString = latexPreprocessor.process(input: text, matchingRules: option.latexMatchingRules)
 

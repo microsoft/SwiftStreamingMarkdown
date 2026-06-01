@@ -6,12 +6,23 @@ import UIKit
 
 /// Configuration for the edit menu that appears on text selection.
 public struct TextContextMenu: Hashable, Sendable {
+  /// Ordered groups that compose the custom portion of the menu.
   public let menuGroups: [TextContextMenuGroup]
 
+  /// Create a menu definition from the supplied groups.
   public init(menuGroups: [TextContextMenuGroup]) {
     self.menuGroups = menuGroups
   }
 
+  /// Build the `UIMenu` to present on text selection by merging the standard
+  /// system edit actions with the configured custom groups. Used by
+  /// `MarkdownViewController` and is rarely called directly by consumers.
+  /// - Parameters:
+  ///   - textView: The `UITextView` requesting the menu.
+  ///   - selectedRange: Current selection range, clamped to the text length.
+  ///   - suggestedActions: System-suggested actions from UIKit.
+  ///   - markdownController: Optional controller used to forward item taps.
+  /// - Returns: The composed `UIMenu` to display.
   public func buildUIMenu(textView: UITextView, selectedRange: NSRange, suggestedActions: [UIMenuElement], markdownController: MarkdownController?) -> UIMenu {
     var customMenu: [UIMenu] = []
 

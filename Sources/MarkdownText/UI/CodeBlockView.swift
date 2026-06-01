@@ -46,7 +46,7 @@ private actor HighlightTaskManager: ObservableObject {
   }
 }
 
-public struct CodeBlockView: View {
+struct CodeBlockView: View {
 
   let language: String
   let code: String
@@ -56,7 +56,7 @@ public struct CodeBlockView: View {
   @State var attributedString: AttributedString?
   @StateObject private var taskManager: HighlightTaskManager = HighlightTaskManager()
 
-  public init(language: String, code: String, onCodeCopied: (() -> Void)? = nil) {
+  init(language: String, code: String, onCodeCopied: (() -> Void)? = nil) {
     self.language = language
     self.code = code
     self.onCodeCopied = onCodeCopied
@@ -93,7 +93,7 @@ public struct CodeBlockView: View {
     .padding(16)
   }
 
-  public var body: some View {
+  var body: some View {
     VStack(spacing: 0) {
       HStack(alignment: .top) {
         Text(language)

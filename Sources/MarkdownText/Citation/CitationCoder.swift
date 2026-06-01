@@ -25,6 +25,8 @@ public struct CitationCoder: Hashable, Sendable {
   /// (typically a longer, more descriptive form of the title).
   public let citationA11yTextQueryParam: String
 
+  /// Create a coder with the supplied marker string and query-parameter names.
+  /// All four arguments together define the on-the-wire citation format.
   public init(
     citationMarker: String,
     citationMarkerQueryParam: String,

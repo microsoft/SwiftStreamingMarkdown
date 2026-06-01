@@ -4,7 +4,6 @@
 
 import Markdown
 
-/// Scan for a specific node matching a certain criteria in a Markdown.
 protocol MarkupScanner {
 
   associatedtype Node: Markup

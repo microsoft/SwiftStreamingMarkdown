@@ -51,7 +51,6 @@ private final class AttachmentCitationLabel: UILabel {
   }
 }
 
-/// NSTextAttachmentViewProvider for rendering citation attachments
 final class InlineCitationViewProvider: NSTextAttachmentViewProvider {
   required override init(
     textAttachment attachment: NSTextAttachment,

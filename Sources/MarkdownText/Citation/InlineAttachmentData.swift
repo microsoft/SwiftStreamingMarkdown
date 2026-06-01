@@ -5,7 +5,6 @@
 import Foundation
 import UIKit
 
-/// The type of inline attachment, used to render different visual styles
 enum AttachmentType: String, Codable {
   case citation
 }

@@ -6,25 +6,35 @@ import Foundation
 import Markdown
 import SwiftUI
 
+/// A `MarkdownRenderConfig`-aware snapshot of a parsed markdown `Document`,
+/// ready to be handed to a `MarkdownView` for rendering. Producing one is
+/// the heavyweight step; rendering it is cheap.
 public struct RenderableDocument: Equatable, Sendable {
   let renderables: [MarkdownRenderable]
 
-  public var containsCodeBlock: Bool {
+  var containsCodeBlock: Bool {
     return renderables.contains(where: { $0.isCodeBlock })
   }
 
-  public var containsBlockQuote: Bool {
+  var containsBlockQuote: Bool {
     return renderables.contains(where: { $0.isBlockQuote })
   }
 
-  public var isEmpty: Bool {
+  var isEmpty: Bool {
     return renderables.isEmpty
   }
 
+  /// Convert a parsed `Document` into a `RenderableDocument` using the supplied config.
+  /// - Parameters:
+  ///   - document: The parsed markdown tree.
+  ///   - config: Styling and behavior used during conversion.
   public init(document: Document, config: MarkdownRenderConfig) async {
     self.renderables = document.convert(with: config)
   }
 
+  /// Construct a renderable wrapping a single plain-text paragraph styled
+  /// with `config.paragraphStyle`. Useful for showing non-markdown text in a
+  /// `MarkdownView` without round-tripping through the parser.
   public init(plainText: String, config: MarkdownRenderConfig) {
     var attributes: [NSAttributedString.Key: Any] = [
       .font: config.paragraphStyle.textFonts.normal,
@@ -41,19 +51,19 @@ public struct RenderableDocument: Equatable, Sendable {
     self.renderables = renderables
   }
 
+  /// An empty document, equivalent to `RenderableDocument(plainText: "", …)`
+  /// but allocation-free.
   public static let empty = RenderableDocument(renderables: [])
 }
 
-public extension RenderableDocument {
-
+extension RenderableDocument {
   var attributedStrings: [NSAttributedString] {
     return renderables.flatMap { $0.extractAttributedStrings() }
   }
 }
 
 extension MarkdownRenderable {
-
-  public func extractAttributedStrings() -> [NSAttributedString] {
+  func extractAttributedStrings() -> [NSAttributedString] {
     switch self {
     case .paragraph(_, let str):
       return [str]
@@ -70,8 +80,7 @@ extension MarkdownRenderable {
 }
 
 extension MarkdownListItem {
-
-  public func attributedStrings() -> [NSAttributedString] {
+  func attributedStrings() -> [NSAttributedString] {
     return self.children.flatMap { $0.extractAttributedStrings() }
   }
 }

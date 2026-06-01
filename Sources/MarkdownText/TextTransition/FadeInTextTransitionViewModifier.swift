@@ -28,13 +28,13 @@ struct FadeInTextTransitionViewModifier: ViewModifier {
   }
 }
 
-public extension View {
+extension View {
   func fadeInTextTransition(config: FadeInTransitionConfig = .fixedDuration(duration: 2.0, glyphDelay: 0.02, glyphDuration: 0.2)) -> some View {
     modifier(FadeInTextTransitionViewModifier(config: config))
   }
 }
 
-public enum FadeInTransitionConfig {
+enum FadeInTransitionConfig {
   case fixedDuration(duration: TimeInterval, glyphDelay: TimeInterval, glyphDuration: TimeInterval)
   case variableDuration(glyphCount: Int, glyphDelay: TimeInterval, glyphDuration: TimeInterval)
 

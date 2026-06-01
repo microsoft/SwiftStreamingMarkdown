@@ -4,7 +4,6 @@
 
 import Markdown
 
-/// A rewriter that speculatively complete partial emphasis.
 final class PartialEmphasisRewriter: MarkupRewriter {
 
   /// The text node we are trying to rewrite

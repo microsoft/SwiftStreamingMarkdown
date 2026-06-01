@@ -6,8 +6,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-/// All typography styles used by this package.
-public enum Typography: CaseIterable, Sendable {
+enum Typography: CaseIterable, Sendable {
   case extraLargeStrong
   case extraLargeStrongItalic
   case extraLarge
@@ -41,8 +40,7 @@ public enum Typography: CaseIterable, Sendable {
   case code
   case tripleExtraSmallCustom450
 
-  /// The UIFont instance of the typography.
-  public var uiFont: UIFont {
+  var uiFont: UIFont {
     return switch self {
     case .tripleExtraSmallCustom450: Self.systemFont(size: 10.0, weight: .regular)
     case .code: Self.systemMonospacedFont(size: 15.0, weight: .regular)
@@ -93,12 +91,11 @@ public enum Typography: CaseIterable, Sendable {
     return UIFont.monospacedSystemFont(ofSize: scaledSize, weight: weight)
   }
 
-  /// The SwiftUI `Font` instance of the typography.
-  public var font: Font {
+  var font: Font {
     return Font(uiFont)
   }
 
-  public static var extraLargeTextFonts: TextFonts {
+  static var extraLargeTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.extraLarge.uiFont,
       italic: Typography.extraLargeItalic.uiFont,
@@ -109,7 +106,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var largeTextFonts: TextFonts {
+  static var largeTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.large.uiFont,
       italic: Typography.largeItalic.uiFont,
@@ -120,7 +117,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var mediumTextFonts: TextFonts {
+  static var mediumTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.medium.uiFont,
       italic: Typography.mediumItalic.uiFont,
@@ -131,7 +128,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var baseTextFonts: TextFonts {
+  static var baseTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.base.uiFont,
       italic: Typography.baseItalic.uiFont,
@@ -142,7 +139,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var smallTextFonts: TextFonts {
+  static var smallTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.small.uiFont,
       italic: Typography.smallItalic.uiFont,
@@ -153,7 +150,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var extraSmallTextFonts: TextFonts {
+  static var extraSmallTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.extraSmall.uiFont,
       italic: Typography.extraSmallItalic.uiFont,
@@ -164,7 +161,7 @@ public enum Typography: CaseIterable, Sendable {
     )
   }
 
-  public static var codeTextFonts: TextFonts {
+  static var codeTextFonts: TextFonts {
     return TextFonts(
       normal: Typography.code.uiFont,
       italic: nil,

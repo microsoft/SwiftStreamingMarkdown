@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 
 extension NSAttributedString {
-  public func splitIntoWords(withIn range: NSRange) -> [NSRange] {
+  func splitIntoWords(withIn range: NSRange) -> [NSRange] {
     var words: [NSRange] = []
     let string = self.string as NSString
 

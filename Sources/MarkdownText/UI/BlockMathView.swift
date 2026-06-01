@@ -5,18 +5,18 @@
 import iosMath
 import SwiftUI
 
-public struct BlockMathView: UIViewRepresentable {
-  public let latex: String
-  public let color: Color
-  public let pointSize: CGFloat
+struct BlockMathView: UIViewRepresentable {
+  let latex: String
+  let color: Color
+  let pointSize: CGFloat
 
-  public init(latex: String, color: Color = Color.Theme.Foreground.Primary.Primary750, pointSize: CGFloat = Typography.base.uiFont.pointSize) {
+  init(latex: String, color: Color = Color.Theme.Foreground.Primary.Primary750, pointSize: CGFloat = Typography.base.uiFont.pointSize) {
     self.latex = latex
     self.color = color
     self.pointSize = pointSize
   }
 
-  public func makeUIView(context: Context) -> MTMathUILabel {
+  func makeUIView(context: Context) -> MTMathUILabel {
     let label = MTMathUILabel()
     label.latex = latex
     label.textColor = UIColor(color)
@@ -26,12 +26,12 @@ public struct BlockMathView: UIViewRepresentable {
     return label
   }
 
-  public func updateUIView(_ uiView: MTMathUILabel, context: Context) {
+  func updateUIView(_ uiView: MTMathUILabel, context: Context) {
     uiView.textColor = UIColor(color)
     uiView.latex = latex
   }
 
-  public func sizeThatFits(_ proposal: ProposedViewSize, uiView: MTMathUILabel, context: Context) -> CGSize? {
+  func sizeThatFits(_ proposal: ProposedViewSize, uiView: MTMathUILabel, context: Context) -> CGSize? {
     uiView.sizeToFit()
     let size = uiView.bounds.size
     // It's a known issue that MTMathUILabel may be cut off for some short statement. Manually add 1 to the height fix it.

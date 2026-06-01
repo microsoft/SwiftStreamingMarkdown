@@ -5,14 +5,25 @@ import Foundation
 import UIKit
 import SwiftUI
 
+/// A bundle of font variants (normal/italic/bold/boldItalic) plus optional
+/// preferred letter and line spacing values, used by `MarkdownRenderConfig`
+/// to style a run of text.
 public struct TextFonts: Hashable, Sendable {
+  /// Regular variant. Always required.
   public let normal: UIFont
+  /// Italic variant, or `nil` to fall back to `normal` for emphasis.
   public let italic: UIFont?
+  /// Bold variant, or `nil` to fall back to `normal` for strong runs.
   public let bold: UIFont?
+  /// Bold-italic variant, or `nil` to fall back to `bold` then `italic`.
   public let boldItalic: UIFont?
+  /// Optional kerning override applied via `NSAttributedString.Key.kern`.
   public let preferredLetterSpacing: CGFloat?
+  /// Optional preferred line height in points. When greater than the font's
+  /// natural line height, the renderer adds the difference as line spacing.
   public let preferredLineHeight: CGFloat?
 
+  /// Create a font set with explicit variants and optional spacing overrides.
   public init(normal: UIFont, italic: UIFont?, bold: UIFont?, boldItalic: UIFont?, preferredLetterSpacing: CGFloat?, preferredLineHeight: CGFloat?) {
     self.normal = normal
     self.italic = italic
@@ -24,15 +35,15 @@ public struct TextFonts: Hashable, Sendable {
 }
 
 extension TextFonts {
-  
-  public func italicize(font: UIFont) -> UIFont? {
+
+  func italicize(font: UIFont) -> UIFont? {
     if font == bold || font == boldItalic {
       return self.boldItalic
     }
     return self.italic
   }
-  
-  public func bold(font: UIFont) -> UIFont? {
+
+  func bold(font: UIFont) -> UIFont? {
     if font == italic || font == boldItalic {
       return self.boldItalic
     }
@@ -43,10 +54,7 @@ extension TextFonts {
 
 extension View {
 
-  /// Set both the font and the preferred line height if different from the font's line height.
-  /// - Parameter font: The font
-  /// - Returns: The modified view
-  public func font(_ font: TextFonts, bold: Bool = false, italic: Bool = false) -> some View {
+  func font(_ font: TextFonts, bold: Bool = false, italic: Bool = false) -> some View {
     let fontToUse: UIFont?
     if bold && italic {
       fontToUse = font.boldItalic

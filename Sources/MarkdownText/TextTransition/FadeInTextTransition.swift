@@ -5,9 +5,9 @@
 import SwiftUI
 
 @available(iOS 18.0, *)
-public struct VariableDurationFadeInTextTransition: Transition {
+struct VariableDurationFadeInTextTransition: Transition {
 
-  public static var properties: TransitionProperties {
+  static var properties: TransitionProperties {
     TransitionProperties(hasMotion: true)
   }
 
@@ -17,14 +17,14 @@ public struct VariableDurationFadeInTextTransition: Transition {
 
   let totalDuration: TimeInterval
 
-  public init(totalGlyphs: Int, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
+  init(totalGlyphs: Int, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
     self.totalGlyphs = totalGlyphs
     self.glyphDelay = glyphDelay
     self.glyphDuration = glyphDuration
     self.totalDuration = max(0, Double(totalGlyphs - 1) * glyphDelay) + glyphDuration
   }
 
-  public func body(content: Content, phase: TransitionPhase) -> some View {
+  func body(content: Content, phase: TransitionPhase) -> some View {
     let renderer = VariableDurationFadeInTextRenderer(elapsedTime: phase.isIdentity ? self.totalDuration : 0, glyphCount: totalGlyphs, glyphDelay: glyphDelay, glyphDuration: glyphDuration)
     content.transaction { transaction in
       if !transaction.disablesAnimations {
@@ -37,8 +37,8 @@ public struct VariableDurationFadeInTextTransition: Transition {
 }
 
 @available(iOS 18.0, *)
-public struct FixedDurationFadeInTextTransition: Transition {
-  public static var properties: TransitionProperties {
+struct FixedDurationFadeInTextTransition: Transition {
+  static var properties: TransitionProperties {
     TransitionProperties(hasMotion: true)
   }
 
@@ -46,13 +46,13 @@ public struct FixedDurationFadeInTextTransition: Transition {
   let glyphDelay: TimeInterval
   let glyphDuration: TimeInterval
 
-  public init(duration: TimeInterval, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
+  init(duration: TimeInterval, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
     self.totalDuration = duration
     self.glyphDelay = glyphDelay
     self.glyphDuration = glyphDuration
   }
 
-  public func body(content: Content, phase: TransitionPhase) -> some View {
+  func body(content: Content, phase: TransitionPhase) -> some View {
     let renderer = FixedDurationFadeInTextRenderer(
       elapsedTime: phase.isIdentity ? self.totalDuration : 0,
       duration: self.totalDuration,

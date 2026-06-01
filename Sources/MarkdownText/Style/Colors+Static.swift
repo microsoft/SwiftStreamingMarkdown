@@ -7,9 +7,9 @@
 import SwiftUI
 
 extension Color {
-  public enum Static {
-    public enum Stone {
-      public static let Stone350 = Color("Colors/Copilot/Static/Stone/350", bundle: .module)
+  enum Static {
+    enum Stone {
+      static let Stone350 = Color("Colors/Copilot/Static/Stone/350", bundle: .module)
     }
   }
 }

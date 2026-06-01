@@ -6,7 +6,7 @@ import Foundation
 import Markdown
 
 extension ListItem {
-  public var startsWithBold: Bool {
+  var startsWithBold: Bool {
     return child(at: 0) is Paragraph && child(at: 0)?.child(at: 0) is Strong
   }
 }
