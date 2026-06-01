@@ -10,5 +10,5 @@
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes are reflected in `docs/dependency-inventory.md` and `NOTICE`.
+- [ ] Third-party dependency changes are reflected in `NOTICE`.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.

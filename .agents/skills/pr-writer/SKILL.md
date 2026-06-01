@@ -108,7 +108,7 @@ The repo template (`.github/pull_request_template.md`) has three sections plus a
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes are reflected in `docs/dependency-inventory.md` and `NOTICE`.
+- [ ] Third-party dependency changes are reflected in `NOTICE`.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ```
 
@@ -171,7 +171,7 @@ Closes #42
 
 - [x] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [x] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [x] Third-party dependency changes are reflected in `docs/dependency-inventory.md` and `NOTICE`. (no dependency changes)
+- [x] Third-party dependency changes are reflected in `NOTICE`. (no dependency changes)
 - [x] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ```
 
@@ -201,7 +201,7 @@ Return two parts:
 
 - [ ] No secrets, internal URLs, private identifiers, or product-only service names were added.
 - [ ] Public docs, fixtures, or notices were updated if behavior or dependencies changed.
-- [ ] Third-party dependency changes are reflected in `docs/dependency-inventory.md` and `NOTICE`.
+- [ ] Third-party dependency changes are reflected in `NOTICE`.
 - [ ] Streaming/incomplete markdown behavior remains covered by fixtures or tests.
 ````
 

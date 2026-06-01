@@ -182,5 +182,4 @@ Please follow the responsible-disclosure process described in
 ## License
 
 SwiftStreamingMarkdown is released under the [MIT License](LICENSE). Bundled
-third-party software and their licenses are listed in [NOTICE](NOTICE) and
-[`docs/dependency-inventory.md`](docs/dependency-inventory.md).
+third-party software and their licenses are listed in [NOTICE](NOTICE).

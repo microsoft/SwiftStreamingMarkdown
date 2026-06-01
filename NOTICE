@@ -9,49 +9,57 @@ Third-Party Software
 ================================================================================
 
 This product includes third-party software components subject to the licenses
-listed below. Source for these components is available at the URLs noted.
-
-For a per-dependency summary (purpose, version, license, upstream URL), see
-`docs/dependency-inventory.md`.
+listed below. Source for these components is available at the URLs noted. All
+shipped dependencies are MIT- or Apache-2.0-licensed and compatible with this
+project's MIT license; the Apache-2.0 components require attribution only,
+which is captured here.
 
 --------------------------------------------------------------------------------
 AsyncExtensions
 https://github.com/sideeffect-io/AsyncExtensions
 Copyright (c) 2022 AsyncCommunity
 Licensed under the MIT License.
+Purpose: Structured-concurrency helpers used by the streaming parser.
 
 --------------------------------------------------------------------------------
 equatable (Equatable macro)
 https://github.com/ordo-one/equatable
 Copyright (c) Ordo One AB.
 Licensed under the Apache License, Version 2.0.
+Purpose: Compile-time `Equatable` synthesis for SwiftUI view structs to avoid
+hand-rolled `==` implementations.
 
 --------------------------------------------------------------------------------
 HighlightSwift
 https://github.com/appstefan/highlightswift
 Copyright (c) 2023 Stefan Britton
 Licensed under the MIT License.
+Purpose: Syntax highlighting for fenced code blocks.
 
 --------------------------------------------------------------------------------
 iosMath
 https://github.com/maitbayev/iosMath
 Copyright (c) 2013 MathChat
 Licensed under the MIT License.
+Purpose: LaTeX math rendering for `$...$` and `$$...$$` blocks.
 
 --------------------------------------------------------------------------------
 SVGView
 https://github.com/exyte/SVGView
 Copyright (c) 2020 exyte
 Licensed under the MIT License.
+Purpose: Renders inline SVG attachments in rendered markdown.
 
 --------------------------------------------------------------------------------
 swift-markdown
 https://github.com/swiftlang/swift-markdown
 Copyright (c) Apple Inc. and the Swift project authors.
 Licensed under the Apache License, Version 2.0.
+Purpose: CommonMark parsing primitives the package builds on.
 
 --------------------------------------------------------------------------------
 swift-snapshot-testing  (test-only dependency)
 https://github.com/pointfreeco/swift-snapshot-testing
 Copyright (c) 2019 Point-Free, Inc.
 Licensed under the MIT License.
+Purpose: Snapshot tests for the UIKit/SwiftUI rendering pipeline.
