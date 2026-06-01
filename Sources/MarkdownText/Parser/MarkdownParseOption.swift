@@ -10,7 +10,7 @@ public struct MarkdownParseOption {
   /// Specify how to parse latex
   public let latexMatchingRules: [LatexMatching]
 
-  public init(speculativeRewrite: Bool, latexMatchingRules: [LatexMatching] = [.inlineSlashBracket, .blockDollar, .blockSlashBracket]) {
+  public init(speculativeRewrite: Bool, latexMatchingRules: [LatexMatching] = LatexMatching.allCases) {
     self.speculativeRewrite = speculativeRewrite
     self.latexMatchingRules = latexMatchingRules
   }
