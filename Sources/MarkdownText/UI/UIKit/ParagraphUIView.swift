@@ -334,15 +334,13 @@ class ParagraphUIView: UITextView {
         animatedAlpha = easedProgress
       }
 
-      // Apply alpha to this animation's range, preserving existing foreground color
-      // Set a default color in case no color is found in the attributes
-      let defaultColor = UIColor(Color.Theme.Foreground.Primary.Primary750).withAlphaComponent(animatedAlpha)
-      textStorage.addAttribute(.foregroundColor, value: defaultColor, range: animation.range)
+      // Apply alpha to this animation's range, preserving each span's
+      // existing foreground color. Spans with no foreground color get a
+      // sensible default so they still fade in instead of disappearing.
+      let defaultColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
       textStorage.enumerateAttribute(.foregroundColor, in: animation.range, options: []) { value, range, _ in
-        if let existingColor = value as? UIColor {
-          let newColor = existingColor.withAlphaComponent(animatedAlpha)
-          textStorage.addAttribute(.foregroundColor, value: newColor, range: range)
-        }
+        let baseColor = (value as? UIColor) ?? defaultColor
+        textStorage.addAttribute(.foregroundColor, value: baseColor.withAlphaComponent(animatedAlpha), range: range)
       }
     }
   }
