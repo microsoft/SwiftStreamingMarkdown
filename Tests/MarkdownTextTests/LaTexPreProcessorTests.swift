@@ -274,4 +274,40 @@ final class LaTexPreProcessorTests: XCTestCase {
     """
     XCTAssertEqual(expected, processed)
   }
+
+  // MARK: - Matching-rule gating
+
+  func testBlockDollarDisabledLeavesDollarsAsPlainText() {
+    let input = """
+    The price is $$5 and the total is $$10.
+    $$a = b + c$$
+    """
+    let processed = preprocessor.process(
+      input: input,
+      matchingRules: [.inlineSlashBracket, .blockSlashBracket]
+    )
+    XCTAssertEqual(processed, input)
+  }
+
+  func testBlockDollarDisabledStillProcessesOtherRules() {
+    let input = """
+    $$a = b + c$$
+    \\[
+    x = y + z
+    \\]
+    Inline \\(p + q\\) here.
+    """
+    let expected = """
+    $$a = b + c$$
+    ```blockmath
+    x = y + z
+    ```
+    Inline `\\(p + q\\)` here.
+    """
+    let processed = preprocessor.process(
+      input: input,
+      matchingRules: [.inlineSlashBracket, .blockSlashBracket]
+    )
+    XCTAssertEqual(processed, expected)
+  }
 }
