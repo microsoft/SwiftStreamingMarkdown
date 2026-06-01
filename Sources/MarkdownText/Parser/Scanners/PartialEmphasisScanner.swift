@@ -4,11 +4,11 @@
 
 import Markdown
 
-public final class PartialEmphasisScanner: MarkupScanner {
+final class PartialEmphasisScanner: MarkupScanner {
 
-  public init() {}
+  init() {}
 
-  public func scan(document: Document) -> Text? {
+  func scan(document: Document) -> Text? {
     let result = document.rightMostDescendant
     if let textNode = result as? Text {
       return textNode

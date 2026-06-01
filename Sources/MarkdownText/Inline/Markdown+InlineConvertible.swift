@@ -186,9 +186,7 @@ extension Markdown.Table.Cell: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     self.inlineConvertibleChildren.forEach { convertible in
-      str.append(convertible.convert(attributeContainer: attributeContainer, config: config)
-        .removingAllOccurrences(of: MarkdownConstants.openingInlineLatexMarker)
-        .removingAllOccurrences(of: MarkdownConstants.closingInlineLatexMarker))
+      str.append(convertible.convert(attributeContainer: attributeContainer, config: config))
     }
     return str
   }

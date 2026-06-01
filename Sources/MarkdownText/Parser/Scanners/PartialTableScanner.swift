@@ -5,11 +5,11 @@
 import Markdown
 
 // swiftlint:disable unused_optional_binding
-public final class PartialTableScanner: MarkupScanner {
+final class PartialTableScanner: MarkupScanner {
 
-  public init() {}
+  init() {}
 
-  public func scan(document: Document) -> Paragraph? {
+  func scan(document: Document) -> Paragraph? {
     var result: Markup = document
     while result.childCount > 0 {
       if let rightMostChild = result.child(at: result.childCount - 1) {

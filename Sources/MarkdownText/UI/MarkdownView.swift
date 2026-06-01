@@ -39,7 +39,7 @@ public struct MarkdownView: View {
   }
 }
 
-public final class MarkdownViewController: ObservableObject {
+final class MarkdownViewController: ObservableObject {
 
   @Published var renderable: RenderableDocument?
 
@@ -48,7 +48,7 @@ public final class MarkdownViewController: ObservableObject {
   
   let listener: MarkdownListener?
 
-  public init(config: MarkdownRenderConfig = .default, listener: MarkdownListener? = nil) {
+  init(config: MarkdownRenderConfig = .default, listener: MarkdownListener? = nil) {
     self.config = config
     self.listener = listener
   }

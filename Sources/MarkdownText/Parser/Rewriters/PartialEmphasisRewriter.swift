@@ -5,7 +5,7 @@
 import Markdown
 
 /// A rewriter that speculatively complete partial emphasis.
-public final class PartialEmphasisRewriter: MarkupRewriter {
+final class PartialEmphasisRewriter: MarkupRewriter {
 
   /// The text node we are trying to rewrite
   private let targetNode: Text
@@ -18,19 +18,19 @@ public final class PartialEmphasisRewriter: MarkupRewriter {
     return try? Regex("(?:\\*|_).*$")
   }()
 
-  public init(targetNode: Text) {
+  init(targetNode: Text) {
     self.targetNode = targetNode
   }
 
-  public func visitTableCell(_ tableCell: Table.Cell) -> Markup? {
+  func visitTableCell(_ tableCell: Table.Cell) -> Markup? {
     return rewriteIfNeeded(inlineContainer: tableCell) ?? tableCell
   }
 
-  public func visitParagraph(_ paragraph: Paragraph) -> Markup? {
+  func visitParagraph(_ paragraph: Paragraph) -> Markup? {
     return rewriteIfNeeded(inlineContainer: paragraph) ?? paragraph
   }
 
-  public func visitHeading(_ heading: Heading) -> Markup? {
+  func visitHeading(_ heading: Heading) -> Markup? {
     return rewriteIfNeeded(inlineContainer: heading) ?? heading
   }
 

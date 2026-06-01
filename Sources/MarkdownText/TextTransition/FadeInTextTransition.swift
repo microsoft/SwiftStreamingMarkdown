@@ -71,11 +71,11 @@ public struct FixedDurationFadeInTextTransition: Transition {
 }
 
 @available(iOS 18.0, *)
-public struct VariableDurationFadeInTextRenderer: TextRenderer, Animatable {
+struct VariableDurationFadeInTextRenderer: TextRenderer, Animatable {
 
   var elapsedTime: TimeInterval
 
-  public var animatableData: Double {
+  var animatableData: Double {
     get { elapsedTime }
     set { elapsedTime = newValue }
   }
@@ -84,14 +84,14 @@ public struct VariableDurationFadeInTextRenderer: TextRenderer, Animatable {
   let glyphDelay: TimeInterval
   let glyphDuration: TimeInterval
 
-  public init(elapsedTime: TimeInterval, glyphCount: Int, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
+  init(elapsedTime: TimeInterval, glyphCount: Int, glyphDelay: TimeInterval, glyphDuration: TimeInterval) {
     self.elapsedTime = elapsedTime
     self.glyphCount = glyphCount
     self.glyphDelay = glyphDelay
     self.glyphDuration = glyphDuration
   }
 
-  public func draw(layout: Text.Layout, in ctx: inout GraphicsContext) {
+  func draw(layout: Text.Layout, in ctx: inout GraphicsContext) {
     for (index, slice) in layout.flattenedRunSlices.enumerated() {
       let normalizedX = min(max(0, elapsedTime - Double(index) * glyphDelay) / glyphDuration, 1)
       ctx.opacity = UnitCurve.easeOut.value(at: normalizedX)
@@ -101,7 +101,7 @@ public struct VariableDurationFadeInTextRenderer: TextRenderer, Animatable {
 }
 
 @available(iOS 18.0, *)
-public struct FixedDurationFadeInTextRenderer: TextRenderer, Animatable {
+struct FixedDurationFadeInTextRenderer: TextRenderer, Animatable {
   var elapsedTime: TimeInterval
 
   let duration: TimeInterval
@@ -113,19 +113,19 @@ public struct FixedDurationFadeInTextRenderer: TextRenderer, Animatable {
     return UnitCurve.easeOut.value(at: normalizedX)
   }
 
-  public var animatableData: Double {
+  var animatableData: Double {
     get { elapsedTime }
     set { elapsedTime = newValue }
   }
 
-  public init(elapsedTime: TimeInterval, duration: TimeInterval, delay: TimeInterval, animationDuration: TimeInterval) {
+  init(elapsedTime: TimeInterval, duration: TimeInterval, delay: TimeInterval, animationDuration: TimeInterval) {
     self.elapsedTime = elapsedTime
     self.duration = duration
     self.delay = delay
     self.animationDuration = animationDuration
   }
 
-  public func draw(layout: Text.Layout, in context: inout GraphicsContext) {
+  func draw(layout: Text.Layout, in context: inout GraphicsContext) {
     let numberOfGlyphs = layout.flattenedRunSlices.count
     guard numberOfGlyphs > 0 else {
       return
