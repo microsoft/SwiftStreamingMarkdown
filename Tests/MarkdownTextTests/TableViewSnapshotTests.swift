@@ -22,7 +22,7 @@ final class TableViewSnapshotTests: SnapshotTestCase {
   private func createCitationAttachment(url: String, text: String) -> InlineCitationAttachment {
     // Create a proper citation URL with query parameters following the existing pattern
     let baseURL = "http://example.com"
-    let citationURL = "\(baseURL)?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=\(text)&citationFullTitle=\(text)"
+    let citationURL = "\(baseURL)?citationMarker=9F742443&citationTitle=\(text)&citationFullTitle=\(text)"
 
     guard let citationData = CitationCoder.default.decode(linkDestination: citationURL),
           let attachment = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {

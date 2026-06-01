@@ -83,7 +83,7 @@ public struct CitationCoder: Hashable, Sendable {
 extension CitationCoder {
   /// Default coder using the historical query-param names and marker UUID.
   public static let `default` = CitationCoder(
-    citationMarker: "9F742443-6C92-4C44-BF58-8F5A7C53B6F1",
+    citationMarker: "9F742443",
     citationMarkerQueryParam: "citationMarker",
     citationTextQueryParam: "citationTitle",
     citationA11yTextQueryParam: "citationFullTitle"

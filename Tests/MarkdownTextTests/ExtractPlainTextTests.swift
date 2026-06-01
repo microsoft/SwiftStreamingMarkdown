@@ -39,19 +39,19 @@ final class ExtractPlainTextTests: XCTestCase {
   // MARK: - Citation Tests
 
   func testExtractPlainTextFromRegularCitation() async {
-    let markdown = "[Microsoft](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1)"
+    let markdown = "[Microsoft](http://example.com?citationMarker=9F742443)"
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "Microsoft", "Regular citations should show the link text")
   }
 
   func testExtractPlainTextFromAttachmentCitation() async {
-    let markdown = "[9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Microsoft&citationFullTitle=Microsoft)"
+    let markdown = "[9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft)"
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "Microsoft", "Attachment citations should extract title from URL parameters, not show UUID")
   }
 
   func testExtractPlainTextFromMultipleCitations() async {
-    let markdown = "Check [Microsoft](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1) and [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Google&citationFullTitle=Google)"
+    let markdown = "Check [Microsoft](http://example.com?citationMarker=9F742443) and [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationFullTitle=Google)"
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "Check Microsoft and Google", "Should handle both old and new citation formats")
   }
@@ -60,7 +60,7 @@ final class ExtractPlainTextTests: XCTestCase {
 
   func testExtractPlainTextFromBlockQuoteWithRegularCitation() async {
     let markdown = """
-    > This quote contains [Microsoft](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1)
+    > This quote contains [Microsoft](http://example.com?citationMarker=9F742443)
     """
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "This quote contains Microsoft", "BlockQuote should show citation text, not UUID")
@@ -68,7 +68,7 @@ final class ExtractPlainTextTests: XCTestCase {
 
   func testExtractPlainTextFromBlockQuoteWithAttachmentCitation() async {
     let markdown = """
-    > This quote contains [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Microsoft&citationFullTitle=Microsoft)
+    > This quote contains [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft)
     """
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "This quote contains Microsoft", "BlockQuote with attachment citation should extract title from URL, not show UUID")
@@ -76,12 +76,12 @@ final class ExtractPlainTextTests: XCTestCase {
 
   func testExtractPlainTextFromNestedBlockQuoteWithCitations() async {
     let markdown = """
-    > Level 1 with [Microsoft](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1)
-    > > Level 2 with [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](http://example.com?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationTitle=Google&citationFullTitle=Google)
+    > Level 1 with [Microsoft](http://example.com?citationMarker=9F742443)
+    > > Level 2 with [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationFullTitle=Google)
     """
     let result = await markdown.markdownToPlainText()
     XCTAssertTrue(result.contains("Microsoft"), "Nested BlockQuote should handle regular citations")
     XCTAssertTrue(result.contains("Google"), "Nested BlockQuote should handle attachment citations")
-    XCTAssertFalse(result.contains("9F742443-6C92-4C44-BF58-8F5A7C53B6F1"), "Should not show UUID in plain text")
+    XCTAssertFalse(result.contains("9F742443"), "Should not show UUID in plain text")
   }
 }

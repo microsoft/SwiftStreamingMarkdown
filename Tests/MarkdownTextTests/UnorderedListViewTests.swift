@@ -41,7 +41,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
 
   @MainActor
   func testUnorderedListViewWithCitations() async throws {
-    let citationMarker = "9F742443-6C92-4C44-BF58-8F5A7C53B6F1"
+    let citationMarker = "9F742443"
     let paragraphs = [
       "item 1",
       "Item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationFullTitle=ESPN%20Sports)",
