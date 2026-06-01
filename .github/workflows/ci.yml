@@ -10,6 +10,25 @@ permissions:
   contents: read
 
 jobs:
+  swiftlint:
+    name: SwiftLint
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install SwiftLint if missing
+        run: |
+          if ! command -v swiftlint >/dev/null 2>&1; then
+            echo "SwiftLint not found, installing via Homebrew..."
+            brew install swiftlint
+          fi
+          swiftlint version
+
+      - name: Run SwiftLint
+        run: swiftlint --strict
+
   spm-unit-tests:
     name: SPM Unit Tests
     runs-on: macos-26
@@ -17,9 +36,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Run SwiftLint
-        run: swiftlint --strict
 
       - name: Run package tests with xcodebuild
         run: |
