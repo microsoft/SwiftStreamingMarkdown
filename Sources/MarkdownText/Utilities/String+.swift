@@ -7,21 +7,6 @@ import Markdown
 
 extension String {
 
-  public func withoutCitationLinks() async -> String {
-    // Identify all link markdown that have URLs that contain "citationMarker" as a query param name (plus surrounding whitespace)
-    // The pattern matches markdown links [text](url) where the URL contains "citationMarker".
-    // Since parentheses in citation titles are now percent-encoded as %28 and %29,
-    // we use a non-greedy match that stops at the first unmatched closing parenthesis.
-    let citationLinkPattern = #"(\s*)\[[^\]]*\]\([^)]*citationMarker[^)]*\)(\s*)"#
-    if let citationRegex = try? NSRegularExpression(pattern: citationLinkPattern, options: []) {
-      let range = NSRange(self.startIndex..<self.endIndex, in: self)
-      let withoutCitationLinks = citationRegex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
-      return withoutCitationLinks
-    } else {
-      return self
-    }
-  }
-
   public func markdownToPlainText(removeHeading: Bool = false, coder: CitationCoder = .default) async -> String {
     let markdownParser = MarkdownParserImpl()
     let document = await markdownParser.parse(text: self)
