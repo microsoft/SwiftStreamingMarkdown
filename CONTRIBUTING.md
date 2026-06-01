@@ -20,6 +20,36 @@ Please do not file security vulnerabilities as public issues. See
 - Xcode 16 or later (Swift 5.9 toolchain)
 - An iOS 16+ simulator (CI uses iPhone 17 on iOS 26.4.1, but any iOS 16+
   simulator works locally)
+- [SwiftLint](https://github.com/realm/SwiftLint) for enforcing the project's
+  Swift style. Install with Homebrew:
+
+  ```bash
+  brew install swiftlint
+  ```
+
+  Run it from the repository root before opening a PR:
+
+  ```bash
+  swiftlint
+  ```
+
+- [`diff-image`](https://github.com/ewanmellor/git-diff-image) for inspecting
+  snapshot-test PNG diffs in `git diff`. The tool wraps ImageMagick, so install
+  ImageMagick first, then clone and install `diff-image`:
+
+  ```bash
+  brew install imagemagick
+  git clone https://github.com/ewanmellor/git-diff-image.git
+  cd git-diff-image && make install
+  ```
+
+  Enable it as a git diff driver for this repository so PNG snapshots render
+  side-by-side image diffs instead of binary `Binary files ... differ` lines:
+
+  ```bash
+  git config diff.image.command 'diff-image'
+  echo '*.png diff=image' >> .git/info/attributes
+  ```
 
 ## Repository layout
 
@@ -76,8 +106,14 @@ the generated PNGs in `Tests/MarkdownTextTests/__Snapshots__/` alongside your
 code change. Keep the reference simulator the same as CI (`iPhone 17` on iOS
 26.4.1) to avoid spurious diffs.
 
+When a snapshot test fails, review the regenerated PNG with `diff-image` (see
+[Requirements](#requirements)) — `git diff Tests/MarkdownTextTests/__Snapshots__/`
+will render a side-by-side visual diff instead of the default binary marker.
+
 ## Coding conventions
 
+- **Linting**: run `swiftlint` from the repository root before opening a PR
+  and resolve any warnings introduced by your change.
 - **Indentation**: two spaces, no tabs.
 - **Access control**: prefer `internal` (the default). Only mark a symbol
   `public` if it must cross the module boundary. When in doubt, leave it
