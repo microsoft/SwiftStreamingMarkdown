@@ -1,0 +1,57 @@
+SwiftStreamingMarkdown
+Copyright (c) Microsoft Corporation.
+
+This product is licensed under the MIT License. See the LICENSE file in the
+root of this repository for full license text.
+
+================================================================================
+Third-Party Software
+================================================================================
+
+This product includes third-party software components subject to the licenses
+listed below. Source for these components is available at the URLs noted.
+
+For a per-dependency summary (purpose, version, license, upstream URL), see
+`docs/dependency-inventory.md`.
+
+--------------------------------------------------------------------------------
+AsyncExtensions
+https://github.com/sideeffect-io/AsyncExtensions
+Copyright (c) 2022 AsyncCommunity
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+equatable (Equatable macro)
+https://github.com/ordo-one/equatable
+Copyright (c) Ordo One AB.
+Licensed under the Apache License, Version 2.0.
+
+--------------------------------------------------------------------------------
+HighlightSwift
+https://github.com/appstefan/highlightswift
+Copyright (c) 2023 Stefan Britton
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+iosMath
+https://github.com/maitbayev/iosMath
+Copyright (c) 2013 MathChat
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+SVGView
+https://github.com/exyte/SVGView
+Copyright (c) 2020 exyte
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+swift-markdown
+https://github.com/swiftlang/swift-markdown
+Copyright (c) Apple Inc. and the Swift project authors.
+Licensed under the Apache License, Version 2.0.
+
+--------------------------------------------------------------------------------
+swift-snapshot-testing  (test-only dependency)
+https://github.com/pointfreeco/swift-snapshot-testing
+Copyright (c) 2019 Point-Free, Inc.
+Licensed under the MIT License.
