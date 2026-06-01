@@ -42,13 +42,13 @@ public final class MarkdownController: ObservableObject {
   func onDisappear() {
     listenerTask?.cancel()
   }
-  
+
   func onTableCopyTap(content: String) {
     Task {
       await listener?.onTableCopyTap(content: content)
     }
   }
-  
+
   func onTableDownloadTap(content: String) {
     Task {
       await listener?.onTableDownloadTap(content: content)

@@ -7,7 +7,7 @@ public struct MarkdownParseOption {
   /// Whether to speculative rewrite the markdown if it is considered as incomplete
   /// Such as a string ends with a partial table or partial emphasis
   public let speculativeRewrite: Bool
-  
+
   /// Specify how to parse latex
   public let latexMatchingRules: [LatexMatching]
 

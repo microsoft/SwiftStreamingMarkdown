@@ -39,7 +39,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .robotoTheme: "roboto"
     }
   }
-  
+
   var customContextMenu: TextContextMenu? {
     switch self {
     case .multiParagraph:

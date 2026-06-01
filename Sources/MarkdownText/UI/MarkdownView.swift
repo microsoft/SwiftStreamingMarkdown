@@ -50,7 +50,7 @@ final class MarkdownViewController: ObservableObject {
 
   private let config: MarkdownRenderConfig
   private let parser = MarkdownParserImpl()
-  
+
   let listener: MarkdownListener?
 
   init(config: MarkdownRenderConfig = .default, listener: MarkdownListener? = nil) {

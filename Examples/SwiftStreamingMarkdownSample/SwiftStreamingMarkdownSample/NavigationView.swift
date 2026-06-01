@@ -16,7 +16,7 @@ struct NavigationView: View {
         if isLoading {
           VStack(spacing: 12) {
             ProgressView()
-            Text("Loading demonstrations...")
+            Text(verbatim: "Loading demonstrations...")
               .font(.subheadline)
               .foregroundStyle(.secondary)
           }

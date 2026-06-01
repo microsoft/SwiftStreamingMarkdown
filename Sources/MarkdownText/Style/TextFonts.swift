@@ -51,7 +51,6 @@ extension TextFonts {
   }
 }
 
-
 extension View {
 
   func font(_ font: TextFonts, bold: Bool = false, italic: Bool = false) -> some View {

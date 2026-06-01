@@ -12,9 +12,6 @@ import UIKit
 @Suite("ParagraphView Tests")
 struct ParagraphViewTests {
 
-  init() {
-  }
-
   // MARK: - Helper Methods
 
   /// Create a simple attributed string with a citation attachment

@@ -32,7 +32,7 @@ final class MarkdownParserTests: XCTestCase {
     XCTAssertEqual(parsed.document.child(at: 1)?.childCount, 2)
   }
 
-  //TODO: This does crash
+  // TODO: This does crash
   func skip_testTableWithExtraPipesInCellDoesNotCrash() async {
     let text = """
     | Jenis Kelamin | Jenis Tas     | Tally       | Jumlah |

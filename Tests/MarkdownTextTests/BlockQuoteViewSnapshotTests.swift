@@ -15,10 +15,6 @@ enum TestStrings {
 
 final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
-  override func setUp() {
-    super.setUp()
-  }
-
   func test_l0_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
       .text(TestStrings.l0)

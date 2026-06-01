@@ -9,10 +9,6 @@ import XCTest
 
 final class UnorderedListViewTests: SnapshotTestCase {
 
-  override func setUp() {
-    super.setUp()
-  }
-
   @MainActor
   func testUnorderedListView() async throws {
     let paragraphs = ["item 1", "item 2", "item 3, this is a very long item with a lot of texts. it may create a multi-line paragraph."]

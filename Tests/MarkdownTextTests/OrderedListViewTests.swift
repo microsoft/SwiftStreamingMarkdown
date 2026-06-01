@@ -9,10 +9,6 @@ import XCTest
 
 final class OrderedListViewTests: SnapshotTestCase {
 
-  override func setUp() {
-    super.setUp()
-  }
-
   // [Auto-disabled] Real test failure detected by CI pipeline
   @MainActor
   func skip_testOrderedListView() async throws {

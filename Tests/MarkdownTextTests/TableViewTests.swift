@@ -8,10 +8,6 @@ import XCTest
 
 final class TableViewTests: SnapshotTestCase {
 
-  override func setUp() {
-    super.setUp()
-  }
-
   // MARK: - Tests
 
   // [Auto-disabled] Real test failure detected by CI pipeline

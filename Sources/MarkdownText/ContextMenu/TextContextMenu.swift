@@ -59,4 +59,3 @@ public struct TextContextMenu: Hashable, Sendable {
     return UIMenu(children: filteredSuggestedActions + customMenu)
   }
 }
-

@@ -19,7 +19,7 @@ extension Markdown.Emphasis: InlineConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
     let str = NSMutableAttributedString()
     var newContainer = attributeContainer
-        
+
     if let currentTextFonts = attributeContainer[.typography] as? TextFonts {
       let currentFont = attributeContainer[.font] as? UIFont
       newContainer[.font] = currentFont.map { currentTextFonts.italicize(font: $0) } ?? currentTextFonts.italic

@@ -13,10 +13,6 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
 
   let parser: MarkdownParser = MarkdownParserImpl()
 
-  override func setUp() {
-    super.setUp()
-  }
-
   func testMarkdownLists_uikit() async throws {
     let text = """
      I found some resources that can help you compare gyms in your neighborhood. Here's a brief overview:

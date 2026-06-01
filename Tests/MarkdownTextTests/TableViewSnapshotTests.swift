@@ -12,10 +12,6 @@ import XCTest
 @MainActor
 final class TableViewSnapshotTests: SnapshotTestCase {
 
-  override func setUp() {
-    super.setUp()
-  }
-
   // MARK: - Helper Methods
 
   /// Create a citation attachment with pre-decoded data

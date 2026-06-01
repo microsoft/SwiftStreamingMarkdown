@@ -1,0 +1,150 @@
+# SwiftLint configuration for SwiftStreamingMarkdown.
+# Adapted from the upstream microsoft/app-ios .swiftlint.yml; rules that
+# depend on app-ios-only types (ViewModelWithModals, presentationCornerRadiusIfAvailable,
+# ImageResource code-generation) are intentionally omitted here.
+disabled_rules:
+  - todo
+  - line_length
+  - nesting
+  - cyclomatic_complexity
+  - non_optional_string_data_conversion
+  - type_body_length
+  - blanket_disable_command
+  - superfluous_disable_command
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - force_try
+
+analyzer_rules:
+  - explicit_self
+
+included:
+  - Sources
+  - Tests
+  - Examples
+excluded:
+  - "**/.build/**"
+  - "**/.swiftpm/**"
+  - "**/Generated/**"
+  - "**/*.xcassets"
+  - "**/*.bundle"
+
+allow_zero_lintable_files: false
+strict: true
+
+force_cast:
+  severity: error
+force_try:
+  severity: error
+function_body_length: 200
+
+file_length:
+  - 900 # error
+
+type_name:
+  min_length: 3 # error
+  max_length: 50 # error
+  excluded: iPhone
+  allowed_symbols: ["_"]
+
+identifier_name:
+  min_length: 1 # error
+
+reporter: emoji
+
+force_unwrapping: error
+
+function_parameter_count:
+  warning: 8
+  error: 8
+
+custom_rules:
+  no_any:
+    name: "Disallow Any"
+    regex: "\\bAny(?!])\\b"
+    message: "freestanding 'Any' is not allowed, please use as? (optional downcasting) to an explicit type"
+    severity: error
+  no_empty_else:
+    name: "No Empty Else"
+    regex: 'else\s*\{\s*\}'
+    message: "Empty else block is not allowed, please handle the else case or remove the else block"
+    severity: error
+  no_anyview:
+    name: "No AnyView"
+    regex: "\\bAnyView(?!])\\b"
+    excluded:
+      - ".*Previews\\.swift"
+      - ".*Test\\.swift"
+      - ".*Tests\\.swift"
+    message: "Use of AnyView is discouraged. Here's a some good explanatory article on it: https://www.swiftbysundell.com/articles/avoiding-anyview-in-swiftui/"
+    severity: error
+  no_value_nslocalizedstring:
+    name: "No Value in NSLocalizedString"
+    regex: 'NSLocalizedString\s*\(\s*(?![^)]*\bvalue\b)[^)]*\)'
+    message: "NSLocalizedString should always have a value parameter, otherwise the key can be shown if the translation is missing"
+    severity: error
+  no_bundle_nslocalizedstring:
+    name: "No Bundle in NSLocalizedString"
+    regex: 'NSLocalizedString\s*\(\s*(?![^)]*\bbundle\b)[^)]*\)'
+    message: "NSLocalizedString should always have a bundle parameter"
+    severity: error
+  no_async_image:
+    name: "No AsyncImage"
+    regex: "\\bAsyncImage(?!])\\b"
+    excluded:
+      - ".*Test\\.swift"
+      - ".*Tests\\.swift"
+    message: "Prefer a cached image loader over AsyncImage."
+    severity: error
+  no_print:
+    name: "No print"
+    regex: "\\bprint(?!])\\b"
+    excluded:
+      - ".*View\\.swift"
+      - ".*Previews\\.swift"
+      - ".*Mocks\\.swift"
+      - ".*Mock\\.swift"
+      - ".*Mock.*\\.swift"
+      - ".*Test\\.swift"
+      - ".*Tests\\.swift"
+      - ".*Listener\\.swift"
+    message: "Prefer logDebug() over print() to obtain structured messages sent to Apple's unified logging system. Mocks, Preview and Tests are not subject to this rule."
+    severity: error
+  no_verbatim:
+    name: "Verbatim is missing in Text()"
+    regex: '\bText\(\"'
+    message: "Text should be used with Text(verbatim:) if we are hardcoding a string with variables"
+  no_localized_string:
+    name: "No Localized String in swift files"
+    regex: "\\bNSLocalizedString\\b"
+    excluded:
+      - ".*String\\+\\.swift"
+      - ".*String\\.swift"
+      - ".*Strings\\.swift"
+      - ".*String\\+Local\\.swift"
+      - ".*String\\+Const\\.swift"
+    message: "NSLocalizedString should always be defined in String+.swift files, not directly in the code."
+    severity: error
+  no_thread_sleep_in_tests:
+    included: ".*Tests.swift"
+    name: "No Thread.sleep"
+    regex: "\\b(Thread|Foundation\\.Thread)\\s*\\.\\s*sleep\\s*\\("
+    message: "Avoid using Thread.sleep in tests."
+    severity: error
+  no_presentation_background_with_sheet:
+    name: "No PresentationBackground"
+    regex: '.presentationBackground\('
+    message: "Please make sure you didn't use .PresentationBackground together with .sheet on iOS versions below 18, as this may cause severe app hang."
+    severity: error
+  no_swiftuicore_import:
+    name: "No SwiftUICore Import"
+    regex: 'import SwiftUICore'
+    message: "Importing SwiftUICore is not allowed. Please use SwiftUI instead."
+    severity: error
+  no_swift_testing_placeholder:
+    included: ".*Tests.swift"
+    name: "No Placeholder code for SwiftTesting"
+    regex: '@Test func example\(\)'
+    message: "Please delete placeholder code for Swift Testing as they will slow down CI"
+    severity: error

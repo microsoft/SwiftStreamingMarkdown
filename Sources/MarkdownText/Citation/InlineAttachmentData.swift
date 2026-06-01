@@ -14,11 +14,4 @@ struct InlineAttachmentData: Codable {
   let title: String
   let accessibilityLabel: String
   let url: URL
-
-  init(type: AttachmentType, title: String, accessibilityLabel: String, url: URL) {
-    self.type = type
-    self.title = title
-    self.accessibilityLabel = accessibilityLabel
-    self.url = url
-  }
 }

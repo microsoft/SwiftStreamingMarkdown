@@ -2,7 +2,6 @@
 //  Copyright © 2025 Microsoft. All rights reserved.
 //
 
-
 import Foundation
 
 /// Encapsulates how inline citations are encoded into and decoded from
