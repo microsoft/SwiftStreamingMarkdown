@@ -11,6 +11,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
   case multiParagraph = "Multi-paragraph"
   case tables = "Tables"
   case math = "Math"
+  case robotoTheme = "Roboto Themed"
 
   var id: String { rawValue }
 
@@ -24,6 +25,8 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
       "Top 10 populous cities and basic info"
     case .math:
       "Top 10 most popular math equations"
+    case .robotoTheme:
+      "Fully custom MarkdownRenderConfig: Roboto fonts + teal-on-purple palette"
     }
   }
 
@@ -33,6 +36,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .multiParagraph: "multi-paragraph"
     case .tables: "tables"
     case .math: "math"
+    case .robotoTheme: "roboto"
     }
   }
   

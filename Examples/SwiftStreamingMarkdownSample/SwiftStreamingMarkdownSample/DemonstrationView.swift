@@ -14,10 +14,30 @@ struct DemonstrationView: View {
   @StateObject var listener = LoggingMarkdownListener()
 
   private var streamedRenderConfig: MarkdownRenderConfig {
-    MarkdownRenderConfig
-      .default
+    let base: MarkdownRenderConfig
+    switch demonstration {
+    case .robotoTheme:
+      base = RobotoTheme.renderConfig
+    default:
+      base = .default
+    }
+    return base
       .withTextContextMenu(value: demonstration.customContextMenu)
       .withShouldAnimateText(value: true)
+  }
+
+  private var nonStreamedRenderConfig: MarkdownRenderConfig {
+    switch demonstration {
+    case .robotoTheme: RobotoTheme.renderConfig
+    default: .default
+    }
+  }
+
+  private var backgroundColor: Color {
+    switch demonstration {
+    case .robotoTheme: RobotoTheme.pageBackground
+    default: Color(.systemBackground)
+    }
   }
 
   var body: some View {
@@ -32,7 +52,7 @@ struct DemonstrationView: View {
         } else {
           MarkdownView(
             text: markdownText,
-            config: .default,
+            config: nonStreamedRenderConfig,
             listener: listener
           )
         }
@@ -41,6 +61,7 @@ struct DemonstrationView: View {
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.vertical, 16)
     }
+    .background(backgroundColor.ignoresSafeArea())
     .navigationTitle(demonstration.rawValue)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {

@@ -21,6 +21,14 @@
 		BE6C83AD3DA984F6E4A480D2 /* SwiftStreamingMarkdown in Frameworks */ = {isa = PBXBuildFile; productRef = B906B315BC41DB59BE692F25 /* SwiftStreamingMarkdown */; };
 		E87D871D9C2E90AC3D9C8D15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4D12945E3562180C24C411D /* Assets.xcassets */; };
 		F93DC505137820E5E08A003E /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDC20A761CA89CDF30A31D2 /* NavigationView.swift */; };
+		A1B2C3D4E5F60718293A4B01 /* RobotoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B00 /* RobotoTheme.swift */; };
+		A1B2C3D4E5F60718293A4B11 /* roboto.md in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B10 /* roboto.md */; };
+		A1B2C3D4E5F60718293A4B21 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B20 /* Roboto-Regular.ttf */; };
+		A1B2C3D4E5F60718293A4B23 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B22 /* Roboto-Italic.ttf */; };
+		A1B2C3D4E5F60718293A4B25 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B24 /* Roboto-Bold.ttf */; };
+		A1B2C3D4E5F60718293A4B27 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B26 /* Roboto-BoldItalic.ttf */; };
+		A1B2C3D4E5F60718293A4B29 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B28 /* Roboto-Medium.ttf */; };
+		A1B2C3D4E5F60718293A4B31 /* Roboto-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B30 /* Roboto-LICENSE.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +48,14 @@
 		F32331634603C9C746B42997 /* math.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = math.md; sourceTree = "<group>"; };
 		F6E7200307CBBC827028382E /* StreamedMarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamedMarkdownView.swift; sourceTree = "<group>"; };
 		FEDC20A761CA89CDF30A31D2 /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B00 /* RobotoTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotoTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B10 /* roboto.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = roboto.md; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B20 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B22 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B24 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B26 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B28 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B30 /* Roboto-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Roboto-LICENSE.txt"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +76,23 @@
 				2C5E33E5B93545D59228B2F4 /* kitchen-sink.md */,
 				F32331634603C9C746B42997 /* math.md */,
 				73868F0AE9190348E3D3EE91 /* multi-paragraph.md */,
+				A1B2C3D4E5F60718293A4B10 /* roboto.md */,
 				D51631C4D1BDAFE7CAEFF13E /* tables.md */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60718293A4B40 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F60718293A4B24 /* Roboto-Bold.ttf */,
+				A1B2C3D4E5F60718293A4B26 /* Roboto-BoldItalic.ttf */,
+				A1B2C3D4E5F60718293A4B22 /* Roboto-Italic.ttf */,
+				A1B2C3D4E5F60718293A4B28 /* Roboto-Medium.ttf */,
+				A1B2C3D4E5F60718293A4B20 /* Roboto-Regular.ttf */,
+				A1B2C3D4E5F60718293A4B30 /* Roboto-LICENSE.txt */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		375FBC52F2D86B5EA24A2590 /* Packages */ = {
@@ -78,6 +108,7 @@
 			children = (
 				E4D12945E3562180C24C411D /* Assets.xcassets */,
 				2B080EC39033283C09F6AF34 /* Fixtures */,
+				A1B2C3D4E5F60718293A4B40 /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -90,6 +121,7 @@
 				ED6B676B39FB1F281F1D3A12 /* Info.plist */,
 				4C1B2C3D4E5F60718293A4B5 /* LoggingMarkdownListener.swift */,
 				FEDC20A761CA89CDF30A31D2 /* NavigationView.swift */,
+				A1B2C3D4E5F60718293A4B00 /* RobotoTheme.swift */,
 				66A45AA973D9144DE0D48543 /* SampleSettings.swift */,
 				0B03975E1FF0CB8AA3A2FE2D /* SettingsView.swift */,
 				F6E7200307CBBC827028382E /* StreamedMarkdownView.swift */,
@@ -184,7 +216,14 @@
 				2D1E3427023CC475891E5315 /* kitchen-sink.md in Resources */,
 				BC9708592DBCF60366FA41A7 /* math.md in Resources */,
 				39F8622C57A2EC533E5F01ED /* multi-paragraph.md in Resources */,
+				A1B2C3D4E5F60718293A4B11 /* roboto.md in Resources */,
 				8EF6F43D15E068CC5642CC95 /* tables.md in Resources */,
+				A1B2C3D4E5F60718293A4B21 /* Roboto-Regular.ttf in Resources */,
+				A1B2C3D4E5F60718293A4B23 /* Roboto-Italic.ttf in Resources */,
+				A1B2C3D4E5F60718293A4B25 /* Roboto-Bold.ttf in Resources */,
+				A1B2C3D4E5F60718293A4B27 /* Roboto-BoldItalic.ttf in Resources */,
+				A1B2C3D4E5F60718293A4B29 /* Roboto-Medium.ttf in Resources */,
+				A1B2C3D4E5F60718293A4B31 /* Roboto-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +238,7 @@
 				45A57F3523AF9CFC77103A05 /* Demonstrations.swift in Sources */,
 				4A1B2C3D4E5F60718293A4B5 /* LoggingMarkdownListener.swift in Sources */,
 				F93DC505137820E5E08A003E /* NavigationView.swift in Sources */,
+				A1B2C3D4E5F60718293A4B01 /* RobotoTheme.swift in Sources */,
 				12849B8411B570808F7C0D9E /* SampleSettings.swift in Sources */,
 				428AF75D6DBD4E50617840AD /* SettingsView.swift in Sources */,
 				032FB97FBD7123A985B62BBA /* StreamedMarkdownView.swift in Sources */,
