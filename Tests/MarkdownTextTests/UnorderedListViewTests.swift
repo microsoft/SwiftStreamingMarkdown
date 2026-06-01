@@ -44,7 +44,7 @@ final class UnorderedListViewTests: SnapshotTestCase {
     let citationMarker = "9F742443"
     let paragraphs = [
       "item 1",
-      "Item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationFullTitle=ESPN%20Sports)",
+      "Item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationA11yValue=ESPN%20Sports)",
       "item 3"
     ]
     let parser = MarkdownParserImpl()

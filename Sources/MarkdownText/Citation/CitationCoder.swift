@@ -86,6 +86,6 @@ extension CitationCoder {
     citationMarker: "9F742443",
     citationMarkerQueryParam: "citationMarker",
     citationTextQueryParam: "citationTitle",
-    citationA11yTextQueryParam: "citationFullTitle"
+    citationA11yTextQueryParam: "citationA11yValue"
   )
 }

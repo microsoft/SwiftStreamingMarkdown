@@ -64,7 +64,7 @@ final class MarkdownTextTests: XCTestCase {
   /// Tests attachment citation format by directly testing the convert method
   func testAttachmentCitationFormat() async throws {
     let markdown = """
-    [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft)
+    [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationA11yValue=Microsoft)
     """
 
     let document = await parser.parse(text: markdown)
@@ -166,7 +166,7 @@ final class MarkdownTextTests: XCTestCase {
   /// Tests that BlockQuote correctly renders attachment citations without showing UUIDs
   func testBlockQuoteWithAttachmentCitations() async throws {
     let markdown = """
-    > This quote contains an attachment citation [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft) and regular citation [Google](http://example.com?citationMarker=9F742443)
+    > This quote contains an attachment citation [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationA11yValue=Microsoft) and regular citation [Google](http://example.com?citationMarker=9F742443)
     """
 
     let document = await parser.parse(text: markdown)
@@ -224,7 +224,7 @@ final class MarkdownTextTests: XCTestCase {
     let markdownWithBothTypes = """
     Regular citation: [Microsoft](http://example.com?citationMarker=9F742443)
 
-    Attachment citation: [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationFullTitle=Google)
+    Attachment citation: [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationA11yValue=Google)
     """
 
     let plainText = await markdownWithBothTypes.markdownToPlainText()

@@ -40,10 +40,10 @@ final class OrderedListViewTests: SnapshotTestCase {
   func testOrderedListViewWithCitations() async throws {
     let citationMarker = CitationCoder.default.citationMarker
     let textWithCitations: [String] = [
-      "First item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationFullTitle=ESPN%20Sports)",
-      "Second item [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=Google&citationFullTitle=Google%20Search) with citation",
+      "First item with citation [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=ESPN&citationA11yValue=ESPN%20Sports)",
+      "Second item [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=Google&citationA11yValue=Google%20Search) with citation",
       "Plain text item without citations",
-      "Mixed content [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=Microsoft&citationFullTitle=Microsoft%20Corporation) and more text"
+      "Mixed content [\(citationMarker)](http://example.com?citationMarker=\(citationMarker)&citationTitle=Microsoft&citationA11yValue=Microsoft%20Corporation) and more text"
     ]
 
     let parser = MarkdownParserImpl()

@@ -45,13 +45,13 @@ final class ExtractPlainTextTests: XCTestCase {
   }
 
   func testExtractPlainTextFromAttachmentCitation() async {
-    let markdown = "[9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft)"
+    let markdown = "[9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationA11yValue=Microsoft)"
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "Microsoft", "Attachment citations should extract title from URL parameters, not show UUID")
   }
 
   func testExtractPlainTextFromMultipleCitations() async {
-    let markdown = "Check [Microsoft](http://example.com?citationMarker=9F742443) and [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationFullTitle=Google)"
+    let markdown = "Check [Microsoft](http://example.com?citationMarker=9F742443) and [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationA11yValue=Google)"
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "Check Microsoft and Google", "Should handle both old and new citation formats")
   }
@@ -68,7 +68,7 @@ final class ExtractPlainTextTests: XCTestCase {
 
   func testExtractPlainTextFromBlockQuoteWithAttachmentCitation() async {
     let markdown = """
-    > This quote contains [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationFullTitle=Microsoft)
+    > This quote contains [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Microsoft&citationA11yValue=Microsoft)
     """
     let result = await markdown.markdownToPlainText()
     XCTAssertEqual(result, "This quote contains Microsoft", "BlockQuote with attachment citation should extract title from URL, not show UUID")
@@ -77,7 +77,7 @@ final class ExtractPlainTextTests: XCTestCase {
   func testExtractPlainTextFromNestedBlockQuoteWithCitations() async {
     let markdown = """
     > Level 1 with [Microsoft](http://example.com?citationMarker=9F742443)
-    > > Level 2 with [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationFullTitle=Google)
+    > > Level 2 with [9F742443](http://example.com?citationMarker=9F742443&citationTitle=Google&citationA11yValue=Google)
     """
     let result = await markdown.markdownToPlainText()
     XCTAssertTrue(result.contains("Microsoft"), "Nested BlockQuote should handle regular citations")

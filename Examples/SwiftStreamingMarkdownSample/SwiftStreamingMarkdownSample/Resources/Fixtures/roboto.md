@@ -68,4 +68,4 @@ let theme = MarkdownRenderConfig(
 
 ## Citation pill
 
-Citations render as inline pills tinted with the accent color: see the source [9F742443](https://github.com/googlefonts/roboto-2?citationMarker=9F742443&citationTitle=Roboto%20Sample%20Source&citationFullTitle=Roboto%20Sample%20Source%20citation) for the original quote.
+Citations render as inline pills tinted with the accent color: see the source [9F742443](https://github.com/googlefonts/roboto-2?citationMarker=9F742443&citationTitle=Roboto%20Sample%20Source&citationA11yValue=Roboto%20Sample%20Source%20citation) for the original quote.

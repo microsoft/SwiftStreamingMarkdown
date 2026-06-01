@@ -4,7 +4,7 @@ This fixture intentionally mixes supported Markdown, streaming edge cases, citat
 
 Inline styles: **strong text**, *emphasis*, ***strong emphasis***, ~~strikethrough~~, `inline code`, a [regular link](https://example.com), an app action link [open settings](copilot-action://settings), and inline math $E = mc^2$.
 
-Inline citations should render as compact attachments when the renderer recognizes the citation marker: [9F742443](https://example.com/release-notes?citationMarker=9F742443&citationTitle=1&citationFullTitle=Streaming%20Markdown%20release%20notes&citationId=doc-1&chatItemId=demo-1) [9F742443](https://example.com/api-reference?citationMarker=9F742443&citationTitle=2&citationFullTitle=Markdown%20renderer%20API%20reference&citationId=doc-2&chatItemId=demo-1).
+Inline citations should render as compact attachments when the renderer recognizes the citation marker: [9F742443](https://example.com/release-notes?citationMarker=9F742443&citationTitle=1&citationA11yValue=Streaming%20Markdown%20release%20notes&citationId=doc-1&chatItemId=demo-1) [9F742443](https://example.com/api-reference?citationMarker=9F742443&citationTitle=2&citationA11yValue=Markdown%20renderer%20API%20reference&citationId=doc-2&chatItemId=demo-1).
 
 ---
 
@@ -23,7 +23,7 @@ A paragraph can include a soft
 line break and continue with more text.  
 A hard line break follows two trailing spaces.
 
-> Block quotes can contain **bold text**, links, citations [9F742443](https://example.com/quote-source?citationMarker=9F742443&citationTitle=3&citationFullTitle=Quoted%20source%20metadata&citationId=doc-3&chatItemId=demo-1), and nested content.
+> Block quotes can contain **bold text**, links, citations [9F742443](https://example.com/quote-source?citationMarker=9F742443&citationTitle=3&citationA11yValue=Quoted%20source%20metadata&citationId=doc-3&chatItemId=demo-1), and nested content.
 >
 > - Quoted unordered item
 > - Another quoted item with `code`
@@ -51,7 +51,7 @@ The next list intentionally mixes tight lists, loose lists, ordered lists, unord
 
 1. **Discovery phase** starts as an ordered item with a paragraph continuation.
 
-   The continuation includes inline citation [9F742443](https://example.com/nested-discovery?citationMarker=9F742443&citationTitle=6&citationFullTitle=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math $p95 < 200ms$, and `inline code`.
+   The continuation includes inline citation [9F742443](https://example.com/nested-discovery?citationMarker=9F742443&citationTitle=6&citationA11yValue=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math $p95 < 200ms$, and `inline code`.
 
    - A nested unordered item with its own children.
      1. Ordered grandchild that starts at one.
@@ -70,7 +70,7 @@ The next list intentionally mixes tight lists, loose lists, ordered lists, unord
         ```
 
    - A sibling nested item with a task list below it.
-     - [x] Completed task with a citation [9F742443](https://example.com/task-done?citationMarker=9F742443&citationTitle=7&citationFullTitle=Completed%20nested%20task%20citation&citationId=doc-7&chatItemId=demo-1)
+     - [x] Completed task with a citation [9F742443](https://example.com/task-done?citationMarker=9F742443&citationTitle=7&citationA11yValue=Completed%20nested%20task%20citation&citationId=doc-7&chatItemId=demo-1)
      - [ ] Incomplete task with `code`
        - Follow-up detail under an incomplete task.
        - Another detail with a [link](https://example.com/nested-task-link).
@@ -80,7 +80,7 @@ The next list intentionally mixes tight lists, loose lists, ordered lists, unord
    | Nested item | Markdown inside cell | Expected observation |
    | --- | --- | --- |
    | Cell link | [Docs](https://example.com/docs) | Link styling if table inline parsing is supported |
-   | Cell citation | [9F742443](https://example.com/nested-table?citationMarker=9F742443&citationTitle=8&citationFullTitle=Nested%20table%20citation&citationId=doc-8&chatItemId=demo-1) | Citation attachment if table cells support attachments |
+   | Cell citation | [9F742443](https://example.com/nested-table?citationMarker=9F742443&citationTitle=8&citationA11yValue=Nested%20table%20citation&citationId=doc-8&chatItemId=demo-1) | Citation attachment if table cells support attachments |
    | Cell code | `Result<T, Error>` | Inline code styling in a table |
 
    9. Ordered sublist deliberately starts at nine.
@@ -177,7 +177,7 @@ struct PreviewRow: View {
 
 | Feature | Example | Expected behavior |
 | :--- | :--- | ---: |
-| Inline citation | [9F742443](https://example.com/table-source?citationMarker=9F742443&citationTitle=4&citationFullTitle=Table%20source%20citation&citationId=doc-4&chatItemId=demo-1) | Render a compact citation attachment |
+| Inline citation | [9F742443](https://example.com/table-source?citationMarker=9F742443&citationTitle=4&citationA11yValue=Table%20source%20citation&citationId=doc-4&chatItemId=demo-1) | Render a compact citation attachment |
 | Inline code | `let value = 42` | Preserve code styling in a cell |
 | Link | [Example](https://example.com/table-link) | Render as tappable link |
 | Alignment | 12345 | Right-align this expected-behavior column |
@@ -229,4 +229,4 @@ Term
 
 ## Mixed final paragraph
 
-The final paragraph combines a normal link, an action link, inline math $f(x) = x^2$, a citation [9F742443](https://example.com/final-source?citationMarker=9F742443&citationTitle=5&citationFullTitle=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.
+The final paragraph combines a normal link, an action link, inline math $f(x) = x^2$, a citation [9F742443](https://example.com/final-source?citationMarker=9F742443&citationTitle=5&citationA11yValue=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.

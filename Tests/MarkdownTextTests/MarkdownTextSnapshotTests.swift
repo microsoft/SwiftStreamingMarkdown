@@ -215,7 +215,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
 
   func testCitations() async throws {
     let text = """
-    This paragraph contains a titled inline citation [9F742443](http://www.microsoft.com?citationMarker=9F742443&citationId=987&citationTitle=microsoft.com&citationFullTitle=microsoft.com&chatItemId=chatItemId). And here are more citations [9F742443](http://www.microsoft.com?citationMarker=9F742443&citationId%3D1%2C2&citationTitle=microsoft.com%20%2B1&citationFullTitle=microsoft.com&chatItemId=chatItemId).
+    This paragraph contains a titled inline citation [9F742443](http://www.microsoft.com?citationMarker=9F742443&citationId=987&citationTitle=microsoft.com&citationA11yValue=microsoft.com&chatItemId=chatItemId). And here are more citations [9F742443](http://www.microsoft.com?citationMarker=9F742443&citationId%3D1%2C2&citationTitle=microsoft.com%20%2B1&citationA11yValue=microsoft.com&chatItemId=chatItemId).
     """
     let document = await parser.parse(text: text)
     let renderables = await RenderableDocument(document: document, config: .default)

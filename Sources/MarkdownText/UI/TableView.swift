@@ -448,11 +448,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 #Preview("Table with Citations", body: {
   // Create citation attachments safely
   guard let citationData1 = CitationCoder.default.decode(
-    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Research&citationFullTitle=Research%20Study"
+    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Research&citationA11yValue=Research%20Study"
   ),
     let citation1 = InlineCitationAttachment(citationData: citationData1, citationConfig: .default),
     let citationData2 = CitationCoder.default.decode(
-      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Analysis&citationFullTitle=Data%20Analysis"
+      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Analysis&citationA11yValue=Data%20Analysis"
     ),
     let citation2 = InlineCitationAttachment(citationData: citationData2, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
@@ -489,11 +489,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 #Preview("Citation Only Cells", body: {
   // Create citation with NFL (known rendering issue case)
   guard let nflCitationData = CitationCoder.default.decode(
-    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=NFL&citationFullTitle=National%20Football%20League"
+    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=NFL&citationA11yValue=National%20Football%20League"
   ),
     let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
     let espnCitationData = CitationCoder.default.decode(
-      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
+      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=ESPN&citationA11yValue=ESPN%20Sports"
     ),
     let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
@@ -526,11 +526,11 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 #Preview("Citation Only - Dark Mode", body: {
   // Create citation with NFL (known rendering issue case)
   guard let nflCitationData = CitationCoder.default.decode(
-    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=NFL&citationFullTitle=National%20Football%20League"
+    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=NFL&citationA11yValue=National%20Football%20League"
   ),
     let nflCitation = InlineCitationAttachment(citationData: nflCitationData, citationConfig: .default),
     let espnCitationData = CitationCoder.default.decode(
-      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=ESPN&citationFullTitle=ESPN%20Sports"
+      linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=ESPN&citationA11yValue=ESPN%20Sports"
     ),
     let espnCitation = InlineCitationAttachment(citationData: espnCitationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
@@ -565,7 +565,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 #Preview("Table with Mixed Content", body: {
   // Create citation safely (NO LaTeX to avoid iosMath bundle issues)
   guard let citationData = CitationCoder.default.decode(
-    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Source&citationFullTitle=Primary%20Source"
+    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Source&citationA11yValue=Primary%20Source"
   ),
     let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")
@@ -614,7 +614,7 @@ let tableviewRowsMock: [[NSMutableAttributedString]] =  [
 #Preview("Mixed Content - Dark Mode", body: {
   // Create citation safely (NO LaTeX to avoid iosMath bundle issues)
   guard let citationData = CitationCoder.default.decode(
-    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Source&citationFullTitle=Primary%20Source"
+    linkDestination: "http://example.com?citationMarker=9F742443&citationTitle=Source&citationA11yValue=Primary%20Source"
   ),
     let citation = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
     return Text(verbatim: "Preview unavailable: Citation creation failed")

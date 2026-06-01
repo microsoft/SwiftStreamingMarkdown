@@ -21,7 +21,7 @@ struct ParagraphViewTests {
   private func makeAttributedStringWithCitation(title: String = "ESPN") -> NSMutableAttributedString {
     // Create a proper citation URL with query parameters
     let baseURL = "http://example.com"
-    let citationURL = "\(baseURL)?citationMarker=9F742443&citationTitle=\(title)&citationFullTitle=\(title)"
+    let citationURL = "\(baseURL)?citationMarker=9F742443&citationTitle=\(title)&citationA11yValue=\(title)"
 
     guard let citationData = CitationCoder.default.decode(linkDestination: citationURL),
           let attachment = InlineCitationAttachment(citationData: citationData, citationConfig: .default) else {
