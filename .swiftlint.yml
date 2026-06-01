@@ -77,7 +77,7 @@ custom_rules:
       - ".*Previews\\.swift"
       - ".*Test\\.swift"
       - ".*Tests\\.swift"
-    message: "Use of AnyView is discouraged. Here's a some good explanatory article on it: https://www.swiftbysundell.com/articles/avoiding-anyview-in-swiftui/"
+    message: "Use of AnyView is discouraged. Here's a good explanatory article on it: https://www.swiftbysundell.com/articles/avoiding-anyview-in-swiftui/"
     severity: error
   no_print:
     name: "No print"
