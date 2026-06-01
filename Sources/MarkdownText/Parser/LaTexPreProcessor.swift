@@ -8,7 +8,17 @@ import RegexBuilder
 /// Pre-process the inline and block latex in markdown.
 /// This is a less heavy-weight approach than forking commonmark-gfm and swift-markdown to support parsing latex nodes.
 protocol LaTexPreProcessor {
-  func process(input: String) -> String
+  func process(input: String, matchingRules: [MarkdownParseOption.LatexMatching]) -> String
+}
+
+extension LaTexPreProcessor {
+  /// Convenience overload that enables every supported matching rule.
+  func process(input: String) -> String {
+    return process(
+      input: input,
+      matchingRules: [.inlineSlashBracket, .blockDollar, .blockSlashBracket]
+    )
+  }
 }
 
 final class LaTexPreProcessorImpl: LaTexPreProcessor {
@@ -125,34 +135,50 @@ final class LaTexPreProcessorImpl: LaTexPreProcessor {
 
   init() {}
 
-  func process(input: String) -> String {
-    let result = processBlockMath(input: input)
-    return processInlineMath(input: result)
+  func process(input: String, matchingRules: [MarkdownParseOption.LatexMatching]) -> String {
+    let rules = Set(matchingRules)
+    let result = processBlockMath(input: input, rules: rules)
+    return processInlineMath(input: result, rules: rules)
   }
 
   /// This replace block math with a special code block node. By treating it as a code block it will avoid over escaping characters within latex.
-  func processBlockMath(input: String) -> String {
+  func processBlockMath(input: String, rules: Set<MarkdownParseOption.LatexMatching>) -> String {
     var result = input
-    result.replace(Self.dollarBlockMath, with: { match in
-      let indentation = match[Self.latexOpenIndentation]
-      let latex = match[Self.latexRef]
-      return Self.buildCodeBlock(indentation: indentation, latex: latex)
-    })
+    if rules.contains(.blockDollar) {
+      result.replace(Self.dollarBlockMath, with: { match in
+        let indentation = match[Self.latexOpenIndentation]
+        let latex = match[Self.latexRef]
+        return Self.buildCodeBlock(indentation: indentation, latex: latex)
+      })
+    }
 
-    result.replace(Self.slashBracketMath, with: { match in
-      let indentation = match[Self.latexOpenIndentation]
-      let latex = match[Self.latexRef]
-      return Self.buildCodeBlock(indentation: indentation, latex: latex)
-    })
+    if rules.contains(.blockSlashBracket) {
+      result.replace(Self.slashBracketMath, with: { match in
+        let indentation = match[Self.latexOpenIndentation]
+        let latex = match[Self.latexRef]
+        return Self.buildCodeBlock(indentation: indentation, latex: latex)
+      })
+    }
     return result
   }
 
   /// This wraps inline math as inline code to avoid over-unescaping issue
-  func processInlineMath(input: String) -> String {
+  func processInlineMath(input: String, rules: Set<MarkdownParseOption.LatexMatching>) -> String {
+    guard rules.contains(.inlineSlashBracket) else { return input }
     return input.replacing(Self.inlineParenthesisMath, with: { match in
       let latex = String(match[Self.latexRef]).filteringUnsupportedSyntaxes()
       return "`\\(\(latex)\\)`"
     })
+  }
+
+  // MARK: - Convenience overloads (default to every supported rule)
+
+  func processBlockMath(input: String) -> String {
+    return processBlockMath(input: input, rules: Set(MarkdownParseOption.LatexMatching.allCases))
+  }
+
+  func processInlineMath(input: String) -> String {
+    return processInlineMath(input: input, rules: Set(MarkdownParseOption.LatexMatching.allCases))
   }
 
   private static func buildCodeBlock(indentation: Substring, latex: Substring) -> String {
