@@ -15,20 +15,29 @@ enum RobotoTheme {
 
   // MARK: - Colors
 
-  private static let pageForeground = UIColor(red: 0.92, green: 0.96, blue: 1.00, alpha: 1.0)
-  private static let mutedForeground = UIColor(red: 0.65, green: 0.78, blue: 0.90, alpha: 1.0)
-  private static let accent = UIColor(red: 0.20, green: 0.85, blue: 0.78, alpha: 1.0)
-  private static let accentSoft = UIColor(red: 0.20, green: 0.85, blue: 0.78, alpha: 0.18)
-  private static let boldEmphasis = UIColor(red: 1.00, green: 0.78, blue: 0.36, alpha: 1.0)
-  private static let codeForeground = UIColor(red: 0.98, green: 0.94, blue: 0.74, alpha: 1.0)
-  private static let codeBackground = UIColor(red: 0.10, green: 0.06, blue: 0.20, alpha: 1.0)
-  private static let codeUnderline = UIColor(red: 0.40, green: 0.30, blue: 0.55, alpha: 1.0)
-  private static let tableHeaderBackground = UIColor(red: 0.18, green: 0.10, blue: 0.32, alpha: 1.0)
-  private static let tableBorder = UIColor(red: 0.45, green: 0.30, blue: 0.65, alpha: 1.0)
+  /// Loads a named color from the `RobotoTheme` namespace in the main bundle's
+  /// asset catalog. Each color provides both a light and dark appearance, so
+  /// using the asset-backed `UIColor` lets the rendered markdown automatically
+  /// adapt when the user toggles dark mode.
+  private static func color(_ name: String) -> UIColor {
+    UIColor(named: "RobotoTheme/\(name)") ?? .systemPink
+  }
+
+  private static var pageForeground: UIColor { color("PageForeground") }
+  private static var mutedForeground: UIColor { color("MutedForeground") }
+  private static var accent: UIColor { color("Accent") }
+  private static var accentSoft: UIColor { color("AccentSoft") }
+  private static var boldEmphasis: UIColor { color("BoldEmphasis") }
+  private static var codeForeground: UIColor { color("CodeForeground") }
+  private static var codeBackground: UIColor { color("CodeBackground") }
+  private static var codeUnderline: UIColor { color("CodeUnderline") }
+  private static var tableHeaderBackground: UIColor { color("TableHeaderBackground") }
+  private static var tableBorder: UIColor { color("TableBorder") }
 
   /// Background applied around the rendered content to make the Roboto theme
   /// pop visually. Exposed so `DemonstrationView` can paint the scroll view.
-  static let pageBackground = Color(red: 0.07, green: 0.04, blue: 0.16)
+  /// Backed by the same dark-mode-aware asset as everything else.
+  static var pageBackground: Color { Color("RobotoTheme/PageBackground") }
 
   // MARK: - Fonts
 
