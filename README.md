@@ -79,38 +79,40 @@ struct ContentView: View {
 
 ## Streaming usage
 
-For chat-style UIs that grow the Markdown source over time, parse each new
-chunk into a `RenderableDocument` and feed it to `DocumentView`. Re-rendering
-an existing `RenderableDocument` is cheap; the expensive step is the parse.
+For chat-style UIs that grow the Markdown source over time, use
+`StreamedMarkdownView`. It takes a `StreamedMarkdownSource` whose `text`
+property yields progressively larger snapshots of the Markdown source (each
+emission is the full source so far, not a delta) and incrementally parses
+and renders them as they arrive.
 
 ```swift
 import SwiftUI
+import AsyncExtensions
 import SwiftStreamingMarkdown
 
-@MainActor
-final class StreamingViewModel: ObservableObject {
-  @Published private(set) var document: RenderableDocument = .empty
-  private let parser = MarkdownParserImpl()
-  private let config: MarkdownRenderConfig = .default
-
-  func append(chunk: String, to buffer: inout String) async {
-    buffer += chunk
-    let parsed = await parser.parse(text: buffer)
-    document = await RenderableDocument(document: parsed, config: config)
-  }
+struct ChatResponseSource: StreamedMarkdownSource {
+  let snapshots: AsyncStream<String>
+  var text: AnyAsyncSequence<String> { snapshots.eraseToAnyAsyncSequence() }
 }
 
 struct ChatBubble: View {
-  @StateObject var model = StreamingViewModel()
+  let source: ChatResponseSource
 
   var body: some View {
-    DocumentView(renderableDocument: model.document, config: .default)
+    StreamedMarkdownView(source: source)
   }
 }
 ```
 
+Re-rendering an existing `RenderableDocument` is cheap; the expensive step is
+the parse, which `StreamedMarkdownView` handles for you off the main thread.
+If you'd rather drive `DocumentView` directly, parse each snapshot with
+`MarkdownParser.parse(text:config:)` and feed the resulting
+`RenderableDocument` into your view yourself.
+
 The bundled [sample app](Examples/SwiftStreamingMarkdownSample) demonstrates
-chunked streaming end-to-end with adjustable chunk size and interval.
+chunked streaming end-to-end with adjustable chunk size and interval, plus
+auto-scroll wired through a `MarkdownListener`.
 
 ## Customizing the theme
 
