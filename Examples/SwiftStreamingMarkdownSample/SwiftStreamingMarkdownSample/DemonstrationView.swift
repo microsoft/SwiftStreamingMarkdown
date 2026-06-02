@@ -14,16 +14,8 @@ struct DemonstrationView: View {
   @StateObject var listener = LoggingMarkdownListener()
 
   var body: some View {
-    Group {
-      if #available(iOS 18.0, *) {
-        ScrollPositionStreamingView(listener: listener) {
-          markdownContent
-        }
-      } else {
-        ScrollViewReaderStreamingView(listener: listener) {
-          markdownContent
-        }
-      }
+    ScrollPositionStreamingView(listener: listener) {
+      markdownContent
     }
     .background(demonstration.backgroundColor.ignoresSafeArea())
     .onAppear {
@@ -86,39 +78,6 @@ struct DemonstrationView: View {
   }
 }
 
-private struct ScrollViewReaderStreamingView<Content: View>: View {
-  @ObservedObject var listener: LoggingMarkdownListener
-  let content: () -> Content
-  private let streamingBottomID = "streaming-bottom"
-
-  init(listener: LoggingMarkdownListener, @ViewBuilder content: @escaping () -> Content) {
-    self.listener = listener
-    self.content = content
-  }
-
-  var body: some View {
-    ScrollViewReader { scrollProxy in
-      ScrollView {
-        VStack(spacing: 0) {
-          content()
-
-          Color.clear
-            .frame(height: 1)
-            .id(streamingBottomID)
-        }
-      }
-      .onReceive(listener.$streamingScrollRequest) { request in
-        guard request > 0 else { return }
-
-        withAnimation(.linear(duration: LoggingMarkdownListener.streamingScrollAnimationDuration)) {
-          scrollProxy.scrollTo(streamingBottomID, anchor: .bottom)
-        }
-      }
-    }
-  }
-}
-
-@available(iOS 18.0, *)
 private struct ScrollPositionStreamingView<Content: View>: View {
   @ObservedObject var listener: LoggingMarkdownListener
   @State private var scrollPosition = ScrollPosition(edge: .top)
