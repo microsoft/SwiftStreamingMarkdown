@@ -1,0 +1,166 @@
+# Agent Instructions for SwiftStreamingMarkdown
+
+> **Trust these instructions first.** Only search the repository if information here is incomplete or wrong.
+
+## Project Overview
+
+SwiftStreamingMarkdown is a Swift Package that renders **Markdown** in SwiftUI. It is consumed by Apple-platform apps that need to display Markdown content, either bespoke or incrementally produced by an LLM or other streaming source. The package is iOS-first, distributed via **Swift Package Manager only**, and ships with a sample app under `Examples/`.
+
+**Key technologies:**
+
+| Topic | Value |
+|---|---|
+| Language | Swift |
+| UI | SwiftUI (some UIKit interop under `Sources/MarkdownText/UI/UIKit/`) |
+| swift-tools-version | 5.9 |
+| Minimum Xcode | **16.0** (the package contains `@available(iOS 18.0, *)` annotations that require the iOS 18 SDK) |
+| Minimum iOS deployment | iOS 16 |
+| Build system | Swift Package Manager (no Bazel, no CocoaPods) |
+| Linter | SwiftLint (config: `.swiftlint.yml`, run via `swiftlint --strict`) |
+
+## Directory Structure
+
+```
+SwiftStreamingMarkdown/
+├── Package.swift                            # SPM manifest — single library target
+├── Sources/
+│   └── MarkdownText/                        # The library target
+│       ├── Block/                           # Block-level Markdown rendering
+│       ├── Inline/                          # Inline-level Markdown rendering
+│       ├── Citation/                        # Inline citation handling
+│       ├── Style/                           # Colors, fonts, typography
+│       ├── TextTransition/                  # iOS 18+ FadeInTextTransition
+│       ├── UI/                              # SwiftUI views (CodeBlockView, TableView, etc.)
+│       │   └── UIKit/                       # UIKit interop (ParagraphUIView, etc.)
+│       ├── Utilities/                       # Bundle, URL, String helpers
+│       └── Resources/                       # Assets.xcassets, Media.xcassets (Bundle.module)
+├── Tests/
+│   └── MarkdownTextTests/                   # XCTest + swift-snapshot-testing
+├── Examples/
+│   └── SwiftStreamingMarkdownSample/        # Sample iOS app + .xcodeproj
+├── .agents/skills/                          # Repo-scoped Copilot skills (pr-writer, snapshot-tests)
+├── scripts/
+│   └── dev-setup.sh                         # One-time local tooling check
+├── .github/workflows/ci.yml                 # SwiftLint + SPM unit tests + sample-app build
+├── .swiftlint.yml                           # Lint rules
+├── .xcode-version                           # Minimum Xcode version, read by dev-setup.sh
+└── CONTRIBUTING.md                          # Contributor guide
+```
+
+## Coding Standards
+
+### Naming Conventions
+
+Names should be grammatical, concise, and accurate. Avoid abbreviations and Boolean-naming mistakes (`isFooEnabled`, not `isEnableFoo`).
+
+```swift
+// ❌ Not preferred
+var data: String
+func process() -> Void
+var usrNm: String
+var isEnableFoo: Bool
+
+// ✅ Preferred
+var userName: String
+var profileImageURL: URL
+func processLoginCredentials() -> Void
+var isFooEnabled: Bool
+```
+
+### Swift Concurrency
+
+- Prefer `async/await` and `Task`. Avoid `DispatchQueue` / `OperationQueue` except when bridging legacy callbacks.
+- Use `actor` for shared mutable state owned by the library.
+- Do not sweep `@MainActor` isolation across non-UI types. Only views and types that mutate observable view state need to be main-actor isolated.
+- This package's streaming pipeline runs on a background task and pushes rendered output to the main actor at the boundary; do not move that boundary inward without measuring.
+
+### Main Thread and Rendering Performance
+
+- Code must not block the main thread with sleeps, semaphore waits, busy polling etc.
+- Do not perform heavy operations inside SwiftUI view bodies — precompute upstream of the view.
+
+### Data Flow
+
+Streaming input is modeled as `AsyncSequence`. The package depends on [`AsyncExtensions`](https://github.com/sideeffect-io/AsyncExtensions) for helpful operators (channels, debouncing, multicasting, etc.). Use those over bridging to Combine.
+
+For new async subscriptions inside view-scoped code, bind the Task lifecycle to the owning type rather than creating an orphan `Task`. If a background loop must outlive a single render, factor it into a type with deterministic teardown.
+
+### Swift Code Organization
+
+- One primary type per source file. Nested helper types (`enum State`, `struct Configuration`) belong inside the parent type when they are only meaningful in that context.
+- Group related extensions in `Type+Feature.swift` files (e.g. `Colors+Theme.swift`, `String+.swift`).
+
+```swift
+// ✅ Preferred — State is meaningful only inside the view model
+final class FooViewModel: ObservableObject {
+    enum State { case loading, ready, error(Error) }
+    @Published var state: State = .loading
+}
+```
+
+---
+
+## Architecture
+
+The major components of this library are parsing and rendering. They are highly isolated to make sure code is executed on the right threads and is easy to contribute to.
+
+### Preprocess
+
+Perform text-level processing before sending it to the markdown parser, if needed. The library uses it to recognize math syntax and convert it to a format the markdown parser understands. This works in most cases but is not ideal — it's on the roadmap to include math parsing as part of the markdown parsing itself.
+
+### Parse
+
+This is based on Apple's open-source parser from [swift-markdown](https://github.com/swiftlang/swift-markdown), which is backed by [cmark-gfm](https://github.com/swiftlang/swift-cmark).
+
+### Rewrite
+
+Perform markdown AST-level manipulation before passing the result to the UI layer. The library uses this to speculatively close half-typed emphasis — for example, a streaming chunk `Yeah, this is *cool` gets rewritten to render as if it were `Yeah, this is **cool**`, so the text doesn't jitter back and forth as the rest of the token streams in.
+
+### Pre-Render
+
+This step converts the markdown AST (`Document`) into a `RenderableDocument` for rendering. It translates markdown styles into Apple's language, mainly around `NSAttributedString`, `NSTextAttachment`, etc.
+
+### Render
+
+The `RenderableDocument` is then passed to the SwiftUI/UIKit layer to render on iOS devices. Most of the UI components are written in SwiftUI except for paragraphs. We chose UIKit's `UITextView` to render paragraphs to ensure the library can support streamed markdown with fine-grained animation control and high performance.
+
+---
+
+## Testing
+
+- The unit-test target is `SwiftStreamingMarkdownTests` at `Tests/MarkdownTextTests`, built on **XCTest**.
+- Snapshot tests use [`pointfreeco/swift-snapshot-testing`](https://github.com/pointfreeco/swift-snapshot-testing). See the **`.agents/skills/snapshot-tests/SKILL.md`** skill for how to record, validate, and visually diff snapshots (`diff-image` from ImageMagick).
+
+---
+
+## Build, Test, and Local Setup
+
+### One-time setup
+
+```bash
+scripts/dev-setup.sh
+```
+
+This verifies Homebrew, Xcode ≥ `.xcode-version`, SwiftLint, ImageMagick, and `diff-image` are present and installs the missing optional tools where it can.
+
+### Authoritative commands (mirrors CI)
+
+```bash
+# Lint
+swiftlint --strict
+
+# Run the package unit tests
+xcodebuild test \
+  -scheme SwiftStreamingMarkdown \
+  -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
+  -skipMacroValidation
+
+# Build the sample app
+xcodebuild build \
+  -project Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj \
+  -scheme SwiftStreamingMarkdownSample \
+  -configuration Debug \
+  -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
+  -skipMacroValidation \
+  CODE_SIGNING_ALLOWED=NO
+```
