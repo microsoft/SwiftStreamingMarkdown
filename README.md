@@ -140,14 +140,6 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
 
 
 
-## Requirements
-
-| Requirement | Minimum |
-| --- | --- |
-| iOS | 16.0 |
-| Swift | 5.9 |
-| Xcode | 16.0 |
-
 ## Installation
 
 SwiftStreamingMarkdown is distributed exclusively as a Swift Package.
