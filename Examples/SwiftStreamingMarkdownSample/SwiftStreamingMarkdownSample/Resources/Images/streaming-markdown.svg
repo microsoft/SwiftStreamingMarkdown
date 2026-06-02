@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320" viewBox="0 0 640 320" role="img" aria-labelledby="title desc">
+  <title id="title">Streaming Markdown sample</title>
+  <desc id="desc">A purple rounded card with teal markdown tokens flowing left to right.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b1b5a"/>
+      <stop offset="1" stop-color="#123f5a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#72f2d8"/>
+      <stop offset="1" stop-color="#8fb8ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="320" rx="32" fill="url(#background)"/>
+  <circle cx="96" cy="88" r="28" fill="#72f2d8" opacity="0.85"/>
+  <circle cx="544" cy="232" r="44" fill="#8fb8ff" opacity="0.18"/>
+  <path d="M132 104h376" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.18"/>
+  <path d="M96 160h448" stroke="url(#accent)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M96 216h304" stroke="#ffffff" stroke-width="14" stroke-linecap="round" opacity="0.65"/>
+  <text x="96" y="176" fill="#10223a" font-family="Menlo, Consolas, monospace" font-size="44" font-weight="700"># Markdown</text>
+  <text x="96" y="252" fill="#ffffff" font-family="Menlo, Consolas, monospace" font-size="24">**streaming** `tokens`</text>
+</svg>

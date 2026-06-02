@@ -196,6 +196,12 @@ $$
 
 ## Images and HTML fallback
 
+Bundled SVG asset:
+
+![Streaming Markdown SVG sample](Images/streaming-markdown.svg)
+
+Remote unsupported image fallback:
+
 ![Alt text for an unsupported image](https://example.com/demo-image.png)
 
 <details>
