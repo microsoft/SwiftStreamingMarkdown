@@ -8,12 +8,12 @@
 
 A high-performance Markdown renderer for iOS, designed for both static markdown texts and LLM stream style where the source text grows token-by-token. 
 
+- Built-in high-performance stream style text transitions for newly arrived glyphs
 - Native inline and block LaTeX math rendering backed by
   [iosMath](https://github.com/maitbayev/iosMath)
-- Support configurable inline citations UIs commonly seen from LLM outputs
+- Inline citations UI commonly seen from LLM outputs
 - Highly configurable text styles and iOS context menus
-- Streaming-friendly fade-in transitions for newly arrived glyphs
-- Built-in `MarkdownListener` hooks for analytics and interaction tracking
+- Built-in hooks for analytics and interaction tracking
 
 ## Demos
 
@@ -23,23 +23,38 @@ Here are a few demos to help you quickly understand this library's capabilities.
   <tr>
     <td>
       <h3>Table</h3>
+    </td>
+    <td>
       <video src="https://github.com/user-attachments/assets/bdfc448f-069a-413f-a9d8-221fe1a1e303" width="400" controls></video>
     </td>
+  </tr>
+  <tr>
     <td>
-      <h3>Inline and Block LaTeX</h3>
-      <video src="https://github.com/user-attachments/assets/590d7757-4ad6-46e1-9e59-9b2a13355087" width="400" controls></video>
+      <h3>LaTeX</h3>
     </td>
     <td>
-      <h3>Customized Theme</h3>
+      <video src="https://github.com/user-attachments/assets/590d7757-4ad6-46e1-9e59-9b2a13355087" width="400" controls></video>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>Customization</h3>
+    </td>
+    <td>
       <video src="https://github.com/user-attachments/assets/bec02fc2-8b8d-4bc3-9145-0a6f2012ffc6" width="400" controls></video>
     </td>
   </tr>
-</table>
-
-<table>
   <tr>
     <td>
+      <h3>Inline citation</h3>
+    </td>
+    <td>
       <img width="361" height="156" alt="Inline Citation" src="https://github.com/user-attachments/assets/f35fa1af-0d9a-48b2-81f2-b3228d1b7322" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>Code block</h3>
     </td>
     <td>
       <img width="375" height="453" alt="code-block" src="https://github.com/user-attachments/assets/d6e3a266-e00b-442b-82f4-f9f395629547" />
@@ -80,6 +95,31 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [ ] Mermaid / PlantUML diagrams — rendered as fenced code
 
 The bundled `Kitchen Sink` demonstration in the sample app exercises every item above so you can verify the fallback behavior on-device.
+
+### Streaming Performance
+
+`SwiftStreamingMarkdown` has built-in streaming animation support for newly arrived glyphs. It is carefully designed to minimize UI thread overhead to avoid app hangs. Here's an Xcode profiling result of `SwiftStreamingMarkdown` and other popular markdown rendering libraries on github that does not come with built-in streaming support.
+
+<table>
+  <tr>
+    <td>
+      <h3>SwiftStreamingMarkdown</h3>
+    </td>
+    <td>
+      <img width="891" height="110" alt="profiling-streaming" src="https://github.com/user-attachments/assets/d8eb9ee6-7b61-4bbb-b70d-e1862a6b1176" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>Markdown rendering library without streaming support</h3>
+    </td>
+    <td>
+      <img width="940" height="156" alt="profiling-streaming-comparision" src="https://github.com/user-attachments/assets/739d00d3-5067-409a-96d4-9c3c8b6c0675" />
+    </td>
+  </tr>
+</table>
+
+
 
 ## Requirements
 
