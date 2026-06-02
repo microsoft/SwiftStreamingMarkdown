@@ -68,10 +68,6 @@ struct DemonstrationView: View {
       }
     }
     .scrollPosition($listener.scrollPosition)
-    .onChange(of: listener.renderCount) { _, _ in
-      guard preferStreamedMarkdown else { return }
-      listener.scrollToStreamingBottom()
-    }
     .background(backgroundColor.ignoresSafeArea())
     .navigationTitle(demonstration.rawValue)
     .navigationBarTitleDisplayMode(.inline)

@@ -10,15 +10,14 @@ import SwiftStreamingMarkdown
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   private static let streamingScrollAnimationDuration = 0.16
 
-  @Published private(set) var renderCount: Int = 0
   @Published var followsStreamingMarkdown: Bool = true
   @Published var scrollPosition = ScrollPosition(edge: .top)
   private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
     print("[MarkdownListener] onRender")
-    await MainActor.run {
-      self.renderCount &+= 1
+    if followsStreamingMarkdown && !pendingStreamingScroll {
+      await scrollToStreamingBottom()
     }
   }
 
