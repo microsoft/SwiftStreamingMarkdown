@@ -59,8 +59,7 @@ final class MarkdownViewController: ObservableObject {
   }
 
   func parse(text: String) async {
-    let document = await parser.parse(text: text)
-    let renderable = await RenderableDocument(document: document, config: config)
+    let renderable = await parser.parse(text: text, config: config)
     await MainActor.run {
       self.renderable = renderable
     }
