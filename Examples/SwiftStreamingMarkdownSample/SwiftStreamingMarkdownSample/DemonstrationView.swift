@@ -52,13 +52,14 @@ struct DemonstrationView: View {
           Group {
             if preferStreamedMarkdown {
               StreamedMarkdownView(
-                text: markdownText,
+                source: TextSimulatedStreamSource(
+                  text: markdownText,
+                  chunkSize: 48,
+                  chunkInterval: 0.2
+                ),
                 config: streamedRenderConfig,
-                chunkInterval: 0.2,
-                onStreamUpdate: {
-                  scrollToStreamingBottom(with: scrollProxy)
-                }
-              ).environmentObject(listener)
+                listener: listener
+              )
             } else {
               MarkdownView(
                 text: markdownText,
@@ -75,6 +76,9 @@ struct DemonstrationView: View {
             .frame(height: 1)
             .id(Self.streamBottomAnchorID)
         }
+      }
+      .onChange(of: listener.renderCount) { _ in
+        scrollToStreamingBottom(with: scrollProxy)
       }
     }
     .background(backgroundColor.ignoresSafeArea())

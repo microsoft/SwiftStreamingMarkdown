@@ -7,8 +7,13 @@ import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
+  @Published private(set) var renderCount: Int = 0
+
   func onRender(markdown: RenderableDocument) async {
     print("[MarkdownListener] onRender")
+    await MainActor.run {
+      self.renderCount &+= 1
+    }
   }
 
   func onTableCopyTap(content: String) async {
