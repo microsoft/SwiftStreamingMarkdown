@@ -10,6 +10,7 @@ struct StreamedMarkdownView: View {
   let config: MarkdownRenderConfig
   let chunkSize: Int
   let chunkInterval: TimeInterval
+  let onStreamUpdate: @MainActor () -> Void
 
   @EnvironmentObject var listener: LoggingMarkdownListener
   @StateObject private var controller: StreamedMarkdownViewController
@@ -18,12 +19,14 @@ struct StreamedMarkdownView: View {
     text: String,
     config: MarkdownRenderConfig = .default,
     chunkSize: Int = 48,
-    chunkInterval: TimeInterval = 0.2
+    chunkInterval: TimeInterval = 0.2,
+    onStreamUpdate: @escaping @MainActor () -> Void = {}
   ) {
     self.text = text
     self.config = config
     self.chunkSize = chunkSize
     self.chunkInterval = chunkInterval
+    self.onStreamUpdate = onStreamUpdate
     _controller = StateObject(
       wrappedValue: StreamedMarkdownViewController(
         chunkSize: chunkSize,
@@ -40,7 +43,7 @@ struct StreamedMarkdownView: View {
       listener: listener
     )
     .task {
-      await controller.startStreaming(text: text)
+      await controller.startStreaming(text: text, onUpdate: onStreamUpdate)
     }
   }
 }
@@ -59,7 +62,7 @@ final class StreamedMarkdownViewController: ObservableObject {
     self.config = config
   }
 
-  func startStreaming(text: String) async {
+  func startStreaming(text: String, onUpdate: @escaping @MainActor () -> Void) async {
     guard !text.isEmpty else { return }
 
     var startIndex = text.startIndex
@@ -74,6 +77,7 @@ final class StreamedMarkdownViewController: ObservableObject {
       let renderableDocument = await RenderableDocument(document: document, config: config)
       await MainActor.run {
         self.streamedText = renderableDocument
+        onUpdate()
       }
       startIndex = endIndex
       do {
