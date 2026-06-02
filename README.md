@@ -98,7 +98,7 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
 
 ### Streaming Performance
 
-`SwiftStreamingMarkdown` has built-in streaming animation support for newly arrived glyphs. It is carefully designed to minimize UI thread overhead to avoid app hangs. Here's an Xcode profiling result of `SwiftStreamingMarkdown` and other popular markdown rendering libraries on github that does not come with built-in streaming support.
+`SwiftStreamingMarkdown` has built-in streaming animation support for newly arrived glyphs. It is carefully designed to minimize UI-thread overhead and avoid app hangs. Below is an Xcode profiling comparison between `SwiftStreamingMarkdown` and other popular Markdown rendering libraries on GitHub that do not include built-in streaming support.
 
 <table>
   <tr>
