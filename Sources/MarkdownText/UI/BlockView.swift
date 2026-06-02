@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import SVGView
 import SwiftUI
 
 struct BlockView: View {

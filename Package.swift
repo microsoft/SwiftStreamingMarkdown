@@ -18,14 +18,12 @@ let package = Package(
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.18.1"),
     .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
     .package(url: "https://github.com/appstefan/highlightswift", revision: "99c431b38a1444a5fd6a4978307fbbefe3a7af53"),
-    .package(url: "https://github.com/exyte/SVGView.git", exact: "1.0.6"),
     .package(url: "https://github.com/maitbayev/iosMath", revision: "066ba2f8353782a644889efe9ceb884ea844180b")
   ],
   targets: [
     .target(
       name: "SwiftStreamingMarkdown",
       dependencies: [
-        "SVGView",
         .product(name: "Equatable", package: "equatable"),
         "AsyncExtensions",
         .product(name: "Markdown", package: "swift-markdown"),
