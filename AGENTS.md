@@ -47,6 +47,81 @@ SwiftStreamingMarkdown/
 └── CONTRIBUTING.md                          # Contributor guide
 ```
 
+## Architecture
+
+The major components of this library are parsing and rendering. They are highly isolated to make sure code is executed on the right threads and is easy to contribute to.
+
+### Preprocess
+
+Perform text-level processing before sending it to the markdown parser, if needed. The library uses it to recognize math syntax and convert it to a format the markdown parser understands. This works in most cases but is not ideal — it's on the roadmap to include math parsing as part of the markdown parsing itself.
+
+### Parse
+
+This is based on Apple's open-source parser from [swift-markdown](https://github.com/swiftlang/swift-markdown), which is backed by [cmark-gfm](https://github.com/swiftlang/swift-cmark).
+
+### Rewrite
+
+Perform markdown AST-level manipulation before passing the result to the UI layer. The library uses this to speculatively close half-typed emphasis — for example, a streaming chunk `Yeah, this is *cool` gets rewritten to render as if it were `Yeah, this is **cool**`, so the text doesn't jitter back and forth as the rest of the token streams in.
+
+### Pre-Render
+
+This step converts the markdown AST (`Document`) into a `RenderableDocument` for rendering. It translates markdown styles into Apple's language, mainly around `NSAttributedString`, `NSTextAttachment`, etc.
+
+### Render
+
+The `RenderableDocument` is then passed to the SwiftUI/UIKit layer to render on iOS devices. Most of the UI components are written in SwiftUI except for paragraphs. We chose UIKit's `UITextView` to render paragraphs to ensure the library can support streamed markdown with fine-grained animation control and high performance.
+
+---
+
+## Working Principles
+
+Behavioral guidelines for agents (and humans) working in this repo. These bias toward caution over speed; for trivial tasks, use judgment.
+
+### 1. Think before coding
+
+Don't assume. Don't hide confusion. Surface tradeoffs.
+
+- State assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them — don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop, name what's confusing, and ask.
+
+### 2. Simplicity first
+
+Minimum code that solves the problem. Nothing speculative.
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+### 3. Surgical changes
+
+Touch only what you must. Clean up only your own mess.
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it — don't delete it.
+- Remove imports/variables/functions that *your* changes made unused; don't remove pre-existing dead code unless asked.
+
+The test: every changed line should trace directly to the user's request.
+
+### 4. Goal-driven execution
+
+Define success criteria. Loop until verified.
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass."
+- "Fix the bug" → "Write a test that reproduces it, then make it pass."
+- "Refactor X" → "Ensure tests pass before and after."
+
+For multi-step tasks, state a brief plan with a verification step per item.
+
+---
+
 ## Coding Standards
 
 ### Naming Conventions
@@ -97,32 +172,6 @@ final class FooViewModel: ObservableObject {
     @Published var state: State = .loading
 }
 ```
-
----
-
-## Architecture
-
-The major components of this library are parsing and rendering. They are highly isolated to make sure code is executed on the right threads and is easy to contribute to.
-
-### Preprocess
-
-Perform text-level processing before sending it to the markdown parser, if needed. The library uses it to recognize math syntax and convert it to a format the markdown parser understands. This works in most cases but is not ideal — it's on the roadmap to include math parsing as part of the markdown parsing itself.
-
-### Parse
-
-This is based on Apple's open-source parser from [swift-markdown](https://github.com/swiftlang/swift-markdown), which is backed by [cmark-gfm](https://github.com/swiftlang/swift-cmark).
-
-### Rewrite
-
-Perform markdown AST-level manipulation before passing the result to the UI layer. The library uses this to speculatively close half-typed emphasis — for example, a streaming chunk `Yeah, this is *cool` gets rewritten to render as if it were `Yeah, this is **cool**`, so the text doesn't jitter back and forth as the rest of the token streams in.
-
-### Pre-Render
-
-This step converts the markdown AST (`Document`) into a `RenderableDocument` for rendering. It translates markdown styles into Apple's language, mainly around `NSAttributedString`, `NSTextAttachment`, etc.
-
-### Render
-
-The `RenderableDocument` is then passed to the SwiftUI/UIKit layer to render on iOS devices. Most of the UI components are written in SwiftUI except for paragraphs. We chose UIKit's `UITextView` to render paragraphs to ensure the library can support streamed markdown with fine-grained animation control and high performance.
 
 ---
 
