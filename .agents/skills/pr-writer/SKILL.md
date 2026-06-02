@@ -15,10 +15,17 @@ Prepare pull requests end-to-end by generating the PR description and handling t
 
 ## End-to-End Publish Workflow
 
+> [!IMPORTANT]
+> **If the current branch already has an open PR, always ask the user before doing anything else** whether the new work should (a) be pushed as additional commits to the existing PR, or (b) go on a new branch (off the appropriate base, usually `main`) as a separate PR.
+>
+> **Never assume the user wants to extend the open PR**, even if the new work feels related. Scope, review timing, and merge-queue considerations are the user's call. Do not commit, branch, or push until the user has answered.
+
 1. Check repository and PR state
    - Confirm current branch and dirty working tree using `git status`.
    - Check if branch already has an open PR:
-     - `gh pr view --json number,url,headRefName,baseRefName`
+     - `gh pr view --json number,url,headRefName,baseRefName,state`
+   - **If an open PR exists on the current branch, stop and ask the user** whether to push to that PR or start a new branch. Wait for the answer before proceeding to any other step. Quote the existing PR's number/title/URL in the question so the user can decide with full context.
+   - If the user picks "new branch", create it off the appropriate base (usually `main`) in step 4 below before any commit.
 
 2. Generate PR description body
    - Produce the PR body using the template in this skill (mirrors `.github/pull_request_template.md`).
@@ -56,7 +63,7 @@ Prepare pull requests end-to-end by generating the PR description and handling t
 ## Partial-State Handling (Some Steps Already Done)
 
 - Existing branch + existing PR + new code changes:
-  - Commit/push changes, then update PR body/title with `gh pr edit`.
+  - **Ask the user first** whether the new changes belong on this PR or on a new branch (see the IMPORTANT callout above). If "this PR": commit/push changes, then update PR body/title with `gh pr edit`. If "new branch": create a fresh branch off `main` and run the normal flow there.
 - Existing branch + existing PR + no code changes:
   - Skip commit/push and update PR description/title only.
 - Existing branch + no PR:
@@ -207,6 +214,7 @@ Return two parts:
 
 ## Guardrails
 
+- **If the current branch has an open PR, always ask the user** whether the new work belongs on that PR or on a new branch — never assume. See the IMPORTANT callout at the top of the workflow.
 - **Every PR must reference its GitHub issue** in the Summary section using a `Closes #N` / `Fixes #N` / `Refs #N` line. If no issue exists, create one first with `gh issue create` before opening the PR. The only allowed exception is when the user explicitly waives this requirement.
 - **Never force-push to update a PR.** Do not run `git push --force` or `git push --force-with-lease`, and do not amend, rebase, or squash commits that have already been pushed. To update a PR, always add a new commit on top. If a push is rejected as non-fast-forward, stop and ask the user — do not "resolve" it with force.
 - Do not create duplicate PRs for the same head branch.
