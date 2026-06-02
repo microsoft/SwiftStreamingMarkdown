@@ -8,10 +8,10 @@ import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
-  private static let streamingScrollAnimationDuration = 0.16
+  static let streamingScrollAnimationDuration = 0.16
 
   @Published var followsStreamingMarkdown: Bool = true
-  @Published var scrollPosition = ScrollPosition(edge: .top)
+  @Published private(set) var streamingScrollRequest = 0
   private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
@@ -27,13 +27,14 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     guard !pendingStreamingScroll else { return }
 
     pendingStreamingScroll = true
-    DispatchQueue.main.async {
-      withAnimation(.linear(duration: Self.streamingScrollAnimationDuration)) {
-        self.scrollPosition.scrollTo(edge: .bottom)
+    streamingScrollRequest += 1
+    Task { @MainActor in
+      do {
+        try await Task.sleep(nanoseconds: UInt64(Self.streamingScrollAnimationDuration * 1_000_000_000))
+      } catch {
+        // Cancellation should only end the throttle window.
       }
-      DispatchQueue.main.asyncAfter(deadline: .now() + Self.streamingScrollAnimationDuration) {
-        self.pendingStreamingScroll = false
-      }
+      pendingStreamingScroll = false
     }
   }
 
