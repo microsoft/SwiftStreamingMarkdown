@@ -22,6 +22,7 @@ SwiftStreamingMarkdown is a Swift Package that renders **Markdown** in SwiftUI. 
 
 ```
 SwiftStreamingMarkdown/
+├── Makefile                                 # Common local development commands
 ├── Package.swift                            # SPM manifest — single library target
 ├── Sources/
 │   └── MarkdownText/                        # The library target
@@ -37,7 +38,7 @@ SwiftStreamingMarkdown/
 ├── Tests/
 │   └── MarkdownTextTests/                   # XCTest + swift-snapshot-testing
 ├── Examples/
-│   └── SwiftStreamingMarkdownSample/        # Sample iOS app + .xcodeproj
+│   └── SwiftStreamingMarkdownSample/        # Sample iOS app + XcodeGen project.yml
 ├── .agents/skills/                          # Repo-scoped Copilot skills (pr-writer, snapshot-tests)
 ├── scripts/
 │   └── dev-setup.sh                         # One-time local tooling check
@@ -187,29 +188,39 @@ final class FooViewModel: ObservableObject {
 ### One-time setup
 
 ```bash
-scripts/dev-setup.sh
+make dev-setup
 ```
 
-This verifies Homebrew, Xcode ≥ `.xcode-version`, SwiftLint, ImageMagick, and `diff-image` are present and installs the missing optional tools where it can.
+This verifies Homebrew, Xcode ≥ `.xcode-version`, SwiftLint, XcodeGen, `cloc`, ImageMagick, and `diff-image` are present and installs the missing optional tools where it can.
+
+### Common commands
+
+```bash
+# Show all Make targets
+make help
+
+# Resolve Swift package dependencies and open the package in Xcode
+make project
+
+# Generate the sample app project
+make generate-sample-project
+
+# Generate and open the sample app project in Xcode
+make sample-project
+
+# Count code using cloc's Git file discovery
+make cloc
+```
 
 ### Authoritative commands (mirrors CI)
 
 ```bash
 # Lint
-swiftlint --strict
+make lint
 
 # Run the package unit tests
-xcodebuild test \
-  -scheme SwiftStreamingMarkdown \
-  -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
-  -skipMacroValidation
+make test
 
 # Build the sample app
-xcodebuild build \
-  -project Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj \
-  -scheme SwiftStreamingMarkdownSample \
-  -configuration Debug \
-  -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
-  -skipMacroValidation \
-  CODE_SIGNING_ALLOWED=NO
+make build-sample
 ```

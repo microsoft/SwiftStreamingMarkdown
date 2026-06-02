@@ -5,6 +5,8 @@
 # Required:
 #   - Xcode (xcodebuild) at or above the version in .xcode-version
 #   - swiftlint
+#   - xcodegen
+#   - cloc
 #   - diff-image (and imagemagick, which it shells out to) — used as the git
 #     diff driver for snapshot PNGs.
 #
@@ -126,6 +128,32 @@ if has_cmd swiftlint; then
   log_pass "swiftlint $(swiftlint version 2>/dev/null)"
 else
   missing_items+=("swiftlint (brew install swiftlint)")
+fi
+
+# XcodeGen (required for the generated sample app project).
+if ! has_cmd xcodegen; then
+  if ensure_brew_on_path && prompt_to_run "❌ xcodegen not found. Install via 'brew install xcodegen' now?" \
+      brew install xcodegen; then
+    :
+  fi
+fi
+if has_cmd xcodegen; then
+  log_pass "$(xcodegen --version 2>/dev/null)"
+else
+  missing_items+=("xcodegen (brew install xcodegen)")
+fi
+
+# cloc (required for make cloc).
+if ! has_cmd cloc; then
+  if ensure_brew_on_path && prompt_to_run "❌ cloc not found. Install via 'brew install cloc' now?" \
+      brew install cloc; then
+    :
+  fi
+fi
+if has_cmd cloc; then
+  log_pass "cloc $(cloc --version 2>/dev/null)"
+else
+  missing_items+=("cloc (brew install cloc)")
 fi
 
 # diff-image (required) + imagemagick that backs it.

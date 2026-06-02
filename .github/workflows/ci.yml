@@ -52,12 +52,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build sample app
+      - name: Install XcodeGen if missing
         run: |
-          xcodebuild build \
-            -project Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj \
-            -scheme SwiftStreamingMarkdownSample \
-            -configuration Debug \
-            -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
-            -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            echo "XcodeGen not found, installing via Homebrew..."
+            brew install xcodegen
+          fi
+          xcodegen --version
+
+      - name: Build sample app
+        run: make build-sample

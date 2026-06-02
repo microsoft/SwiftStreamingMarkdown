@@ -136,8 +136,8 @@ The repo template (`.github/pull_request_template.md`) has three sections plus a
 ### Validation
 
 - List the actual commands you ran and their result. Common ones in this repo:
-  - `xcodebuild test -scheme SwiftStreamingMarkdown -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" -skipMacroValidation`
-  - `xcodebuild build -project Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj -scheme SwiftStreamingMarkdownSample -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" -skipMacroValidation`
+  - `make test`
+  - `make build-sample`
   - `swift build` / `swift test` for SwiftPM-only checks
 - Mention snapshot test runs explicitly when relevant (record vs validate; see the `snapshot-tests` skill).
 - For UI changes, mention manual verification in the sample app and any VoiceOver/accessibility checks.

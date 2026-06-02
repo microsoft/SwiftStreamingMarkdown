@@ -154,9 +154,26 @@ rendered subviews observe the same hooks.
 A SwiftUI sample app lives in
 [`Examples/SwiftStreamingMarkdownSample`](Examples/SwiftStreamingMarkdownSample).
 It includes a streaming demonstration with adjustable chunk size and interval,
-a settings screen, and a logging `MarkdownListener` implementation. Open
-`Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj`
-in Xcode to run it on a simulator or device.
+a settings screen, and a logging `MarkdownListener` implementation. The sample
+Xcode project is generated from `Examples/SwiftStreamingMarkdownSample/project.yml`;
+run `make sample-project` to generate and open it in Xcode.
+
+## Development
+
+Run `make help` to see the repo's common development commands. The most useful
+targets are:
+
+| Command | Purpose |
+| --- | --- |
+| `make dev-setup` | Verify local tools such as Xcode, SwiftLint, XcodeGen, `cloc`, ImageMagick, and `diff-image`. |
+| `make project` | Resolve Swift package dependencies and open the package in Xcode. |
+| `make generate-sample-project` | Generate the sample app project with XcodeGen. |
+| `make sample-project` | Generate and open the sample app project in Xcode. |
+| `make lint` | Run `swiftlint --strict`. |
+| `make test` | Run the package unit tests with `xcodebuild`. |
+| `make build-sample` | Generate and build the sample app. |
+| `make ci` | Run lint, tests, and the sample-app build. |
+| `make cloc` | Count code with `cloc --vcs=git`. |
 
 ## Documentation
 
@@ -167,9 +184,8 @@ citations, math) is on the near-term roadmap.
 ## Contributing
 
 Contributions are welcome! Bug reports and feature requests go through the
-[issue templates](.github/ISSUE_TEMPLATE). A dedicated `CONTRIBUTING.md`
-with local setup, code style, and the pull-request process is in progress
-and will land in a follow-up change.
+[issue templates](.github/ISSUE_TEMPLATE). See [CONTRIBUTING.md](CONTRIBUTING.md)
+for local setup, code style, and the pull-request process.
 
 This project follows the
 [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
