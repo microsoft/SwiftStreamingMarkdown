@@ -114,7 +114,7 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
       <h3>Markdown rendering library without streaming support</h3>
     </td>
     <td>
-      <img width="940" height="156" alt="profiling-streaming-comparision" src="https://github.com/user-attachments/assets/739d00d3-5067-409a-96d4-9c3c8b6c0675" />
+      <img width="940" height="156" alt="profiling-streaming-comparison" src="https://github.com/user-attachments/assets/739d00d3-5067-409a-96d4-9c3c8b6c0675" />
     </td>
   </tr>
 </table>
