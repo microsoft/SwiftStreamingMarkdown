@@ -12,6 +12,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
   case tables = "Tables"
   case math = "Math"
   case robotoTheme = "Roboto Themed"
+  case `default` = "Default"
 
   var id: String { rawValue }
 
@@ -27,6 +28,8 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
       "Top 10 most popular math equations"
     case .robotoTheme:
       "Fully custom MarkdownRenderConfig: Roboto fonts + teal-on-purple palette"
+    case .default:
+      "Same content as Roboto Themed, rendered with the default MarkdownRenderConfig"
     }
   }
 
@@ -37,6 +40,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .tables: "tables"
     case .math: "math"
     case .robotoTheme: "roboto"
+    case .default: "roboto"
     }
   }
 
