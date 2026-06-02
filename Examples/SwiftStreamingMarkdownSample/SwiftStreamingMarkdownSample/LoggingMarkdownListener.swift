@@ -3,16 +3,38 @@
 //
 
 import Foundation
+import SwiftUI
 import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
+  static let streamBottomAnchorID = "stream-bottom-anchor"
+  private static let streamingScrollAnimationDuration = 0.16
+
   @Published private(set) var renderCount: Int = 0
+  @Published var followsStreamingMarkdown: Bool = true
+  private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
     print("[MarkdownListener] onRender")
     await MainActor.run {
       self.renderCount &+= 1
+    }
+  }
+
+  @MainActor
+  func scrollToStreamingBottom(with scrollProxy: ScrollViewProxy) {
+    guard followsStreamingMarkdown else { return }
+    guard !pendingStreamingScroll else { return }
+
+    pendingStreamingScroll = true
+    DispatchQueue.main.async {
+      withAnimation(.linear(duration: Self.streamingScrollAnimationDuration)) {
+        scrollProxy.scrollTo(Self.streamBottomAnchorID, anchor: .bottom)
+      }
+      DispatchQueue.main.asyncAfter(deadline: .now() + Self.streamingScrollAnimationDuration) {
+        self.pendingStreamingScroll = false
+      }
     }
   }
 

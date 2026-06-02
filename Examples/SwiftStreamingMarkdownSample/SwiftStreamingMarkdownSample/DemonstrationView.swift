@@ -12,11 +12,6 @@ struct DemonstrationView: View {
   let demonstration: Demonstration
   let markdownText: String
   @StateObject var listener = LoggingMarkdownListener()
-  @State private var pendingStreamingScroll = false
-  @State private var followsStreamingMarkdown = true
-
-  private static let streamBottomAnchorID = "stream-bottom-anchor"
-  private static let streamingScrollAnimationDuration = 0.16
 
   private var streamedRenderConfig: MarkdownRenderConfig {
     let base: MarkdownRenderConfig
@@ -74,11 +69,12 @@ struct DemonstrationView: View {
 
           Color.clear
             .frame(height: 1)
-            .id(Self.streamBottomAnchorID)
+            .id(LoggingMarkdownListener.streamBottomAnchorID)
         }
       }
       .onChange(of: listener.renderCount) { _ in
-        scrollToStreamingBottom(with: scrollProxy)
+        guard preferStreamedMarkdown else { return }
+        listener.scrollToStreamingBottom(with: scrollProxy)
       }
     }
     .background(backgroundColor.ignoresSafeArea())
@@ -88,11 +84,11 @@ struct DemonstrationView: View {
       ToolbarItemGroup(placement: .topBarTrailing) {
         if preferStreamedMarkdown {
           Button {
-            followsStreamingMarkdown.toggle()
+            listener.followsStreamingMarkdown.toggle()
           } label: {
-            Image(systemName: followsStreamingMarkdown ? "arrow.down.circle.fill" : "arrow.down.circle")
+            Image(systemName: listener.followsStreamingMarkdown ? "arrow.down.circle.fill" : "arrow.down.circle")
           }
-          .accessibilityLabel(followsStreamingMarkdown ? "Disable follow scrolling" : "Enable follow scrolling")
+          .accessibilityLabel(listener.followsStreamingMarkdown ? "Disable follow scrolling" : "Enable follow scrolling")
         }
 
         Menu {
@@ -105,21 +101,6 @@ struct DemonstrationView: View {
           Image(systemName: "circle.righthalf.filled")
             .accessibilityLabel("Appearance")
         }
-      }
-    }
-  }
-
-  private func scrollToStreamingBottom(with scrollProxy: ScrollViewProxy) {
-    guard preferStreamedMarkdown, followsStreamingMarkdown else { return }
-    guard !pendingStreamingScroll else { return }
-
-    pendingStreamingScroll = true
-    DispatchQueue.main.async {
-      withAnimation(.linear(duration: Self.streamingScrollAnimationDuration)) {
-        scrollProxy.scrollTo(Self.streamBottomAnchorID, anchor: .bottom)
-      }
-      DispatchQueue.main.asyncAfter(deadline: .now() + Self.streamingScrollAnimationDuration) {
-        pendingStreamingScroll = false
       }
     }
   }
