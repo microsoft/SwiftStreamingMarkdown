@@ -15,6 +15,25 @@ A high-performance Markdown renderer for iOS, designed for both static markdown 
 - Highly configurable text styles and iOS context menus
 - Built-in hooks for analytics and interaction tracking
 
+## Catalog
+
+- [Demos](#demos)
+- [Markdown support](#markdown-support)
+  - [Supported](#supported)
+  - [Not yet supported](#not-yet-supported)
+  - [Streaming Performance](#streaming-performance)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Streaming usage](#streaming-usage)
+- [Customizing the theme](#customizing-the-theme)
+- [Listening for events](#listening-for-events)
+- [Sample app](#sample-app)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Security](#security)
+- [License](#license)
+
 ## Demos
 
 Here are a few demos to help you quickly understand this library's capabilities. More can be found in the sample app.
