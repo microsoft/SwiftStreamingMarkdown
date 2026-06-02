@@ -13,9 +13,8 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   @Published var followsStreamingMarkdown: Bool = true
   @Published var scrollPosition = ScrollPosition(edge: .top)
   private var pendingStreamingScroll = false
-
+  
   func onRender(markdown: RenderableDocument) async {
-    print("[MarkdownListener] onRender")
     if followsStreamingMarkdown && !pendingStreamingScroll {
       await scrollToStreamingBottom()
     }
