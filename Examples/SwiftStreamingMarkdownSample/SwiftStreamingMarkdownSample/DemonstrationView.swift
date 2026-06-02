@@ -31,7 +31,7 @@ struct DemonstrationView: View {
             MarkdownView(
               text: markdownText,
               config: demonstration.nonStreamedRenderConfig,
-              listener: nil
+              listener: listener
             )
           }
         }
@@ -42,6 +42,9 @@ struct DemonstrationView: View {
     }
     .scrollPosition($listener.scrollPosition)
     .background(demonstration.backgroundColor.ignoresSafeArea())
+    .onChange(of: preferStreamedMarkdown, initial: true) { _, isStreamed in
+      listener.isStreamingActive = isStreamed
+    }
     .navigationTitle(demonstration.rawValue)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {

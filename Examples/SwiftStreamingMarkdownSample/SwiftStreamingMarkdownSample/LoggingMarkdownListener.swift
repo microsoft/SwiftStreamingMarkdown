@@ -12,9 +12,15 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
 
   @Published var followsStreamingMarkdown: Bool = true
   @Published var scrollPosition = ScrollPosition(edge: .top)
+  /// Whether the current rendering context is a streamed source. When `false`,
+  /// `onRender` callbacks will not auto-scroll, which lets the same listener
+  /// be shared between streamed and static `MarkdownView`s without the static
+  /// case yanking the scroll position on first render.
+  @Published var isStreamingActive: Bool = false
   private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
+    guard isStreamingActive else { return }
     if followsStreamingMarkdown && !pendingStreamingScroll {
       await scrollToStreamingBottom()
     }
