@@ -17,7 +17,7 @@ A high-performance Markdown renderer for iOS, designed for both static markdown 
 
 ## Demos
 
-Here are a few demos to help you quickly understand this library's capability. More can be found in the sample app.
+Here are a few demos to help you quickly understand this library's capabilities. More can be found in the sample app.
 
 <table>
   <tr>
