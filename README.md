@@ -15,7 +15,39 @@ A high-performance Markdown renderer for iOS, designed for both static markdown 
 - Streaming-friendly fade-in transitions for newly arrived glyphs
 - Built-in `MarkdownListener` hooks for analytics and interaction tracking
 
-## Markdown feature support
+## Demos
+
+Here are a few demos to help you quickly understand this library's capability. More can be found in the sample app.
+
+<table>
+  <tr>
+    <td>
+      <h3>Table</h3>
+      <video src="https://github.com/user-attachments/assets/bdfc448f-069a-413f-a9d8-221fe1a1e303" width="400" controls></video>
+    </td>
+    <td>
+      <h3>Inline and Block LaTeX</h3>
+      <video src="https://github.com/user-attachments/assets/590d7757-4ad6-46e1-9e59-9b2a13355087" width="400" controls></video>
+    </td>
+    <td>
+      <h3>Customized Theme</h3>
+      <video src="https://github.com/user-attachments/assets/bec02fc2-8b8d-4bc3-9145-0a6f2012ffc6" width="400" controls></video>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>
+      <img width="361" height="156" alt="Inline Citation" src="https://github.com/user-attachments/assets/f35fa1af-0d9a-48b2-81f2-b3228d1b7322" />
+    </td>
+    <td>
+      <img width="375" height="453" alt="code-block" src="https://github.com/user-attachments/assets/d6e3a266-e00b-442b-82f4-f9f395629547" />
+    </td>
+  </tr>
+</table>
+
+## Markdown support
 
 The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LLM responses actually emit. Unsupported syntax degrades to readable text so streamed responses never break.
 
@@ -48,35 +80,6 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [ ] Mermaid / PlantUML diagrams — rendered as fenced code
 
 The bundled `Kitchen Sink` demonstration in the sample app exercises every item above so you can verify the fallback behavior on-device.
-
-### Tables
-
-GitHub-flavored tables with column alignment, inline styles inside cells, and the built-in copy / download affordances.
-
-<!-- TODO: attach tables.mov -->
-
-https://user-images.githubusercontent.com/PLACEHOLDER/tables.mov
-
-### LaTeX math
-
-Inline `\( … \)` and display `$$ … $$` equations rendered through [iosMath](https://github.com/maitbayev/iosMath), mid-paragraph or on their own line, and recovered cleanly while streaming.
-
-<!-- TODO: attach math.mov -->
-
-https://user-images.githubusercontent.com/PLACEHOLDER/math.mov
-
-### Customizability
-
-A fully themed `MarkdownRenderConfig` (custom fonts, palette, list markers, code styling) showing how far the styling hooks reach without touching call sites.
-
-<!-- TODO: attach custom-style.mov -->
-
-https://user-images.githubusercontent.com/PLACEHOLDER/custom-style.mov
-
-### Inline Citation
-
-<!-- TODO: attach image -->
-
 
 ## Requirements
 
@@ -166,8 +169,6 @@ struct ChatBubble: View {
 }
 ```
 
-Re-rendering an existing `RenderableDocument` is cheap; the expensive step is
-the parse, which `StreamedMarkdownView` handles for you off the main thread.
 If you'd rather drive `DocumentView` directly, parse each snapshot with
 `MarkdownParser.parse(text:config:)` and feed the resulting
 `RenderableDocument` into your view yourself.
@@ -220,12 +221,6 @@ It includes a streaming demonstration with adjustable chunk size and interval,
 a settings screen, and a logging `MarkdownListener` implementation. Open
 `Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj`
 in Xcode to run it on a simulator or device.
-
-## Documentation
-
-API reference is currently generated from in-source doc-comments. A DocC
-catalog with curated articles (getting started, streaming, theming,
-citations, math) is on the near-term roadmap.
 
 ## Contributing
 
