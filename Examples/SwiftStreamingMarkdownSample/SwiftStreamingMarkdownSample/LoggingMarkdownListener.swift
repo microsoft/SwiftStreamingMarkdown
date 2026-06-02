@@ -8,11 +8,11 @@ import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
-  static let streamBottomAnchorID = "stream-bottom-anchor"
   private static let streamingScrollAnimationDuration = 0.16
 
   @Published private(set) var renderCount: Int = 0
   @Published var followsStreamingMarkdown: Bool = true
+  @Published var scrollPosition = ScrollPosition(edge: .top)
   private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
@@ -23,14 +23,14 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   }
 
   @MainActor
-  func scrollToStreamingBottom(with scrollProxy: ScrollViewProxy) {
+  func scrollToStreamingBottom() {
     guard followsStreamingMarkdown else { return }
     guard !pendingStreamingScroll else { return }
 
     pendingStreamingScroll = true
     DispatchQueue.main.async {
       withAnimation(.linear(duration: Self.streamingScrollAnimationDuration)) {
-        scrollProxy.scrollTo(Self.streamBottomAnchorID, anchor: .bottom)
+        self.scrollPosition.scrollTo(edge: .bottom)
       }
       DispatchQueue.main.asyncAfter(deadline: .now() + Self.streamingScrollAnimationDuration) {
         self.pendingStreamingScroll = false

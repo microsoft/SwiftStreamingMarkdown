@@ -41,41 +41,36 @@ struct DemonstrationView: View {
   }
 
   var body: some View {
-    ScrollViewReader { scrollProxy in
-      ScrollView {
-        VStack(spacing: 0) {
-          Group {
-            if preferStreamedMarkdown {
-              StreamedMarkdownView(
-                source: TextSimulatedStreamSource(
-                  text: markdownText,
-                  chunkSize: 48,
-                  chunkInterval: 0.2
-                ),
-                config: streamedRenderConfig,
-                listener: listener
-              )
-            } else {
-              MarkdownView(
+    ScrollView {
+      VStack(spacing: 0) {
+        Group {
+          if preferStreamedMarkdown {
+            StreamedMarkdownView(
+              source: TextSimulatedStreamSource(
                 text: markdownText,
-                config: nonStreamedRenderConfig,
-                listener: listener
-              )
-            }
+                chunkSize: 48,
+                chunkInterval: 0.2
+              ),
+              config: streamedRenderConfig,
+              listener: listener
+            )
+          } else {
+            MarkdownView(
+              text: markdownText,
+              config: nonStreamedRenderConfig,
+              listener: listener
+            )
           }
-          .padding(.horizontal, 16)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.vertical, 16)
-
-          Color.clear
-            .frame(height: 1)
-            .id(LoggingMarkdownListener.streamBottomAnchorID)
         }
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 16)
       }
-      .onChange(of: listener.renderCount) { _ in
-        guard preferStreamedMarkdown else { return }
-        listener.scrollToStreamingBottom(with: scrollProxy)
-      }
+    }
+    .scrollPosition($listener.scrollPosition)
+    .onChange(of: listener.renderCount) { _, _ in
+      guard preferStreamedMarkdown else { return }
+      listener.scrollToStreamingBottom()
     }
     .background(backgroundColor.ignoresSafeArea())
     .navigationTitle(demonstration.rawValue)
