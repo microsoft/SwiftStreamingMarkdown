@@ -15,6 +15,69 @@ A high-performance Markdown renderer for iOS, designed for both static markdown 
 - Streaming-friendly fade-in transitions for newly arrived glyphs
 - Built-in `MarkdownListener` hooks for analytics and interaction tracking
 
+## Markdown feature support
+
+The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LLM responses actually emit. Unsupported syntax degrades to readable text so streamed responses never break.
+
+### Supported
+
+- [x] Headings (`#` … `######`)
+- [x] Paragraphs with soft and hard line breaks
+- [x] **Bold**, *italic*, ***bold-italic***, ~~strikethrough~~
+- [x] `Inline code`
+- [x] Inline links
+- [x] Fenced code blocks with language tag
+- [x] Block quotes (with nested inlines, lists, and citations)
+- [x] Ordered lists
+- [x] Unordered lists (with nesting)
+- [x] Thematic breaks (`---`)
+- [x] Tables with `:---`, `:---:`, `---:` column alignment
+- [x] Inline LaTeX math via `\( … \)`
+- [x] Display LaTeX math via `$$ … $$`
+- [x] Inline citation pills
+
+### Not yet supported
+
+- [ ] Images (`![alt](url)`) — alt text only
+- [ ] Task lists (`- [ ]` / `- [x]`)
+- [ ] Footnotes (`[^1]`)
+- [ ] Highlight (`==text==`), superscript (`^x^`), subscript (`~x~`)
+- [ ] Raw HTML (`<details>`, `<kbd>`, `<aside>`, …) — kept inline as text
+- [ ] GitHub alerts (`> [!NOTE]`) — rendered as plain block quotes
+- [ ] Container directives (`::: warning … :::`) and admonitions (`!!! note`)
+- [ ] Mermaid / PlantUML diagrams — rendered as fenced code
+
+The bundled `Kitchen Sink` demonstration in the sample app exercises every item above so you can verify the fallback behavior on-device.
+
+### Tables
+
+GitHub-flavored tables with column alignment, inline styles inside cells, and the built-in copy / download affordances.
+
+<!-- TODO: attach tables.mov -->
+
+https://user-images.githubusercontent.com/PLACEHOLDER/tables.mov
+
+### LaTeX math
+
+Inline `\( … \)` and display `$$ … $$` equations rendered through [iosMath](https://github.com/maitbayev/iosMath), mid-paragraph or on their own line, and recovered cleanly while streaming.
+
+<!-- TODO: attach math.mov -->
+
+https://user-images.githubusercontent.com/PLACEHOLDER/math.mov
+
+### Customizability
+
+A fully themed `MarkdownRenderConfig` (custom fonts, palette, list markers, code styling) showing how far the styling hooks reach without touching call sites.
+
+<!-- TODO: attach custom-style.mov -->
+
+https://user-images.githubusercontent.com/PLACEHOLDER/custom-style.mov
+
+### Inline Citation
+
+<!-- TODO: attach image -->
+
+
 ## Requirements
 
 | Requirement | Minimum |
