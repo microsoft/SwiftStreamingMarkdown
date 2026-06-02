@@ -90,13 +90,12 @@ import SwiftUI
 import AsyncExtensions
 import SwiftStreamingMarkdown
 
-struct ChatResponseSource: StreamedMarkdownSource {
-  let snapshots: AsyncStream<String>
-  var text: AnyAsyncSequence<String> { snapshots.eraseToAnyAsyncSequence() }
+class ChatResponseSource: ObservableObject, StreamedMarkdownSource {
+  let text: AnyAsyncSequence<String> { ... }
 }
 
 struct ChatBubble: View {
-  let source: ChatResponseSource
+  @EnvironmentObject var source: ChatResponseSource
 
   var body: some View {
     StreamedMarkdownView(source: source)
