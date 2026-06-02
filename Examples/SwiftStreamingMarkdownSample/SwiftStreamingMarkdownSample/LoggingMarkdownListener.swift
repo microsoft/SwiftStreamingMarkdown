@@ -8,10 +8,10 @@ import UIKit
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
-  static let streamingScrollAnimationDuration = 0.16
+  private static let streamingScrollAnimationDuration = 0.16
 
   @Published var followsStreamingMarkdown: Bool = true
-  @Published private(set) var streamingScrollRequest = 0
+  @Published var scrollPosition = ScrollPosition(edge: .top)
   /// Whether the current rendering context is a streamed source. When `false`,
   /// `onRender` callbacks will not auto-scroll, which lets the same listener
   /// be shared between streamed and static `MarkdownView`s without the static
@@ -32,14 +32,13 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     guard !pendingStreamingScroll else { return }
 
     pendingStreamingScroll = true
-    streamingScrollRequest += 1
-    Task { @MainActor in
-      do {
-        try await Task.sleep(nanoseconds: UInt64(Self.streamingScrollAnimationDuration * 1_000_000_000))
-      } catch {
-        // Cancellation should only end the throttle window.
+    DispatchQueue.main.async {
+      withAnimation(.linear(duration: Self.streamingScrollAnimationDuration)) {
+        self.scrollPosition.scrollTo(edge: .bottom)
       }
-      pendingStreamingScroll = false
+      DispatchQueue.main.asyncAfter(deadline: .now() + Self.streamingScrollAnimationDuration) {
+        self.pendingStreamingScroll = false
+      }
     }
   }
 
