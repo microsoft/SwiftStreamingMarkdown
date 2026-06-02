@@ -8,7 +8,7 @@
 
 A high-performance Markdown renderer for iOS, designed for both static markdown texts and LLM stream style where the source text grows token-by-token. 
 
-- Built-in high-performance stream style text transitions for newly arrived glyphs
+- Built-in high-performance streaming-style text transitions for newly arrived glyphs
 - Native inline and block LaTeX math rendering backed by
   [iosMath](https://github.com/maitbayev/iosMath)
 - Inline citations UI commonly seen from LLM outputs
