@@ -2,9 +2,9 @@
 
 This fixture intentionally mixes supported Markdown, streaming edge cases, citations, and syntax that may not have first-class rendering yet. It is useful for checking graceful fallback behavior while text is still arriving.
 
-Inline styles: **strong text**, *emphasis*, ***strong emphasis***, ~~strikethrough~~, `inline code`, a [regular link](https://example.com), an app action link [open settings](copilot-action://settings), and inline math $E = mc^2$.
+Inline styles: **strong text**, *emphasis*, ***strong emphasis***, ~~strikethrough~~, `inline code`, a [regular link](https://example.com), and inline math \(E = mc^2\).
 
-Inline citations should render as compact attachments when the renderer recognizes the citation marker: [9F742443](https://example.com/release-notes?citationMarker=9F742443&citationTitle=1&citationA11yValue=Streaming%20Markdown%20release%20notes&citationId=doc-1&chatItemId=demo-1) [9F742443](https://example.com/api-reference?citationMarker=9F742443&citationTitle=2&citationA11yValue=Markdown%20renderer%20API%20reference&citationId=doc-2&chatItemId=demo-1).
+Inline citations should render as compact attachments when the renderer recognizes the citation marker: [9F742443](https://example.com/release-notes?citationMarker=9F742443&citationTitle=Release%20Notes&citationA11yValue=Streaming%20Markdown%20release%20notes&citationId=doc-1&chatItemId=demo-1) [9F742443](https://example.com/api-reference?citationMarker=9F742443&citationTitle=API%20Reference&citationA11yValue=Markdown%20renderer%20API%20reference&citationId=doc-2&chatItemId=demo-1).
 
 ---
 
@@ -51,7 +51,7 @@ The next list intentionally mixes tight lists, loose lists, ordered lists, unord
 
 1. **Discovery phase** starts as an ordered item with a paragraph continuation.
 
-   The continuation includes inline citation [9F742443](https://example.com/nested-discovery?citationMarker=9F742443&citationTitle=6&citationA11yValue=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math $p95 < 200ms$, and `inline code`.
+   The continuation includes inline citation [9F742443](https://example.com/nested-discovery?citationMarker=9F742443&citationTitle=Nested%20Discovery&citationA11yValue=Nested%20list%20discovery%20citation&citationId=doc-6&chatItemId=demo-1), inline math \(p95 < 200ms\), and `inline code`.
 
    - A nested unordered item with its own children.
      1. Ordered grandchild that starts at one.
@@ -184,7 +184,7 @@ struct PreviewRow: View {
 
 ## Math
 
-Inline math appears in a sentence as $a^2 + b^2 = c^2$.
+Inline math appears in a sentence as \(a^2 + b^2 = c^2\).
 
 $$
 \int_0^1 x^2 dx = \frac{1}{3}
@@ -229,4 +229,4 @@ Term
 
 ## Mixed final paragraph
 
-The final paragraph combines a normal link, an action link, inline math $f(x) = x^2$, a citation [9F742443](https://example.com/final-source?citationMarker=9F742443&citationTitle=5&citationA11yValue=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.
+The final paragraph combines inline math \(f(x) = x^2\), a citation [9F742443](https://example.com/final-source?citationMarker=9F742443&citationTitle=5&citationA11yValue=Final%20paragraph%20citation&citationId=doc-5&chatItemId=demo-1), and `inline code` to exercise wrapping near the end of a stream.

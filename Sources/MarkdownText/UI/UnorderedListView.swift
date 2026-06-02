@@ -34,6 +34,7 @@ struct UnorderedListView: View {
         }
       }
     })
+    .padding([.leading], CGFloat(nestedLevel) * 8)
   }
 
   func bulletView(forListItem listItem: MarkdownListItem) -> some View {

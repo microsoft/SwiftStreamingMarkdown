@@ -12,21 +12,24 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
   case tables = "Tables"
   case math = "Math"
   case robotoTheme = "Roboto Themed"
+  case `default` = "Default"
 
   var id: String { rawValue }
 
   var subtitle: String {
     switch self {
     case .kitchenSink:
-      "Every supported feature, plus unsupported markdown fallbacks"
+      "A comprehensive markdown content includes dialects and corner cases to showcase everything that's supported and unsupported."
     case .multiParagraph:
-      "Excerpts from famous novels and custom context menu"
+      "Multilingual content with custom iOS context menu"
     case .tables:
       "Top 10 populous cities and basic info"
     case .math:
       "Top 10 most popular math equations"
     case .robotoTheme:
       "Fully custom MarkdownRenderConfig: Roboto fonts + teal-on-purple palette"
+    case .default:
+      "Same content as Roboto Themed, rendered with the default MarkdownRenderConfig"
     }
   }
 
@@ -37,6 +40,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .tables: "tables"
     case .math: "math"
     case .robotoTheme: "roboto"
+    case .default: "roboto"
     }
   }
 
@@ -50,6 +54,33 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
         ])
       ])
     default: return nil
+    }
+  }
+
+  var streamedRenderConfig: MarkdownRenderConfig {
+    let base: MarkdownRenderConfig
+    switch self {
+    case .robotoTheme:
+      base = RobotoTheme.renderConfig
+    default:
+      base = .default
+    }
+    return base
+      .withTextContextMenu(value: customContextMenu)
+      .withShouldAnimateText(value: true)
+  }
+
+  var nonStreamedRenderConfig: MarkdownRenderConfig {
+    switch self {
+    case .robotoTheme: RobotoTheme.renderConfig
+    default: .default
+    }
+  }
+
+  var backgroundColor: Color {
+    switch self {
+    case .robotoTheme: RobotoTheme.pageBackground
+    default: Color(.systemBackground)
     }
   }
 }
