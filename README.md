@@ -11,7 +11,7 @@ A high-performance Markdown renderer for iOS, designed for both static markdown 
 - Built-in high-performance streaming-style text transitions for newly arrived glyphs
 - Native inline and block LaTeX math rendering backed by
   [iosMath](https://github.com/maitbayev/iosMath)
-- Inline citations UI commonly seen from LLM outputs
+- Inline citations UI to support LLM grouding source
 - Highly configurable text styles and iOS context menus
 - Built-in hooks for analytics and interaction tracking
 
@@ -117,12 +117,12 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
 
 ### Streaming Performance
 
-`SwiftStreamingMarkdown` has built-in streaming animation support for newly arrived glyphs. It is carefully designed to minimize UI-thread overhead and avoid app hangs. Below is an Xcode profiling comparison between `SwiftStreamingMarkdown` and other popular Markdown rendering libraries on GitHub that do not include built-in streaming support.
+`SwiftStreamingMarkdown` has built-in streaming animation support for newly arrived glyphs. It is carefully designed to minimize UI-thread overhead and avoid app hangs. Below is an Xcode profiling comparison between `SwiftStreamingMarkdown` and other popular Markdown rendering libraries on GitHub that do not include built-in streaming support. The profiling was done on a iPhone Xs device with the sample app streaming content while scrolling down to the bottom continuously, it can be seen that even under such highly UI-intense scenario on a low-end iOS device, `SwiftStreamingMarkdown` can achieve decent performance without hanging the app rendering.
 
 <table>
   <tr>
     <td>
-      <h3>SwiftStreamingMarkdown</h3>
+      <h4>SwiftStreamingMarkdown</h4>
     </td>
     <td>
       <img width="891" height="110" alt="profiling-streaming" src="https://github.com/user-attachments/assets/d8eb9ee6-7b61-4bbb-b70d-e1862a6b1176" />
@@ -130,7 +130,7 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
   </tr>
   <tr>
     <td>
-      <h3>Markdown rendering library without streaming support</h3>
+      <h4>Markdown Library w/o streaming support</h4>
     </td>
     <td>
       <img width="940" height="156" alt="profiling-streaming-comparison" src="https://github.com/user-attachments/assets/739d00d3-5067-409a-96d4-9c3c8b6c0675" />
