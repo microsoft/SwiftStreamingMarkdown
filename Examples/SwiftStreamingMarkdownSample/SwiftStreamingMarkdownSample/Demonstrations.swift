@@ -19,9 +19,9 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
   var subtitle: String {
     switch self {
     case .kitchenSink:
-      "Every supported feature, plus unsupported markdown fallbacks"
+      "A comprehensive markdown content includes dialects and corner cases to showcase everything that's supported and unsupported."
     case .multiParagraph:
-      "Excerpts from famous novels and custom context menu"
+      "Multilingual content with custom iOS context menu"
     case .tables:
       "Top 10 populous cities and basic info"
     case .math:
