@@ -6,13 +6,12 @@
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A high-performance Markdown renderer for iOS, designed for both static markdown texts and LLM stream style where the source text grows chunk-by-chunk. 
+An iOS Markdown renderer that offers smooth streaming experiences.
 
-- Built-in high-performance streaming-style text transitions for newly arrived glyphs
-- Native inline and block LaTeX math rendering backed by
-  [iosMath](https://github.com/maitbayev/iosMath)
-- Inline citations UI for LLM-grounded sources
-- Highly configurable text styles and iOS context menus
+- Smooth, high-performance streaming transitions for newly received text
+- Native inline and block LaTeX math rendering
+- Inline citation UI for source-grounded LLM responses
+- Highly configurable typography, theming, and iOS context menus
 - Built-in hooks for analytics and interaction tracking
 
 ## Catalog
