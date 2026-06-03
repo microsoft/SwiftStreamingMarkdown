@@ -8,11 +8,11 @@
 
 An iOS Markdown renderer that offers smooth streaming experiences.
 
-- Smooth, high-performance streaming transitions for newly received text
-- Native inline and block LaTeX math rendering
-- Inline citation UI for source-grounded LLM responses
-- Highly configurable typography, theming, and iOS context menus
-- Built-in hooks for analytics and interaction tracking
+- ⚡ Smooth, high-performance streaming transitions for newly received text
+- 🧮 Native inline and block LaTeX math rendering
+- 🔗 Inline citation UI for source-grounded LLM responses
+- 🎨 Highly configurable typography, theming, and iOS context menus
+- 📊 Built-in hooks for analytics and interaction tracking
 
 ## Catalog
 
