@@ -118,7 +118,7 @@ The bundled `Kitchen Sink` demonstration in the sample app exercises every item 
 
 ### Streaming Performance
 
-`SwiftStreamingMarkdown` includes built-in animations for streaming content as new text arrives. It is designed to keep rendering smooth while minimizing main-thread work. The chart below compares its performance against a popular Markdown libraries that do not provide built-in streaming support.
+`SwiftStreamingMarkdown` includes built-in animations for streaming content as new text arrives. It is designed to keep rendering smooth while minimizing main-thread work. The chart below compares its performance against popular Markdown libraries that do not provide built-in streaming support.
 
 Profiling was performed on an iPhone XS using the sample app while continuously streaming content and scrolling. Even under this demanding workload on older hardware, `SwiftStreamingMarkdown` maintains smooth rendering without noticeable UI stalls.
 
