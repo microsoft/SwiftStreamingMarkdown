@@ -8,57 +8,106 @@ import SwiftStreamingMarkdown
 struct DemonstrationView: View {
   @AppStorage(SampleSettings.preferStreamedMarkdownKey) private var preferStreamedMarkdown = true
   @AppStorage(SampleSettings.appearanceModeKey) private var appearanceMode = AppearanceMode.device
+  @AppStorage(SampleSettings.markdownThemeKey) private var markdownTheme = SampleMarkdownTheme.automatic
 
   let demonstration: Demonstration
   let markdownText: String
   @StateObject var listener = LoggingMarkdownListener()
+  @StateObject private var playback = StreamingPlaybackController()
+  @StateObject private var performanceMetrics = StreamingPerformanceModel()
+  @State private var isControlDrawerPresented = true
+  @State private var isNearScrollBottom = true
 
   var body: some View {
-    ScrollView {
-      VStack(spacing: 0) {
-        Group {
-          if preferStreamedMarkdown {
-            StreamedMarkdownView(
-              source: TextSimulatedStreamSource(
+    GeometryReader { geometry in
+      ScrollView {
+        VStack(spacing: 0) {
+          Group {
+            if preferStreamedMarkdown {
+              StreamedMarkdownView(
+                source: TextSimulatedStreamSource(
+                  text: markdownText,
+                  chunkSize: 48,
+                  chunkInterval: 0.2,
+                  playback: playback,
+                  performanceMetrics: performanceMetrics
+                ),
+                config: demonstration.renderConfig(theme: markdownTheme, isStreaming: true),
+                listener: listener
+              )
+              .id(streamedContentID)
+            } else {
+              MarkdownView(
                 text: markdownText,
-                chunkSize: 48,
-                chunkInterval: 0.2
-              ),
-              config: demonstration.streamedRenderConfig,
-              listener: listener
-            )
-          } else {
-            MarkdownView(
-              text: markdownText,
-              config: demonstration.nonStreamedRenderConfig,
-              listener: listener
-            )
+                config: demonstration.renderConfig(theme: markdownTheme, isStreaming: false),
+                listener: listener
+              )
+              .id(staticContentID)
+              .task(id: staticContentID) {
+                await performanceMetrics.reset(totalCharacters: markdownText.count, mode: .staticMarkdown)
+                await performanceMetrics.recordChunk(snapshotLength: markdownText.count, isFinal: true)
+              }
+            }
+          }
+          .padding(.horizontal, 28)
+          .frame(maxWidth: 760, alignment: .leading)
+          .frame(maxWidth: .infinity, alignment: .center)
+          .padding(.vertical, 16)
+          .padding(.bottom, isControlDrawerPresented ? 190 : 58)
+          .background {
+            GeometryReader { contentGeometry in
+              Color.clear.preference(
+                key: ScrollContentBottomPreferenceKey.self,
+                value: contentGeometry.frame(in: .named(Self.scrollCoordinateSpaceName)).maxY
+              )
+            }
           }
         }
-        .padding(.horizontal, 16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 16)
+      }
+      .coordinateSpace(name: Self.scrollCoordinateSpaceName)
+      .onPreferenceChange(ScrollContentBottomPreferenceKey.self) { contentBottom in
+        isNearScrollBottom = contentBottom <= geometry.size.height + 80
       }
     }
     .scrollPosition($listener.scrollPosition)
-    .background(demonstration.backgroundColor.ignoresSafeArea())
+    .background(markdownTheme.backgroundColor(for: demonstration).ignoresSafeArea())
+    .overlay(alignment: .bottom) {
+      StreamingControlDrawerView(
+        isPresented: $isControlDrawerPresented,
+        playback: playback,
+        performanceMetrics: performanceMetrics,
+        listener: listener,
+        isStreaming: preferStreamedMarkdown
+      )
+      .ignoresSafeArea(edges: .bottom)
+    }
+    .onAppear {
+      listener.performanceMetrics = performanceMetrics
+    }
     .onChange(of: preferStreamedMarkdown, initial: true) { _, isStreamed in
       listener.isStreamingActive = isStreamed
+      if isStreamed {
+        playback.play()
+      }
+    }
+    .onChange(of: isControlDrawerPresented) { _, isPresented in
+      guard isPresented && performanceMetrics.isComplete && isNearScrollBottom else { return }
+      Task { @MainActor in
+        try? await Task.sleep(nanoseconds: 80_000_000)
+        listener.scrollToStreamingBottom(force: true)
+      }
     }
     .navigationTitle(demonstration.rawValue)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
       ToolbarItemGroup(placement: .topBarTrailing) {
-        if preferStreamedMarkdown {
-          Button {
-            listener.followsStreamingMarkdown.toggle()
-          } label: {
-            Image(systemName: listener.followsStreamingMarkdown ? "arrow.down.circle.fill" : "arrow.down.circle")
-          }
-          .accessibilityLabel(listener.followsStreamingMarkdown ? "Disable follow scrolling" : "Enable follow scrolling")
-        }
-
         Menu {
+          Picker("Markdown Theme", selection: $markdownTheme) {
+            ForEach(SampleMarkdownTheme.allCases) { theme in
+              Text(theme.displayName).tag(theme)
+            }
+          }
+
           Picker("Appearance", selection: $appearanceMode) {
             ForEach(AppearanceMode.allCases) { mode in
               Text(mode.displayName).tag(mode)
@@ -70,5 +119,23 @@ struct DemonstrationView: View {
         }
       }
     }
+  }
+
+  private var streamedContentID: String {
+    "\(demonstration.id)-\(markdownTheme.id)-\(playback.streamID)"
+  }
+
+  private var staticContentID: String {
+    "\(demonstration.id)-\(markdownTheme.id)-static"
+  }
+
+  private static let scrollCoordinateSpaceName = "demonstration-scroll"
+}
+
+private struct ScrollContentBottomPreferenceKey: PreferenceKey {
+  static var defaultValue: CGFloat = 0
+
+  static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+    value = nextValue()
   }
 }

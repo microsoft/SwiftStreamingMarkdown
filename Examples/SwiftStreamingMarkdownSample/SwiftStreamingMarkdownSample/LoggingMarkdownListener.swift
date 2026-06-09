@@ -17,9 +17,12 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   /// be shared between streamed and static `MarkdownView`s without the static
   /// case yanking the scroll position on first render.
   @Published var isStreamingActive: Bool = false
+  var performanceMetrics: StreamingPerformanceModel?
   private var pendingStreamingScroll = false
 
   func onRender(markdown: RenderableDocument) async {
+    await performanceMetrics?.recordRender()
+
     guard isStreamingActive else { return }
     if followsStreamingMarkdown && !pendingStreamingScroll {
       await scrollToStreamingBottom()
@@ -27,9 +30,17 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   }
 
   @MainActor
-  func scrollToStreamingBottom() {
-    guard followsStreamingMarkdown else { return }
-    guard !pendingStreamingScroll else { return }
+  func toggleFollowScrolling() {
+    followsStreamingMarkdown.toggle()
+    if followsStreamingMarkdown {
+      scrollToStreamingBottom(force: true)
+    }
+  }
+
+  @MainActor
+  func scrollToStreamingBottom(force: Bool = false) {
+    guard followsStreamingMarkdown || force else { return }
+    guard !pendingStreamingScroll || force else { return }
 
     pendingStreamingScroll = true
     DispatchQueue.main.async {

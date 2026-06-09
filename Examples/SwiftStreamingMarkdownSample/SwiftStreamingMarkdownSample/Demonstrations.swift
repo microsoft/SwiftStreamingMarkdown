@@ -57,27 +57,11 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     }
   }
 
-  var streamedRenderConfig: MarkdownRenderConfig {
-    let base: MarkdownRenderConfig
-    switch self {
-    case .robotoTheme:
-      base = RobotoTheme.renderConfig
-    default:
-      base = .default
-    }
-    return base
-      .withTextContextMenu(value: customContextMenu)
-      .withShouldAnimateText(value: true)
+  func renderConfig(theme: SampleMarkdownTheme, isStreaming: Bool) -> MarkdownRenderConfig {
+    theme.renderConfig(for: self, isStreaming: isStreaming)
   }
 
-  var nonStreamedRenderConfig: MarkdownRenderConfig {
-    switch self {
-    case .robotoTheme: RobotoTheme.renderConfig
-    default: .default
-    }
-  }
-
-  var backgroundColor: Color {
+  var automaticBackgroundColor: Color {
     switch self {
     case .robotoTheme: RobotoTheme.pageBackground
     default: Color(.systemBackground)

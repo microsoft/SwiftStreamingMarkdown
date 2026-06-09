@@ -7,6 +7,7 @@ import SwiftUI
 enum SampleSettings {
   static let preferStreamedMarkdownKey = "preferStreamedMarkdown"
   static let appearanceModeKey = "appearanceMode"
+  static let markdownThemeKey = "markdownTheme"
 }
 
 enum AppearanceMode: String, CaseIterable, Identifiable {
