@@ -1,5 +1,6 @@
 //
-//  Copyright © 2025 Microsoft. All rights reserved.
+//  Copyright (c) Microsoft Corporation. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
 //
@@ -30,26 +31,5 @@ final class MarkdownParserTests: XCTestCase {
     parsed = await parser.parse(text: text, option: .init(speculativeRewrite: true))
     XCTAssertTrue(parsed.speculativeRewritten)
     XCTAssertEqual(parsed.document.child(at: 1)?.childCount, 2)
-  }
-
-  // TODO: This does crash
-  func skip_testTableWithExtraPipesInCellDoesNotCrash() async {
-    let text = """
-    | Jenis Kelamin | Jenis Tas     | Tally       | Jumlah |
-    |---------------|---------------|-------------|--------|
-    | Perempuan     | Tas Ransel    | ||||
-    """
-
-    let document = await parser.parse(text: text)
-    let renderableDoc = await RenderableDocument(document: document, config: .default)
-
-    guard case let .table(_, headers, rows, rawMarkdown) = renderableDoc.renderables.first else {
-      XCTFail("Expected markdown to render as a table")
-      return
-    }
-
-    XCTAssertEqual(headers.map(\.string), ["Jenis Kelamin", "Jenis Tas", "Tally", "Jumlah"])
-    XCTAssertEqual(rows.first?.map(\.string), ["Perempuan", "Tas Ransel", "", ""])
-    XCTAssertFalse(rawMarkdown.isEmpty)
   }
 }

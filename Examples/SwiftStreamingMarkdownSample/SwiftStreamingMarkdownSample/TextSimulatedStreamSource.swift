@@ -3,7 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
-import AsyncExtensions
 import Foundation
 import SwiftStreamingMarkdown
 
@@ -32,7 +31,7 @@ struct TextSimulatedStreamSource: StreamedMarkdownSource {
     self.performanceMetrics = performanceMetrics
   }
 
-  var text: AnyAsyncSequence<String> {
+  var text: AsyncStream<String> {
     let fullText = self.fullText
     let step = self.chunkSize
     let interval = self.chunkInterval
@@ -109,7 +108,7 @@ struct TextSimulatedStreamSource: StreamedMarkdownSource {
         continuation.finish()
       }
       continuation.onTermination = { _ in task.cancel() }
-    }.eraseToAnyAsyncSequence()
+    }
   }
 
   private func sleep(

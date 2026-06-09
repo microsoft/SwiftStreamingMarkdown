@@ -13,7 +13,6 @@ let package = Package(
       targets: ["SwiftStreamingMarkdown"])
   ],
   dependencies: [
-    .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
     .package(url: "https://github.com/ordo-one/equatable", exact: "1.0.10"),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.18.1"),
     .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
@@ -25,7 +24,6 @@ let package = Package(
       name: "SwiftStreamingMarkdown",
       dependencies: [
         .product(name: "Equatable", package: "equatable"),
-        "AsyncExtensions",
         .product(name: "Markdown", package: "swift-markdown"),
         .product(name: "HighlightSwift", package: "highlightswift"),
         .product(name: "iosMath", package: "iosMath")

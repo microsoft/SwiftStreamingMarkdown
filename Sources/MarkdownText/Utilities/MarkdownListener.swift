@@ -1,8 +1,8 @@
 //
-//  Copyright © 2025 Microsoft. All rights reserved.
+//  Copyright (c) Microsoft Corporation. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
-import AsyncExtensions
 import Foundation
 
 public protocol MarkdownListener {
@@ -16,31 +16,41 @@ public protocol MarkdownListener {
 public final class MarkdownController: ObservableObject {
 
   private let listener: MarkdownListener?
-  private let eventSubject = AsyncCurrentValueSubject<RenderableDocument?>(nil)
-  private var listenerTask: Task<(), Error>!
+  private var continuation: AsyncStream<RenderableDocument>.Continuation?
+  private var listenerTask: Task<Void, Never>?
 
   init(listener: MarkdownListener?) {
     self.listener = listener
   }
 
   func onAppear(markdown: RenderableDocument) {
+    cleanup()
+
     guard let listener else {
       return
     }
-    self.listenerTask = Task {
-      for try await md in eventSubject.eraseToAnyAsyncSequence().compactMap({ $0 }) {
+
+    let stream = AsyncStream<RenderableDocument>(bufferingPolicy: .bufferingNewest(1)) { continuation in
+      self.continuation = continuation
+    }
+
+    listenerTask = Task {
+      // Deliver the initial markdown directly so it can't be overwritten
+      // in the 1-slot buffer by an `onChange` arriving before this task
+      // starts iterating the stream.
+      await listener.onRender(markdown: markdown)
+      for await md in stream {
         await listener.onRender(markdown: md)
       }
     }
-    eventSubject.send(markdown)
   }
 
   func onChange(markdown: RenderableDocument) {
-    eventSubject.send(markdown)
+    continuation?.yield(markdown)
   }
 
   func onDisappear() {
-    listenerTask?.cancel()
+    cleanup()
   }
 
   func onTableCopyTap(content: String) {
@@ -65,5 +75,12 @@ public final class MarkdownController: ObservableObject {
     Task {
       await listener?.onContextMenuTap(id: id, selectedContent: selectedContent)
     }
+  }
+
+  private func cleanup() {
+    continuation?.finish()
+    continuation = nil
+    listenerTask?.cancel()
+    listenerTask = nil
   }
 }
