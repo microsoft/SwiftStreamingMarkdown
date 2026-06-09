@@ -215,7 +215,7 @@ import SwiftUI
 import SwiftStreamingMarkdown
 
 class ChatResponseSource: ObservableObject, StreamedMarkdownSource {
-  let text: AsyncStream<String> { ... }
+  var text: AsyncStream<String> { ... }
 }
 
 struct ChatBubble: View {
