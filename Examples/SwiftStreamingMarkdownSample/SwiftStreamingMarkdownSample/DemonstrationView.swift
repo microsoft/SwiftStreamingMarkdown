@@ -16,7 +16,7 @@ struct DemonstrationView: View {
   @StateObject private var playback = StreamingPlaybackController()
   @StateObject private var performanceMetrics = StreamingPerformanceModel()
   @State private var isControlDrawerPresented = true
-  @State private var isNearScrollBottom = true
+  @State private var isAtScrollBottom = true
 
   var body: some View {
     GeometryReader { geometry in
@@ -66,7 +66,7 @@ struct DemonstrationView: View {
       }
       .coordinateSpace(name: Self.scrollCoordinateSpaceName)
       .onPreferenceChange(ScrollContentBottomPreferenceKey.self) { contentBottom in
-        isNearScrollBottom = contentBottom <= geometry.size.height + 80
+        isAtScrollBottom = contentBottom <= geometry.size.height + 12
       }
     }
     .scrollPosition($listener.scrollPosition)
@@ -91,7 +91,7 @@ struct DemonstrationView: View {
       }
     }
     .onChange(of: isControlDrawerPresented) { _, isPresented in
-      guard isPresented && performanceMetrics.isComplete && isNearScrollBottom else { return }
+      guard isPresented && performanceMetrics.isComplete && isAtScrollBottom else { return }
       Task { @MainActor in
         try? await Task.sleep(nanoseconds: 80_000_000)
         listener.scrollToStreamingBottom(force: true)
