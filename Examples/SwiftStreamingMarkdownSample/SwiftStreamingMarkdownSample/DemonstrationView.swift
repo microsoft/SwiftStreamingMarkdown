@@ -15,8 +15,6 @@ struct DemonstrationView: View {
   let markdownText: String
   @StateObject var listener = LoggingMarkdownListener()
   @StateObject private var viewModel: DemonstrationViewModel
-  @State private var isControlDrawerPresented = true
-  @State private var isAtScrollBottom = true
 
   init(demonstration: Demonstration, markdownText: String) {
     self.demonstration = demonstration
@@ -52,7 +50,7 @@ struct DemonstrationView: View {
         .frame(maxWidth: 760, alignment: .leading)
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.vertical, 16)
-        .padding(.bottom, isControlDrawerPresented ? 190 : 58)
+        .padding(.bottom, viewModel.isControlDrawerPresented ? 190 : 58)
       }
     }
     .onScrollGeometryChange(for: Bool.self) { geometry in
@@ -62,13 +60,12 @@ struct DemonstrationView: View {
         - geometry.containerSize.height
       return distanceFromBottom <= 12
     } action: { _, isAtBottom in
-      isAtScrollBottom = isAtBottom
+      viewModel.isAtScrollBottom = isAtBottom
     }
     .scrollPosition($listener.scrollPosition)
     .background(markdownTheme.backgroundColor(for: demonstration).ignoresSafeArea())
     .overlay(alignment: .bottom) {
       StreamingControlDrawerView(
-        isPresented: $isControlDrawerPresented,
         viewModel: viewModel,
         listener: listener,
         isStreaming: preferStreamedMarkdown
@@ -84,8 +81,8 @@ struct DemonstrationView: View {
         viewModel.play()
       }
     }
-    .onChange(of: isControlDrawerPresented) { _, isPresented in
-      guard isPresented && viewModel.isComplete && isAtScrollBottom else { return }
+    .onChange(of: viewModel.isControlDrawerPresented) { _, isPresented in
+      guard isPresented && viewModel.isComplete && viewModel.isAtScrollBottom else { return }
       Task { @MainActor in
         try? await Task.sleep(nanoseconds: 80_000_000)
         listener.scrollToStreamingBottom(force: true)

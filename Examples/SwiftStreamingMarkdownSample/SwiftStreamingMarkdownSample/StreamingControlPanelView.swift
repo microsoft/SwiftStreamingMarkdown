@@ -6,7 +6,6 @@
 import SwiftUI
 
 struct StreamingControlDrawerView: View {
-  @Binding var isPresented: Bool
   @ObservedObject var viewModel: DemonstrationViewModel
   @ObservedObject var listener: LoggingMarkdownListener
 
@@ -14,9 +13,8 @@ struct StreamingControlDrawerView: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      if isPresented {
+      if viewModel.isControlDrawerPresented {
         StreamingControlPanelView(
-          isPresented: $isPresented,
           viewModel: viewModel,
           listener: listener,
           isStreaming: isStreaming
@@ -25,7 +23,7 @@ struct StreamingControlDrawerView: View {
       } else {
         Button {
           withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-            isPresented = true
+            viewModel.isControlDrawerPresented = true
           }
         } label: {
           Image(systemName: "chevron.up")
@@ -44,13 +42,13 @@ struct StreamingControlDrawerView: View {
         .accessibilityLabel("Show streaming controls")
       }
     }
-    .animation(.spring(response: 0.28, dampingFraction: 0.86), value: isPresented)
+    .animation(.spring(response: 0.28, dampingFraction: 0.86), value: viewModel.isControlDrawerPresented)
     .gesture(
       DragGesture(minimumDistance: 16)
         .onEnded { value in
           guard abs(value.translation.height) > 28 else { return }
           withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-            isPresented = value.translation.height < 0
+            viewModel.isControlDrawerPresented = value.translation.height < 0
           }
         }
     )
@@ -58,7 +56,6 @@ struct StreamingControlDrawerView: View {
 }
 
 struct StreamingControlPanelView: View {
-  @Binding var isPresented: Bool
   @ObservedObject var viewModel: DemonstrationViewModel
   @ObservedObject var listener: LoggingMarkdownListener
 
@@ -68,7 +65,7 @@ struct StreamingControlPanelView: View {
     VStack(alignment: .leading, spacing: 12) {
       Button {
         withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-          isPresented = false
+          viewModel.isControlDrawerPresented = false
         }
       } label: {
         Capsule(style: .continuous)

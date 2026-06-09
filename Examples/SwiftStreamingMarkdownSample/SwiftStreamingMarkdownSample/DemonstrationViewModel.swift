@@ -31,6 +31,8 @@ final class DemonstrationViewModel: ObservableObject, StreamedMarkdownSource {
   @Published private(set) var isPlaying = true
   @Published private(set) var isFastForwarding = false
   @Published private(set) var streamID = UUID()
+  @Published var isAtScrollBottom = true
+  @Published var isControlDrawerPresented = true
 
   // Performance metrics.
 
