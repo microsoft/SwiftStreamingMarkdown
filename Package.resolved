@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "asyncextensions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sideeffect-io/AsyncExtensions",
-      "state" : {
-        "revision" : "c2b32caf189993285b5a782fe7cd658ed1fa9b9a",
-        "version" : "0.5.5"
-      }
-    },
-    {
       "identity" : "equatable",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ordo-one/equatable",
@@ -41,15 +32,6 @@
       "state" : {
         "revision" : "924936d0427cb25a61169739a7660230bffa6ea6",
         "version" : "0.8.0"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections.git",
-      "state" : {
-        "revision" : "671108c96644956dddcd89dd59c203dcdb36cec7",
-        "version" : "1.1.4"
       }
     },
     {

@@ -3,7 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
-import AsyncExtensions
 import Foundation
 
 public protocol MarkdownListener {
@@ -17,31 +16,48 @@ public protocol MarkdownListener {
 public final class MarkdownController: ObservableObject {
 
   private let listener: MarkdownListener?
-  private let eventSubject = AsyncCurrentValueSubject<RenderableDocument?>(nil)
-  private var listenerTask: Task<(), Error>!
+  private var continuation: AsyncStream<RenderableDocument>.Continuation?
+  private var listenerTask: Task<Void, Never>?
 
   init(listener: MarkdownListener?) {
     self.listener = listener
   }
 
   func onAppear(markdown: RenderableDocument) {
+    // Defensively tear down any prior run so a duplicate `onAppear` can't
+    // strand a previous stream/task.
+    onDisappear()
+
     guard let listener else {
       return
     }
-    self.listenerTask = Task {
-      for try await md in eventSubject.eraseToAnyAsyncSequence().compactMap({ $0 }) {
+
+    // `.bufferingNewest(1)` coalesces rapid `onChange` deliveries while the
+    // listener is still awaiting `onRender`, so a slow listener doesn't
+    // replay every intermediate parse — only the most recent state.
+    let stream = AsyncStream<RenderableDocument>(bufferingPolicy: .bufferingNewest(1)) { continuation in
+      self.continuation = continuation
+    }
+    listenerTask = Task {
+      // Deliver the initial markdown directly to avoid losing it to a rapid
+      // `onChange` that could overwrite the single-slot buffer before the
+      // for-await loop starts iterating.
+      await listener.onRender(markdown: markdown)
+      for await md in stream {
         await listener.onRender(markdown: md)
       }
     }
-    eventSubject.send(markdown)
   }
 
   func onChange(markdown: RenderableDocument) {
-    eventSubject.send(markdown)
+    continuation?.yield(markdown)
   }
 
   func onDisappear() {
+    continuation?.finish()
+    continuation = nil
     listenerTask?.cancel()
+    listenerTask = nil
   }
 
   func onTableCopyTap(content: String) {
