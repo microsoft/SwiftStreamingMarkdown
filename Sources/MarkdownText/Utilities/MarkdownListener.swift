@@ -24,24 +24,20 @@ public final class MarkdownController: ObservableObject {
   }
 
   func onAppear(markdown: RenderableDocument) {
-    // Defensively tear down any prior run so a duplicate `onAppear` can't
-    // strand a previous stream/task.
-    onDisappear()
+    cleanup()
 
     guard let listener else {
       return
     }
 
-    // `.bufferingNewest(1)` coalesces rapid `onChange` deliveries while the
-    // listener is still awaiting `onRender`, so a slow listener doesn't
-    // replay every intermediate parse — only the most recent state.
     let stream = AsyncStream<RenderableDocument>(bufferingPolicy: .bufferingNewest(1)) { continuation in
       self.continuation = continuation
     }
+
     listenerTask = Task {
-      // Deliver the initial markdown directly to avoid losing it to a rapid
-      // `onChange` that could overwrite the single-slot buffer before the
-      // for-await loop starts iterating.
+      // Deliver the initial markdown directly so it can't be overwritten
+      // in the 1-slot buffer by an `onChange` arriving before this task
+      // starts iterating the stream.
       await listener.onRender(markdown: markdown)
       for await md in stream {
         await listener.onRender(markdown: md)
@@ -54,10 +50,7 @@ public final class MarkdownController: ObservableObject {
   }
 
   func onDisappear() {
-    continuation?.finish()
-    continuation = nil
-    listenerTask?.cancel()
-    listenerTask = nil
+    cleanup()
   }
 
   func onTableCopyTap(content: String) {
@@ -82,5 +75,12 @@ public final class MarkdownController: ObservableObject {
     Task {
       await listener?.onContextMenuTap(id: id, selectedContent: selectedContent)
     }
+  }
+
+  private func cleanup() {
+    continuation?.finish()
+    continuation = nil
+    listenerTask?.cancel()
+    listenerTask = nil
   }
 }
