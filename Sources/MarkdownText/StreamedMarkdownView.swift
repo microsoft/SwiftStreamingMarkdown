@@ -5,7 +5,6 @@
 
 import Foundation
 import SwiftUI
-import AsyncExtensions
 import Equatable
 
 /// A source of incremental Markdown text for `StreamedMarkdownView`.
@@ -14,7 +13,7 @@ import Equatable
 /// source so far (a growing prefix), not an incremental delta. The view
 /// re-parses each snapshot and updates the rendered output.
 public protocol StreamedMarkdownSource {
-  var text: AnyAsyncSequence<String> { get }
+  var text: AsyncStream<String> { get }
 }
 
 /// A SwiftUI view that incrementally parses and renders streamed Markdown.
@@ -84,17 +83,13 @@ final class StreamedMarkdownController: ObservableObject {
     task?.cancel()
     task = Task { [weak self] in
       guard let self else { return }
-      do {
-        for try await text in self.source.text {
-          if Task.isCancelled { return }
-          let renderable = await self.parser.parse(text: text, config: self.config)
-          if Task.isCancelled { return }
-          await MainActor.run {
-            self.markdownToRender = renderable
-          }
+      for await text in self.source.text {
+        if Task.isCancelled { return }
+        let renderable = await self.parser.parse(text: text, config: self.config)
+        if Task.isCancelled { return }
+        await MainActor.run {
+          self.markdownToRender = renderable
         }
-      } catch {
-        // Stream terminated with an error; nothing further to render.
       }
     }
   }

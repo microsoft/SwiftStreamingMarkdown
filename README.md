@@ -212,11 +212,10 @@ and renders them as they arrive.
 
 ```swift
 import SwiftUI
-import AsyncExtensions
 import SwiftStreamingMarkdown
 
 class ChatResponseSource: ObservableObject, StreamedMarkdownSource {
-  let text: AnyAsyncSequence<String> { ... }
+  let text: AsyncStream<String> { ... }
 }
 
 struct ChatBubble: View {
