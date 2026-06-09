@@ -1,5 +1,6 @@
 //
-//  Copyright © 2025 Microsoft. All rights reserved.
+//  Copyright (c) Microsoft Corporation. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
 import AsyncExtensions
@@ -118,16 +119,17 @@ struct TextSimulatedStreamSource: StreamedMarkdownSource {
   ) async throws {
     guard interval > 0 else { return }
 
-    let deadline = Date().addingTimeInterval(interval)
-    while Date() < deadline {
+    var remaining = interval
+    while remaining > 0 {
       if await playback?.shouldFastForward(since: fastForwardBaseline) == true {
         return
       }
 
       try await playback?.waitUntilPlaying()
-      let remaining = max(0, deadline.timeIntervalSinceNow)
       let delay = min(remaining, 0.05)
+      let start = Date()
       try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+      remaining -= Date().timeIntervalSince(start)
     }
   }
 }

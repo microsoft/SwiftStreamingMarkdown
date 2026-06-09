@@ -8,11 +8,10 @@ if ! command -v xcrun >/dev/null 2>&1; then
   exit 0
 fi
 
-xcode_major="$(
-  (xcodebuild -version 2>/dev/null || true) | awk '
-    /^Xcode / {
-      split($2, version, ".")
-      print version[1]
+preferred_ios_major="$(
+  (xcrun --sdk iphonesimulator --show-sdk-version 2>/dev/null || true) | awk -F "." '
+    NF > 0 {
+      print $1
       exit
     }
   '
@@ -21,7 +20,7 @@ xcode_major="$(
 simctl_output="$(xcrun simctl list devices available 2>/dev/null || true)"
 
 destination="$(
-  printf "%s\n" "$simctl_output" | awk -v preferred_major="$xcode_major" '
+  printf "%s\n" "$simctl_output" | awk -v preferred_major="$preferred_ios_major" '
     $1 == "--" && $2 == "iOS" {
       split($3, version, ".")
       current_major = version[1]
