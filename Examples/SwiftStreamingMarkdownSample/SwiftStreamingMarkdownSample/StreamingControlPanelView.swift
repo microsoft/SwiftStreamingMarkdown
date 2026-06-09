@@ -7,8 +7,7 @@ import SwiftUI
 
 struct StreamingControlDrawerView: View {
   @Binding var isPresented: Bool
-  @ObservedObject var playback: StreamingPlaybackController
-  @ObservedObject var performanceMetrics: StreamingPerformanceModel
+  @ObservedObject var viewModel: DemonstrationViewModel
   @ObservedObject var listener: LoggingMarkdownListener
 
   let isStreaming: Bool
@@ -18,8 +17,7 @@ struct StreamingControlDrawerView: View {
       if isPresented {
         StreamingControlPanelView(
           isPresented: $isPresented,
-          playback: playback,
-          performanceMetrics: performanceMetrics,
+          viewModel: viewModel,
           listener: listener,
           isStreaming: isStreaming
         )
@@ -61,8 +59,7 @@ struct StreamingControlDrawerView: View {
 
 struct StreamingControlPanelView: View {
   @Binding var isPresented: Bool
-  @ObservedObject var playback: StreamingPlaybackController
-  @ObservedObject var performanceMetrics: StreamingPerformanceModel
+  @ObservedObject var viewModel: DemonstrationViewModel
   @ObservedObject var listener: LoggingMarkdownListener
 
   let isStreaming: Bool
@@ -87,15 +84,15 @@ struct StreamingControlPanelView: View {
         .frame(maxWidth: .infinity)
 
       VStack(alignment: .leading, spacing: 8) {
-        ProgressView(value: performanceMetrics.progress)
+        ProgressView(value: viewModel.progress)
 
         LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
-          metric("Chars", "\(performanceMetrics.streamedCharacters)/\(performanceMetrics.totalCharacters)")
-          metric("Chunks", "\(performanceMetrics.chunkCount)")
-          metric("Renders", "\(performanceMetrics.renderCount)")
+          metric("Chars", "\(viewModel.streamedCharacters)/\(viewModel.totalCharacters)")
+          metric("Chunks", "\(viewModel.chunkCount)")
+          metric("Renders", "\(viewModel.renderCount)")
           metric("Elapsed", elapsedText)
-          metric("Chars/sec", numberText(performanceMetrics.charactersPerSecond))
-          metric("Chunks/sec", numberText(performanceMetrics.chunksPerSecond))
+          metric("Chars/sec", numberText(viewModel.charactersPerSecond))
+          metric("Chunks/sec", numberText(viewModel.chunksPerSecond))
           metric("Render lag", latencyText)
           metric("State", stateText)
         }
@@ -141,7 +138,7 @@ struct StreamingControlPanelView: View {
   private var playbackControls: some View {
     HStack(spacing: 4) {
       Button {
-        playback.replay()
+        viewModel.replay()
       } label: {
         controlIcon("arrow.counterclockwise", isSelected: false)
       }
@@ -150,23 +147,23 @@ struct StreamingControlPanelView: View {
       .accessibilityLabel("Replay stream")
 
       Button {
-        playback.togglePlayback()
+        viewModel.togglePlayback()
       } label: {
-        controlIcon(playback.isPlaying ? "pause.fill" : "play.fill", isSelected: playback.isPlaying)
+        controlIcon(viewModel.isPlaying ? "pause.fill" : "play.fill", isSelected: viewModel.isPlaying)
       }
       .buttonStyle(.plain)
       .frame(maxWidth: .infinity)
-      .disabled(!isStreaming || performanceMetrics.isComplete)
-      .accessibilityLabel(playback.isPlaying ? "Pause stream" : "Play stream")
+      .disabled(!isStreaming || viewModel.isComplete)
+      .accessibilityLabel(viewModel.isPlaying ? "Pause stream" : "Play stream")
 
       Button {
-        playback.fastForward()
+        viewModel.fastForward()
       } label: {
         controlIcon("forward.end.fill", isSelected: false)
       }
       .buttonStyle(.plain)
       .frame(maxWidth: .infinity)
-      .disabled(!isStreaming || performanceMetrics.isComplete)
+      .disabled(!isStreaming || viewModel.isComplete)
       .accessibilityLabel("Fast forward stream")
     }
     .frame(maxWidth: .infinity)
@@ -212,23 +209,23 @@ struct StreamingControlPanelView: View {
   }
 
   private var elapsedText: String {
-    "\(numberText(performanceMetrics.elapsedTime))s"
+    "\(numberText(viewModel.elapsedTime))s"
   }
 
   private var latencyText: String {
-    guard let lastRenderLatency = performanceMetrics.lastRenderLatency else {
+    guard let lastRenderLatency = viewModel.lastRenderLatency else {
       return "—"
     }
     return "\(numberText(lastRenderLatency * 1_000))ms"
   }
 
   private var stateText: String {
-    if performanceMetrics.isComplete {
+    if viewModel.isComplete {
       return "Done"
     }
 
     if isStreaming {
-      return playback.isPlaying ? "Playing" : "Paused"
+      return viewModel.isPlaying ? "Playing" : "Paused"
     }
 
     return "Static"
@@ -236,9 +233,9 @@ struct StreamingControlPanelView: View {
 
   private func speedButton(_ speed: StreamingSpeed, systemImage: String) -> some View {
     Button {
-      playback.speed = speed
+      viewModel.speed = speed
     } label: {
-      controlIcon(systemImage, isSelected: playback.speed == speed)
+      controlIcon(systemImage, isSelected: viewModel.speed == speed)
     }
     .buttonStyle(.plain)
     .frame(maxWidth: .infinity)
