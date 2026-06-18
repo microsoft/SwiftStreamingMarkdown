@@ -12,7 +12,7 @@ extension OrderedList: BlockConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     let nodes: [ListItem] = self.children.compactMap { $0 as? ListItem }
     let items: [MarkdownListItem] = nodes.map { listItem in
-      MarkdownListItem(children: listItem.blockConvertibleChildren.map { $0.convert(attributeContainer: attributeContainer, config: config)},
+      MarkdownListItem(children: listItem.children.flatMap { $0.blockRenderables(attributeContainer: attributeContainer, config: config) },
                        startsWithBold: listItem.startsWithBold)
     }
     return .orderedList(id: self.id, items: items)

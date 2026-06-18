@@ -11,7 +11,7 @@ extension Markdown.Document {
 
   func convert(with config: MarkdownRenderConfig) -> [MarkdownRenderable] {
     return self
-      .blockConvertibleChildren
-      .map { $0.convert(attributeContainer: NSAttributeContainer(), config: config) }
+      .children
+      .flatMap { $0.blockRenderables(attributeContainer: NSAttributeContainer(), config: config) }
   }
 }

@@ -58,6 +58,26 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     }
   }
 
+  var customViewBuilder: MarkdownCustomViewBuilder? {
+    switch self {
+    case .kitchenSink:
+      return MarkdownCustomViewBuilder(id: "kitchen-sink-custom-views") { customView in
+        switch customView {
+        case .image(let image) where image.source == "StreamingMarkdownSample":
+          // swiftlint:disable:next no_anyview
+          return AnyView(SampleMarkdownImageView(image: image))
+        case .block(let block) where block.name == "Callout":
+          // swiftlint:disable:next no_anyview
+          return AnyView(SampleCalloutView(block: block))
+        default:
+          return nil
+        }
+      }
+    default:
+      return nil
+    }
+  }
+
   func renderConfig(theme: SampleMarkdownTheme, isStreaming: Bool) -> MarkdownRenderConfig {
     theme.renderConfig(for: self, isStreaming: isStreaming)
   }
@@ -67,5 +87,47 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .robotoTheme: RobotoTheme.pageBackground
     default: Color(.systemBackground)
     }
+  }
+}
+
+private struct SampleMarkdownImageView: View {
+  let image: MarkdownImage
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Image(image.source)
+        .resizable()
+        .scaledToFit()
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+      if !image.alternativeText.isEmpty {
+        Text(image.alternativeText)
+          .font(.caption)
+          .foregroundStyle(.secondary)
+      }
+    }
+  }
+}
+
+private struct SampleCalloutView: View {
+  @Environment(\.markdownConfig) private var config
+
+  let block: MarkdownCustomBlock
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      HStack(spacing: 8) {
+        Image(systemName: block.arguments["icon"] ?? "sparkles")
+          .font(.system(size: 14, weight: .semibold))
+        Text(block.arguments["title"] ?? block.name)
+          .font(.headline)
+      }
+
+      DocumentView(renderableDocument: block.content, config: config)
+    }
+    .padding(14)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color(uiColor: .secondarySystemBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 8))
   }
 }

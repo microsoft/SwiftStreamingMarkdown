@@ -129,6 +129,31 @@ extension Markdown.Link: InlineConvertible {
   }
 }
 
+extension Markdown.Image: InlineConvertible {
+
+  var markdownImage: MarkdownImage {
+    MarkdownImage(
+      id: id,
+      source: source ?? "",
+      title: title,
+      alternativeText: plainText
+    )
+  }
+
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
+    let fallbackText = alternativeTextFallback
+    return NSMutableAttributedString(string: fallbackText).mergingAttributes(attributeContainer)
+  }
+
+  private var alternativeTextFallback: String {
+    if !plainText.isEmpty {
+      return plainText
+    }
+
+    return source ?? ""
+  }
+}
+
 extension Markdown.SoftBreak: InlineConvertible {
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
