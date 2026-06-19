@@ -74,6 +74,8 @@ extension MarkdownRenderable {
       return items.flatMap { $0.attributedStrings() }
     case .table(_, let headers, let rows, _):
       return headers + rows.flatMap { $0 }
+    case .customView(_, let block):
+      return block.content.attributedStrings
     default:
       return []
     }

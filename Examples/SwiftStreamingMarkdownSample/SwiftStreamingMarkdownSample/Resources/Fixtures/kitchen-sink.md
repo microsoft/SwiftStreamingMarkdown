@@ -198,7 +198,14 @@ $$
 
 Bundled SVG asset:
 
-![Streaming Markdown SVG sample](Images/streaming-markdown.svg)
+![Streaming Markdown SVG sample](StreamingMarkdownSample)
+
+@Callout(title: "Custom view builder", icon: "wand.and.stars") {
+This block is written as markdown, parsed as a swift-markdown directive, and rendered by the sample app's custom view builder.
+
+- It can contain regular markdown content.
+- The fallback renderer still has access to this content.
+}
 
 Remote unsupported image fallback:
 

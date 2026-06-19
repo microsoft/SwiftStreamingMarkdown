@@ -48,6 +48,7 @@ enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
   func renderConfig(for demonstration: Demonstration, isStreaming: Bool) -> MarkdownRenderConfig {
     resolvedConfig(for: demonstration)
       .withTextContextMenu(value: demonstration.customContextMenu)
+      .withCustomViewBuilder(value: demonstration.customViewBuilder)
       .withShouldAnimateText(value: isStreaming)
   }
 

@@ -22,4 +22,20 @@ extension Markup {
   var blockConvertibleChildren: [BlockConvertible] {
     return self.children.compactMap { $0 as? BlockConvertible }
   }
+
+  func blockRenderables(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> [MarkdownRenderable] {
+    if let paragraph = self as? Paragraph {
+      return paragraph.convertRenderables(attributeContainer: attributeContainer, config: config)
+    }
+
+    if let blockDirective = self as? BlockDirective {
+      return blockDirective.convertRenderables(attributeContainer: attributeContainer, config: config)
+    }
+
+    guard let convertible = self as? BlockConvertible else {
+      return []
+    }
+
+    return [convertible.convert(attributeContainer: attributeContainer, config: config)]
+  }
 }

@@ -16,7 +16,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -30,7 +32,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -44,7 +48,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -58,7 +64,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -72,7 +80,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: value,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -86,7 +96,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: value,
       inlineStyle: inlineStyle,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -100,7 +112,9 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: value,
-      textContextMenu: textContextMenu
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
     )
   }
 
@@ -115,7 +129,42 @@ extension MarkdownRenderConfig {
       paragraphStyle: paragraphStyle,
       tableStyle: tableStyle,
       inlineStyle: inlineStyle,
-      textContextMenu: value
+      textContextMenu: value,
+      citationConfig: citationConfig,
+      customViewBuilder: customViewBuilder
+    )
+  }
+
+  /// Returns a copy with `citationConfig` replaced.
+  public func withCitationConfig(value: CitationConfig) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: value,
+      customViewBuilder: customViewBuilder
+    )
+  }
+
+  /// Returns a copy with `customViewBuilder` replaced. Pass `nil` to use only
+  /// built-in rendering and directive fallback content.
+  public func withCustomViewBuilder(value: MarkdownCustomViewBuilder?) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      customViewBuilder: value
     )
   }
 }

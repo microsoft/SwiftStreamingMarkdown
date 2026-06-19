@@ -12,13 +12,22 @@ public struct MarkdownParseOption {
   /// Specify how to parse latex
   public let latexMatchingRules: [LatexMatching]
 
+  /// Whether swift-markdown block directive syntax should be parsed.
+  public let parseBlockDirectives: Bool
+
   /// Create a new parse option.
   /// - Parameters:
   ///   - speculativeRewrite: See `speculativeRewrite`.
   ///   - latexMatchingRules: See `latexMatchingRules`. Defaults to every supported rule.
-  public init(speculativeRewrite: Bool, latexMatchingRules: [LatexMatching] = LatexMatching.allCases) {
+  ///   - parseBlockDirectives: See `parseBlockDirectives`. Defaults to `false`.
+  public init(
+    speculativeRewrite: Bool,
+    latexMatchingRules: [LatexMatching] = LatexMatching.allCases,
+    parseBlockDirectives: Bool = false
+  ) {
     self.speculativeRewrite = speculativeRewrite
     self.latexMatchingRules = latexMatchingRules
+    self.parseBlockDirectives = parseBlockDirectives
   }
 
   /// The set of delimiter forms the LaTeX preprocessor will recognize. Omitting
