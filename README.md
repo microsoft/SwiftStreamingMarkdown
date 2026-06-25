@@ -172,7 +172,7 @@ SwiftStreamingMarkdown is distributed exclusively as a Swift Package.
 
 ### Binary Size
 
-Integrating `SwiftStreamingMarkdown` adds roughly **3 MB** to your app's App Store download size. The increase comes from the rendering engine and its dependencies (e.g. `swift-markdown`, `cmark-gfm`, `iosMath` for LaTeX, `HighlightSwift` for code syntax highlighting) and bundled resources such as math fonts and the syntax-highlighting runtime. Actual size depends on your app's architecture slices and App Store compression.
+Integrating `SwiftStreamingMarkdown` adds approximately **1.6 MB** to your app's App Store download size and **3–3.5 MB** to the on-device install size. The increase comes from the rendering engine and its dependencies (`swift-markdown`, `cmark-gfm`, `iosMath` for LaTeX, `HighlightSwift` for code syntax highlighting) and bundled resources (math font, syntax-highlighting theme). Actual size varies with architecture slices and App Store compression.
 
 ## Quick start
 
