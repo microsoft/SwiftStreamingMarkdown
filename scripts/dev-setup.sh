@@ -7,8 +7,10 @@
 #   - swiftlint
 #   - xcodegen
 #   - cloc
-#   - diff-image (and imagemagick, which it shells out to) — used as the git
-#     diff driver for snapshot PNGs.
+#
+# Optional:
+#   - diff-image (and imagemagick, which it shells out to) — used as a local
+#     visual diff helper for snapshot PNGs.
 #
 # Run this once after cloning the repo.
 
@@ -23,6 +25,7 @@ DIFF_IMAGE_REPO_URL="https://github.com/ewanmellor/git-diff-image"
 echo "🔍 Running SwiftStreamingMarkdown dev environment precheck..."
 
 missing_items=()
+optional_items=()
 
 has_cmd() {
   command -v "$1" >/dev/null 2>&1
@@ -156,9 +159,9 @@ else
   missing_items+=("cloc (brew install cloc)")
 fi
 
-# diff-image (required) + imagemagick that backs it.
+# diff-image (optional) + imagemagick that backs it.
 if ! has_cmd magick && ! has_cmd compare; then
-  if ensure_brew_on_path && prompt_to_run "❌ ImageMagick not found (needed by diff-image). Install via 'brew install imagemagick' now?" \
+  if ensure_brew_on_path && prompt_to_run "⚠️  ImageMagick not found (needed by diff-image). Install via 'brew install imagemagick' now?" \
       brew install imagemagick; then
     :
   fi
@@ -166,20 +169,27 @@ fi
 if has_cmd magick || has_cmd compare; then
   log_pass "ImageMagick available"
 else
-  missing_items+=("imagemagick (brew install imagemagick)")
+  optional_items+=("imagemagick (brew install imagemagick)")
 fi
 
 if ! has_cmd diff-image; then
-  echo "❌ diff-image not found. This tool wires git into a PNG snapshot diff renderer."
+  echo "⚠️  diff-image not found. Snapshot tests can still run, but local PNG snapshot failures"
+  echo "   will not have a visual diff helper unless you install it."
   echo "   Install with:"
   echo "     git clone $DIFF_IMAGE_REPO_URL"
-  echo "     cd git-diff-image && make install"
-  echo "   Then enable it for this clone:"
-  echo "     git config diff.image.command diff-image"
-  echo "     echo '*.png diff=image' >> .git/info/attributes"
-  missing_items+=("diff-image ($DIFF_IMAGE_REPO_URL)")
+  echo "     cd git-diff-image && ./install.sh"
+  echo "   The installer configures Git's image diff driver through git_diff_image."
+  optional_items+=("diff-image ($DIFF_IMAGE_REPO_URL)")
 else
   log_pass "diff-image available"
+fi
+
+if [ ${#optional_items[@]} -ne 0 ]; then
+  echo ""
+  echo "⚠️  Optional snapshot diff helpers missing:"
+  for item in "${optional_items[@]}"; do
+    echo "  - $item"
+  done
 fi
 
 if [ ${#missing_items[@]} -ne 0 ]; then

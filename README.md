@@ -287,7 +287,7 @@ targets are:
 
 | Command | Purpose |
 | --- | --- |
-| `make dev-setup` | Verify local tools such as Xcode, SwiftLint, XcodeGen, `cloc`, ImageMagick, and `diff-image`. |
+| `make dev-setup` | Verify required local tools such as Xcode, SwiftLint, XcodeGen, and `cloc`; warn about optional snapshot diff helpers ImageMagick and `diff-image`. |
 | `make project` | Resolve Swift package dependencies and open the package in Xcode. |
 | `make generate-sample-project` | Generate the sample app project with XcodeGen. |
 | `make sample-project` | Generate and open the sample app project in Xcode. |
