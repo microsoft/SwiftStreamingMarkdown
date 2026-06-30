@@ -29,7 +29,7 @@ PRs are very welcome. To keep the review loop short, please follow these steps b
 3. Keep the change focused — one logical change per PR is much easier to review than a grab-bag.
 4. If you are adding behavior, add a test. The package uses XCTest under `Tests/`; many UI surfaces are covered by snapshot tests.
 5. If you change a public API, update the DocC comments and the README where it shows up.
-6. If you touch rendered output, update the snapshot fixtures and review the `diff-image` output yourself before pushing.
+6. If you touch rendered output, update the snapshot fixtures and review the visual snapshot differences yourself before pushing. When the optional `diff-image` helper is installed, use its output for that review.
 7. Run `make ci` before pushing. Use `make lint`, `make test`, or `make build-sample` for targeted checks while iterating.
 8. Use `make project` to open the Swift package in Xcode or `make sample-project` to generate and open the sample app. Use `make cloc` when you need a Git-backed line-count report.
 
