@@ -8,7 +8,7 @@ import Markdown
 /// The output of `MarkdownParser.parse(text:option:)`.
 public struct MarkdownParseResult {
   /// The parsed markdown `Document` tree.
-  public let document: Document
+  public let document: Markdown.Document
   /// `true` if the parser applied a speculative rewrite (e.g. completing a
   /// partial table or emphasis) before returning the document.
   public let speculativeRewritten: Bool

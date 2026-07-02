@@ -148,7 +148,11 @@ struct CodeBlockView: View {
     }.onChange(of: copied, perform: { isCopied in
       if isCopied {
         Task {
-          try? await Task.sleep(seconds: 3)
+          do {
+            try await Task.sleep(seconds: 3)
+          } catch {
+            return
+          }
           copied = false
         }
       }

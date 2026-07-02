@@ -21,7 +21,7 @@ extension MarkdownParser {
   /// returns only the parsed `Document`.
   /// - Parameter text: The incoming text
   /// - Returns: The parsed markdown `Document` tree
-  public func parse(text: String) async -> Document {
+  public func parse(text: String) async -> Markdown.Document {
     return await parse(text: text, option: .init(speculativeRewrite: false)).document
   }
 
