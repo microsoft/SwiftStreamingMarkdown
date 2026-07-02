@@ -177,7 +177,7 @@ struct TableView: View {
           .onAppear {
             scrollWidth = geo.size.width
           }
-          .onChange(of: geo.size.width) { _, newValue in
+          .onChange(of: geo.size.width) { newValue in
             scrollWidth = newValue
           }
       }

@@ -18,7 +18,7 @@ struct TrackSizeModifier: ViewModifier {
             .onAppear {
               onChange(proxy.size)
             }
-            .onChange(of: proxy.size) { _, newSize in
+            .onChange(of: proxy.size) { newSize in
               onChange(newSize)
             }
         }
