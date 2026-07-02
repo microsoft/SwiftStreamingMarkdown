@@ -145,19 +145,19 @@ struct CodeBlockView: View {
             topTrailingRadius: 0
           ))
         )
-    }.onChange(of: copied, perform: { isCopied in
+    }.onChange(of: copied) { _, isCopied in
       if isCopied {
         Task {
-          try await Task.sleep(seconds: 3)
+          try? await Task.sleep(seconds: 3)
           copied = false
         }
       }
-    })
-    .onChange(of: code, perform: { value in
+    }
+    .onChange(of: code) { _, value in
       Task {
         await updateAttributedString(code: value)
       }
-    })
+    }
     .onAppear(perform: {
       Task {
         await updateAttributedString(code: code)

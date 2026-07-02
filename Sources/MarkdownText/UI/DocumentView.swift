@@ -40,9 +40,9 @@ public struct DocumentView: View {
     .task {
       controller.onAppear(markdown: renderableDocument)
     }
-    .onChange(of: renderableDocument, perform: { md in
+    .onChange(of: renderableDocument) { _, md in
       controller.onChange(markdown: md)
-    })
+    }
     .onDisappear {
       controller.onDisappear()
     }

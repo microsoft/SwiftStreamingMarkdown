@@ -34,7 +34,7 @@ public struct RenderableDocument: Equatable, Sendable {
   /// - Parameters:
   ///   - document: The parsed markdown tree.
   ///   - config: Styling and behavior used during conversion.
-  public init(document: Document, config: MarkdownRenderConfig) async {
+  public init(document: Markdown.Document, config: MarkdownRenderConfig) async {
     self.renderables = document.convert(with: config)
   }
 
