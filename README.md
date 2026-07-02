@@ -97,6 +97,7 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [x] Block quotes (with nested inlines, lists, and citations)
 - [x] Ordered lists
 - [x] Unordered lists (with nesting)
+- [x] Task lists (`- [ ]` / `- [x]`), display-only
 - [x] Thematic breaks (`---`)
 - [x] Tables with `:---`, `:---:`, `---:` column alignment
 - [x] Inline LaTeX math via `\( … \)`
@@ -106,7 +107,6 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 ### Not yet supported
 
 - [ ] Images (`![alt](url)`) — alt text only
-- [ ] Task lists (`- [ ]` / `- [x]`)
 - [ ] Footnotes (`[^1]`)
 - [ ] Highlight (`==text==`), superscript (`^x^`), subscript (`~x~`)
 - [ ] Raw HTML (`<details>`, `<kbd>`, `<aside>`, …) — kept inline as text

@@ -68,6 +68,28 @@ final class UnorderedListViewTests: SnapshotTestCase {
   }
 
   @MainActor
+  func testTaskListView() async throws {
+    let text = """
+    - [x] completed task
+    - [ ] open task with a longer trailing description to exercise wrapping behavior
+    - regular item mixed into the same list
+    """
+    let parser = MarkdownParserImpl()
+    let document = await parser.parse(text: text)
+    let renderables = document.convert(with: .default)
+    guard case .unorderedList(_, let items, let nestedLevel) = renderables.first else {
+      XCTFail("Expected the parsed document to start with an unordered list")
+      return
+    }
+
+    let view = CanvasView {
+      UnorderedListView(items: items, nestedLevel: nestedLevel).padding()
+    }.environment(\.markdownConfig, MarkdownRenderConfig.default)
+
+    assert(view)
+  }
+
+  @MainActor
   func testNestedUnorderedListView() async throws {
     let text = """
     - Top level item 1

@@ -72,6 +72,14 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
 }
 
 struct MarkdownListItem: Equatable {
+  /// Checkbox state for a GitHub-flavored task list item (`- [ ]` / `- [x]`).
+  enum Checkbox {
+    case checked
+    case unchecked
+  }
+
   let children: [MarkdownRenderable]
   let startsWithBold: Bool
+  /// `nil` for regular list items.
+  var checkbox: Checkbox?
 }

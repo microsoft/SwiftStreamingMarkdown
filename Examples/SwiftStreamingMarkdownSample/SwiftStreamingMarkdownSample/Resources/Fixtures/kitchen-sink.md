@@ -43,7 +43,7 @@ A hard line break follows two trailing spaces.
 3. Final ordered item
 
 - [x] Task lists are included as GitHub-flavored Markdown.
-- [ ] If task-list rendering is not implemented, these should degrade to plain list text.
+- [ ] Unchecked tasks render with an empty checkbox.
 
 ### Deep mixed nested list stress test
 
