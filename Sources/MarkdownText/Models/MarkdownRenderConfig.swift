@@ -107,6 +107,10 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   /// Styling for inline runs: bold emphasis, links, and inline code spans.
+  ///
+  /// - Note: Marked as `@unchecked Sendable` because this struct stores `MDFont`
+  ///   (`UIFont`/`NSFont`), which are immutable and safe to share across
+  ///   concurrency domains, but the SDK does not mark them as `Sendable`.
   public struct MarkdownInlineTextStyle: Hashable, @unchecked Sendable {
     /// Foreground color applied to bold-emphasis runs.
     public let boldTextColor: Color
@@ -136,6 +140,10 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   }
 
   /// Controls whether inline citations are parsed and how they are rendered.
+  ///
+  /// - Note: Marked as `@unchecked Sendable` because this struct stores `MDFont`
+  ///   (`UIFont`/`NSFont`), which are immutable and safe to share across
+  ///   concurrency domains, but the SDK does not mark them as `Sendable`.
   public struct CitationConfig: Hashable, @unchecked Sendable {
     /// When `false`, citation markers are left as plain text.
     public let isEnabled: Bool
