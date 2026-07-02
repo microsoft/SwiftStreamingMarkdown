@@ -30,9 +30,9 @@ public struct RenderableDocument: Equatable, Sendable {
     return renderables.isEmpty
   }
 
-  /// Convert a parsed `Document` into a `RenderableDocument` using the supplied config.
+  /// Convert a parsed `Markdown.Document` into a `RenderableDocument` using the supplied config.
   /// - Parameters:
-  ///   - document: The parsed markdown tree.
+  ///   - document: The parsed `Markdown.Document` tree.
   ///   - config: Styling and behavior used during conversion.
   public init(document: Markdown.Document, config: MarkdownRenderConfig) async {
     self.renderables = document.convert(with: config)
