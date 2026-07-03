@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload failed snapshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: failed-snapshots-iOS
           path: /tmp/failed-snapshots/
@@ -84,7 +84,7 @@ jobs:
 
       - name: Upload failed snapshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: failed-snapshots-macOS
           path: /tmp/failed-snapshots/
