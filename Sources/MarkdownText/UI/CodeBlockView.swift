@@ -150,8 +150,6 @@ struct CodeBlockView: View {
         Task { @MainActor in
           do {
             try await Task.sleep(seconds: 3)
-          } catch is CancellationError {
-            return
           } catch {
             return
           }
