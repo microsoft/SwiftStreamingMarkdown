@@ -5,7 +5,11 @@
 
 import SwiftStreamingMarkdown
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
   case automatic
@@ -33,7 +37,7 @@ enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
     case .automatic:
       demonstration.automaticBackgroundColor
     case .system:
-      Color(.systemBackground)
+      Color.systemBackground
     case .roboto:
       RobotoTheme.pageBackground
     case .presentation:
@@ -183,12 +187,6 @@ private struct Palette {
 }
 
 private extension Color {
-  static func dynamic(light: Color, dark: Color) -> Color {
-    Color(UIColor { traitCollection in
-      traitCollection.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
-    })
-  }
-
   static func sampleRGB(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> Color {
     Color(red: red, green: green, blue: blue)
   }

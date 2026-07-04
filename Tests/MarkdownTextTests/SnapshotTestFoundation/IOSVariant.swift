@@ -3,19 +3,20 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
+#if canImport(UIKit)
 import SnapshotTesting
 import SwiftUI
 import XCTest
 
 /// Device variant model needed for Snapshot testing
 
-public struct DeviceVariant {
+public struct IOSVariant {
   let title: DeviceName
   let snapshot: Snapshotting<UIViewController, UIImage>
   let colorScheme: ColorScheme
 }
 
-extension DeviceVariant {
+extension IOSVariant {
   var regionCode: String {
     "US"
   }
@@ -44,7 +45,7 @@ private extension ColorScheme {
   }
 }
 
-extension DeviceVariant {
+extension IOSVariant {
   /// All snapshot devices in Portait mode
 
   enum Vertical {
@@ -53,8 +54,8 @@ extension DeviceVariant {
       colorScheme: ColorScheme = .light,
       precision: Float = 1,
       perceptualPrecision: Float = 1
-    ) -> DeviceVariant {
-      DeviceVariant(
+    ) -> IOSVariant {
+      IOSVariant(
         title: .iPhone16,
         snapshot: .image(on: .init(config: ViewImageConfig.iPhone16(.portrait), height: size), precision: precision, perceptualPrecision: perceptualPrecision),
         colorScheme: colorScheme
@@ -66,8 +67,8 @@ extension DeviceVariant {
       colorScheme: ColorScheme = .light,
       precision: Float = 1,
       perceptualPrecision: Float = 1
-    ) -> DeviceVariant {
-      DeviceVariant(
+    ) -> IOSVariant {
+      IOSVariant(
         title: .iPadPro11,
         snapshot: .image(on: .init(config: .iPadPro11(.portrait), height: size), precision: precision, perceptualPrecision: perceptualPrecision),
         colorScheme: colorScheme
@@ -83,8 +84,8 @@ extension DeviceVariant {
       colorScheme: ColorScheme = .light,
       precision: Float = 1,
       perceptualPrecision: Float = 1
-    ) -> DeviceVariant {
-      DeviceVariant(
+    ) -> IOSVariant {
+      IOSVariant(
         title: .iPadPro11Landscape,
         snapshot: .image(on: .init(config: .iPadPro11(.landscape), height: size), precision: precision, perceptualPrecision: perceptualPrecision),
         colorScheme: colorScheme
@@ -99,7 +100,7 @@ extension DeviceVariant {
   }
 }
 
-extension Collection where Element == DeviceVariant {
+extension Collection where Element == IOSVariant {
   /// Standard device variant list – one iPhone light / dark, one iPad light / dark
   /// - Parameters:
   ///   - height: An optional height for the virtual device. If not provided, a default height will be used.
@@ -111,7 +112,7 @@ extension Collection where Element == DeviceVariant {
     height: CGFloat? = nil,
     precision: Float = 1,
     perceptualPrecision: Float = 1.0
-  ) -> [DeviceVariant] {
+  ) -> [IOSVariant] {
     iPhoneOnly(
       height: height,
       precision: precision,
@@ -134,17 +135,17 @@ extension Collection where Element == DeviceVariant {
     height: CGFloat? = nil,
     precision: Float = 1,
     perceptualPrecision: Float = 1.0
-  ) -> [DeviceVariant] {
+  ) -> [IOSVariant] {
     [
       // iPhone 16, light
-      DeviceVariant.Vertical.iPhone16(
+      IOSVariant.Vertical.iPhone16(
         size: height,
         colorScheme: .light,
         precision: precision,
         perceptualPrecision: perceptualPrecision
       ),
       // iPhone 16, dark
-      DeviceVariant.Vertical.iPhone16(
+      IOSVariant.Vertical.iPhone16(
         size: height,
         colorScheme: .dark,
         precision: precision,
@@ -164,17 +165,17 @@ extension Collection where Element == DeviceVariant {
     height: CGFloat? = nil,
     precision: Float = 1,
     perceptualPrecision: Float = 1.0
-  ) -> [DeviceVariant] {
+  ) -> [IOSVariant] {
     [
       // iPad Pro 11 in portrait (light)
-      DeviceVariant.Vertical.iPadPro11(
+      IOSVariant.Vertical.iPadPro11(
         size: height,
         colorScheme: .light,
         precision: precision,
         perceptualPrecision: perceptualPrecision
       ),
       // iPad Pro 11 in landscape (dark)
-      DeviceVariant.Horizontal.iPadPro11(
+      IOSVariant.Horizontal.iPadPro11(
         size: height,
         colorScheme: .dark,
         precision: precision,
@@ -183,3 +184,4 @@ extension Collection where Element == DeviceVariant {
     ]
   }
 }
+#endif

@@ -89,9 +89,11 @@ struct DemonstrationView: View {
       }
     }
     .navigationTitle(demonstration.rawValue)
+    #if canImport(UIKit)
     .navigationBarTitleDisplayMode(.inline)
+    #endif
     .toolbar {
-      ToolbarItemGroup(placement: .topBarTrailing) {
+      ToolbarItemGroup(placement: .automatic) {
         Menu {
           Picker("Markdown Theme", selection: $markdownTheme) {
             ForEach(SampleMarkdownTheme.allCases) { theme in

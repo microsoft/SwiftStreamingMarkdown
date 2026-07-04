@@ -6,7 +6,11 @@
 import Foundation
 @testable import SwiftStreamingMarkdown
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 import UniformTypeIdentifiers
 import XCTest
 
@@ -32,10 +36,14 @@ final class TableViewSnapshotTests: SnapshotTestCase {
 
   /// Create a LaTeX attachment with proper data encoding
   private func createLatexAttachment(latex: String, fontSize: CGFloat = 16.0) -> NSTextAttachment {
-    // Create LatexAttachmentData and encode it
-    let textColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
+    let textColor = MDColor(Color.Theme.Foreground.Primary.Primary750)
+    #if canImport(UIKit)
     let lightHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)).toHexString()
     let darkHex = textColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)).toHexString()
+    #elseif canImport(AppKit)
+    let lightHex = textColor.resolvedForAppearance(.aqua).toHexString()
+    let darkHex = textColor.resolvedForAppearance(.darkAqua).toHexString()
+    #endif
     let attachmentData = LatexAttachmentData(latex: latex, fontSize: fontSize, lightTextColor: lightHex, darkTextColor: darkHex)
     let encoder = JSONEncoder()
     guard let payload = try? encoder.encode(attachmentData) else {
@@ -44,6 +52,7 @@ final class TableViewSnapshotTests: SnapshotTestCase {
     }
     return NSTextAttachment(data: payload, ofType: UTType.data.identifier)
   }
+
   private func createTableView(_ attributedString: NSAttributedString) -> some View {
     CanvasView {
       VStack(alignment: .leading) {
@@ -86,7 +95,7 @@ final class TableViewSnapshotTests: SnapshotTestCase {
       string: "documentation",
       attributes: [
         .link: docURL,
-        .foregroundColor: UIColor.systemBlue
+        .foregroundColor: MDColor.systemBlue
       ]
     )
     mutableString.append(linkText)
@@ -152,7 +161,7 @@ final class TableViewSnapshotTests: SnapshotTestCase {
     let mutableString = NSMutableAttributedString()
 
     // Add bold text
-    let boldText = NSAttributedString(string: "Important: ", attributes: [.font: UIFont.boldSystemFont(ofSize: 16)])
+    let boldText = NSAttributedString(string: "Important: ", attributes: [.font: MDFont.boldSystemFont(ofSize: 16)])
     mutableString.append(boldText)
 
     // Add citation
@@ -160,7 +169,12 @@ final class TableViewSnapshotTests: SnapshotTestCase {
     mutableString.append(NSAttributedString(attachment: citation))
 
     // Add italic text
-    let italicText = NSAttributedString(string: " provides crucial insights", attributes: [.font: UIFont.italicSystemFont(ofSize: 16)])
+    #if canImport(UIKit)
+    let italicFont = MDFont.italicSystemFont(ofSize: 16)
+    #elseif canImport(AppKit)
+    let italicFont = NSFontManager.shared.convert(NSFont.systemFont(ofSize: 16), toHaveTrait: .italicFontMask)
+    #endif
+    let italicText = NSAttributedString(string: " provides crucial insights", attributes: [.font: italicFont])
     mutableString.append(italicText)
 
     mutableString.append(NSAttributedString(string: " for our analysis."))

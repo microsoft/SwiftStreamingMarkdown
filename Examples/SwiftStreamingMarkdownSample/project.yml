@@ -38,11 +38,45 @@ targets:
         CODE_SIGN_STYLE: Automatic
         TARGETED_DEVICE_FAMILY: "1,2"
 
+  SwiftStreamingMarkdownSampleMac:
+    type: application
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: SwiftStreamingMarkdownSample
+        excludes:
+          - Resources
+      - path: SwiftStreamingMarkdownSample/Resources
+        buildPhase: resources
+    dependencies:
+      - package: SwiftStreamingMarkdown
+        product: SwiftStreamingMarkdown
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.microsoft.SwiftStreamingMarkdownSample.mac
+        PRODUCT_NAME: SwiftStreamingMarkdownSampleMac
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+        SWIFT_VERSION: 5.9
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+
 schemes:
   SwiftStreamingMarkdownSample:
     build:
       targets:
         SwiftStreamingMarkdownSample: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    archive:
+      config: Release
+
+  SwiftStreamingMarkdownSampleMac:
+    build:
+      targets:
+        SwiftStreamingMarkdownSampleMac: all
     run:
       config: Debug
     test:

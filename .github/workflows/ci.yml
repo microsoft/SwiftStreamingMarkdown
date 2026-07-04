@@ -44,6 +44,53 @@ jobs:
             -destination "platform=iOS Simulator,OS=26.4.1,name=iPhone 17" \
             -skipMacroValidation
 
+      - name: Collect failed snapshots
+        if: failure()
+        run: |
+          mkdir -p /tmp/failed-snapshots
+          find ~/Library/Developer/CoreSimulator/Devices -path "*tmp/*SnapshotTests*" -name "*.png" -exec cp {} /tmp/failed-snapshots/ \; 2>/dev/null || true
+          ls /tmp/failed-snapshots/ 2>/dev/null || echo "No snapshots found"
+
+      - name: Upload failed snapshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: failed-snapshots-iOS
+          path: /tmp/failed-snapshots/
+          retention-days: 3
+          if-no-files-found: ignore
+
+  spm-unit-tests-macos:
+    name: SPM Unit Tests (macOS)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run package tests with xcodebuild
+        run: |
+          xcodebuild test \
+            -scheme SwiftStreamingMarkdown \
+            -destination "platform=macOS" \
+            -skipMacroValidation
+
+      - name: Collect failed snapshots
+        if: failure()
+        run: |
+          mkdir -p /tmp/failed-snapshots
+          find /var/folders -path "*/T/*SnapshotTests*" -name "*.png" -exec cp {} /tmp/failed-snapshots/ \; 2>/dev/null || true
+          ls /tmp/failed-snapshots/ 2>/dev/null || echo "No snapshots found"
+
+      - name: Upload failed snapshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: failed-snapshots-macOS
+          path: /tmp/failed-snapshots/
+          retention-days: 3
+          if-no-files-found: ignore
+
   sample-app-build:
     name: Sample App Build
     runs-on: macos-26
@@ -62,3 +109,32 @@ jobs:
 
       - name: Build sample app
         run: make build-sample
+
+  sample-app-build-macos:
+    name: Sample App Build (macOS)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install XcodeGen if missing
+        run: |
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            echo "XcodeGen not found, installing via Homebrew..."
+            brew install xcodegen
+          fi
+          xcodegen --version
+
+      - name: Generate sample app project
+        run: make generate-sample-project
+
+      - name: Build macOS sample app
+        run: |
+          GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.bareRepository GIT_CONFIG_VALUE_0=all \
+          xcodebuild build \
+            -project Examples/SwiftStreamingMarkdownSample/SwiftStreamingMarkdownSample.xcodeproj \
+            -scheme SwiftStreamingMarkdownSampleMac \
+            -destination "platform=macOS" \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO

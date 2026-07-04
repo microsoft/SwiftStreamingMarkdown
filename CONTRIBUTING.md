@@ -32,6 +32,7 @@ PRs are very welcome. To keep the review loop short, please follow these steps b
 6. If you touch rendered output, update the snapshot fixtures and review the `diff-image` output yourself before pushing.
 7. Run `make ci` before pushing. Use `make lint`, `make test`, or `make build-sample` for targeted checks while iterating.
 8. Use `make project` to open the Swift package in Xcode or `make sample-project` to generate and open the sample app. Use `make cloc` when you need a Git-backed line-count report.
+9. As you iterate on your PR, please resolve reviewer comments as you fix them, especially AI reviewer comments. Your AI agent can do this automatically via the `gh` CLI tool. 
 
 If you are unsure whether a feature is in scope, open an issue first to talk through the design. It is much less frustrating to align on the approach before you have spent an afternoon implementing it.
 

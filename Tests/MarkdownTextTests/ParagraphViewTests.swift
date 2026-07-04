@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
+#if canImport(UIKit)
 import Foundation
 import Markdown
 @testable import SwiftStreamingMarkdown
@@ -287,3 +288,4 @@ struct ParagraphViewTests {
     #expect(citationData?.url != nil, "Should have valid URL")
   }
 }
+#endif

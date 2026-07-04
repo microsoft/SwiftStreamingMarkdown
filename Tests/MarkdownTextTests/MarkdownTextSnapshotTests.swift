@@ -6,7 +6,6 @@
 import Markdown
 @testable import SwiftStreamingMarkdown
 import SwiftUI
-import UIKit
 import XCTest
 
 @MainActor
@@ -61,7 +60,7 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     This double integral:
     - Sweeps across a rectangular region from \\( \\boxed{x = 0} \\) to \\( \\pi \\), and \\( y = 1 \\) to \\( e \\)
     - Combines a sine of a product \\( xy \\), a logarithmic denominator, and a cosine term multiplied by a polynomial
-    - Now we have this matrix \\(\\begin{bmatrix} 1 & 2\\\\ 3 & 4 \\end{bmatrix}\\\\)
+    - Now we have this matrix \\(\\begin{bmatrix} 1 & 2\\\\ 3 & 4 \\end{bmatrix}\\)
 
     ## Very *important* title \\( x = 0 \\)
     """

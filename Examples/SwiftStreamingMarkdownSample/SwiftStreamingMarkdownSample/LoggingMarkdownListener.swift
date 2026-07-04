@@ -5,7 +5,11 @@
 
 import Foundation
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 import SwiftStreamingMarkdown
 
 class LoggingMarkdownListener: MarkdownListener, ObservableObject {
@@ -55,12 +59,26 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
   }
 
   func onTableCopyTap(content: String) async {
+    #if canImport(UIKit)
     UIPasteboard.general.string = content
     await presentCopyConfirmation()
+    #elseif canImport(AppKit)
+    NSPasteboard.general.clearContents()
+    NSPasteboard.general.setString(content, forType: .string)
+    #endif
   }
 
   func onTableDownloadTap(content: String) async {
+    #if canImport(UIKit)
     await presentShareSheet(for: content)
+    #elseif canImport(AppKit)
+    let panel = NSSavePanel()
+    panel.allowedContentTypes = [.plainText]
+    panel.nameFieldStringValue = "table.txt"
+    if panel.runModal() == .OK, let url = panel.url {
+      try? content.write(to: url, atomically: true, encoding: .utf8)
+    }
+    #endif
   }
 
   func onContextMenuAppear(id: String, selectedContent: String) async {
@@ -71,6 +89,7 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     print("[MarkdownListener] onContextMenuTap(id: \(id), selectedContent: \(selectedContent))")
   }
 
+  #if canImport(UIKit)
   @MainActor
   private func presentCopyConfirmation() {
     guard let presenter = topPresentingViewController() else {
@@ -127,4 +146,5 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     }
     return presenter
   }
+  #endif
 }

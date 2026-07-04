@@ -27,6 +27,8 @@ struct SettingsView: View {
       .pickerStyle(.menu)
     }
     .navigationTitle("Settings")
+    #if canImport(UIKit)
     .navigationBarTitleDisplayMode(.inline)
+    #endif
   }
 }

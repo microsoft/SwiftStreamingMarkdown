@@ -44,7 +44,7 @@ struct NavigationView: View {
       }
       .navigationTitle("Markdown Demos")
       .toolbar {
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .automatic) {
           NavigationLink {
             SettingsView()
           } label: {

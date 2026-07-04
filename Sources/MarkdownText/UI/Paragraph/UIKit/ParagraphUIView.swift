@@ -14,13 +14,6 @@ struct AccessibilityContent {
   let actions: [UIAccessibilityCustomAction]
 }
 
-struct FadeAnimationData {
-  let id: UUID = UUID()
-  let startTime: CFTimeInterval
-  let duration: CFTimeInterval
-  let range: NSRange
-}
-
 private struct CachedParagraphUIViewSize {
   let size: CGSize
   let targetWidth: CGFloat
@@ -28,7 +21,7 @@ private struct CachedParagraphUIViewSize {
 
 class ParagraphUIView: UITextView {
   private static let jsonEncoder = JSONEncoder()
-  static let animationDuration: CFTimeInterval = 0.5 // Animation duration for each word
+  static let animationDuration: CFTimeInterval = ParagraphAnimationConstants.fadeInDuration
 
   private(set) var paragraphContents: NSMutableAttributedString = NSMutableAttributedString()
   private(set) var lineSpacing: CGFloat?
@@ -78,9 +71,7 @@ class ParagraphUIView: UITextView {
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
     if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
-      AppAppearance.$current.mutate { app in
-        app = traitCollection.userInterfaceStyle == .dark ? .dark : .light
-      }
+      AppAppearance.update(style: traitCollection.userInterfaceStyle)
     }
   }
 
@@ -111,9 +102,7 @@ class ParagraphUIView: UITextView {
   func setParagraphContents(_ newContents: NSMutableAttributedString, lineSpacing: CGFloat? = nil, animatedByWord: Bool) {
     // Keep the cached interface style up to date for citation preview rendering.
     // This runs on the main thread so it's safe to read traitCollection here.
-    AppAppearance.$current.mutate { app in
-      app = traitCollection.userInterfaceStyle == .dark ? .dark : .light
-    }
+    AppAppearance.update(style: traitCollection.userInterfaceStyle)
 
     guard paragraphContents != newContents || self.lineSpacing != lineSpacing else {
       return
@@ -150,7 +139,7 @@ class ParagraphUIView: UITextView {
       let newContentRange = NSRange(location: oldAttributedString.length, length: newContentLength)
       let wordRanges = attributedText.splitIntoWords(withIn: newContentRange)
       let wordCount = wordRanges.count
-      let delayBetweenWords: Double = 0.1 / Double(wordCount)
+      let delayBetweenWords: Double = ParagraphAnimationConstants.delayBetweenWordsRatio / Double(wordCount)
       let baseStartTime = CACurrentMediaTime()
       for (index, wordRange) in wordRanges.enumerated() {
         let animationData = FadeAnimationData(
@@ -272,28 +261,6 @@ class ParagraphUIView: UITextView {
     }
   }
 
-  /// Configure visual styling for citations (separate from accessibility)
-  private func configureVisualStyling(for attributedString: NSAttributedString) {
-    // This method handles visual styling that should always be applied
-    // regardless of accessibility configuration
-    // Currently, the visual styling is handled during attachment creation
-    // but this method is a placeholder for any future visual processing
-  }
-
-  // Custom easeOut curve
-  private func easeOut(_ t: CGFloat) -> CGFloat {
-    let c2: CGFloat = 0.1
-    let c4: CGFloat = 1.0
-
-    // Cubic Bezier evaluation
-    let t2 = t * t
-    let t3 = t2 * t
-    let mt = 1 - t
-    let mt2 = mt * mt
-
-    return 3 * mt2 * t * c2 + 3 * mt * t2 * c4 + t3
-  }
-
   @objc private func updateFadeAnimation() {
     let currentTime = CACurrentMediaTime()
     var completedAnimations: [UUID] = []
@@ -333,7 +300,7 @@ class ParagraphUIView: UITextView {
         animatedAlpha = 0.0
       } else {
         let progress = min(max(elapsed / animation.duration, 0.0), 1.0)
-        let easedProgress = easeOut(progress) // Apply ease-out curve
+        let easedProgress = paragraphEaseOut(progress)
         animatedAlpha = easedProgress
       }
 
@@ -417,81 +384,6 @@ fileprivate extension NSMutableAttributedString {
     paragraphStyle.lineSpacing = lineSpacing
     paragraphStyle.alignment = .left
     addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: length))
-  }
-}
-
-// LatexAttachmentData struct is defined in Models/LatexAttachmentData.swift
-
-extension LatexAttachmentData {
-  var resolvedTextColor: UIColor {
-    let fallback = UIColor(Color.Theme.Foreground.Primary.Primary750)
-    guard let lightColor = UIColor(hex: lightTextColor),
-          let darkColor = UIColor(hex: darkTextColor) else {
-      return fallback
-    }
-    return UIColor { trait in
-      trait.userInterfaceStyle == .dark ? darkColor : lightColor
-    }
-  }
-}
-
-final class LatexViewProvider: NSTextAttachmentViewProvider {
-  private let latex: String
-  private let fontSize: CGFloat
-  private let textColor: UIColor
-  private static let jsonDecoder = JSONDecoder()
-
-  required override init(textAttachment attachment: NSTextAttachment,
-                         parentView: UIView?,
-                         textLayoutManager: NSTextLayoutManager?,
-                         location: any NSTextLocation) {
-
-    var tempLatex = ""
-    var tempFontSize = Typography.base.mdFont.pointSize
-    var tempTextColor: UIColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
-    if let data = attachment.contents {
-      if let attachmentData = try? Self.jsonDecoder.decode(LatexAttachmentData.self, from: data) {
-        tempLatex = attachmentData.latex
-        tempFontSize = attachmentData.fontSize
-        tempTextColor = attachmentData.resolvedTextColor
-      }
-    }
-    latex = tempLatex
-    fontSize = tempFontSize
-    textColor = tempTextColor
-
-    super.init(textAttachment: attachment,
-               parentView: parentView,
-               textLayoutManager: textLayoutManager,
-               location: location)
-
-    tracksTextAttachmentViewBounds = true
-  }
-
-  override func loadView() {
-    let label = MTMathUILabel()
-    label.latex = latex
-    label.textColor = textColor
-    label.displayErrorInline = false
-    label.fontSize = fontSize
-    label.setContentHuggingPriority(.defaultHigh, for: .vertical)
-    self.view = label
-  }
-
-  override func attachmentBounds(for attributes: [NSAttributedString.Key: Any],
-                                 location: any NSTextLocation,
-                                 textContainer: NSTextContainer?,
-                                 proposedLineFragment: CGRect,
-                                 position: CGPoint) -> CGRect {
-    guard let mathLabel = view as? MTMathUILabel else {
-      return .zero
-    }
-    mathLabel.sizeToFit()
-    // It's a known issue that MTMathUILabel may be cut off for some short statement. Manually add 1 to the height fix it.
-    let height = mathLabel.bounds.height.rounded(.up) + 1.0
-    let font = attributes[.font] as? UIFont ?? UIFont.systemFont(ofSize: fontSize)
-    let yOffset = (font.xHeight - height) / 2.0
-    return CGRect(x: 0, y: yOffset, width: mathLabel.bounds.width.rounded(.up), height: height)
   }
 }
 #endif

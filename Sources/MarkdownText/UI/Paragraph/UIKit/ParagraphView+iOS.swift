@@ -3,9 +3,9 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
-#if canImport(UIKit)
 struct ParagraphView: UIViewRepresentable {
   @Environment(\.openURL) var openURL
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
@@ -20,7 +20,7 @@ struct ParagraphView: UIViewRepresentable {
 
   func makeUIView(context: Context) -> ParagraphUIView {
     let openUrlFunction = openURL.callAsFunction(_:)
-    let view = ParagraphUIViewCache.shared.createOrReuseParagraphUIView(contents: contents, lineSpacing: lineSpacing)
+    let view = ParagraphViewCache.shared.createOrReuseView(contents: contents, lineSpacing: lineSpacing)
     view.onUrlTap = openUrlFunction
     view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
     view.setTextContextMenu(config.textContextMenu)
@@ -81,26 +81,6 @@ struct ParagraphView: UIViewRepresentable {
     var sizeCache: [CGFloat: CGSize] = [:]
     var lastContents: NSMutableAttributedString?
     var lastLineSpacing: CGFloat?
-  }
-}
-
-extension ParagraphView: Equatable {
-  static func == (lhs: ParagraphView, rhs: ParagraphView) -> Bool {
-    lhs.contents == rhs.contents && lhs.lineSpacing == rhs.lineSpacing
-  }
-}
-
-#elseif canImport(AppKit)
-
-/// macOS placeholder — renders paragraph content as plain attributed text.
-/// A full NSTextView-backed implementation is planned for a future PR.
-struct ParagraphView: View {
-  var contents: NSMutableAttributedString
-  var lineSpacing: CGFloat?
-
-  var body: some View {
-    Text(AttributedString(contents))
-      .textSelection(.enabled)
   }
 }
 

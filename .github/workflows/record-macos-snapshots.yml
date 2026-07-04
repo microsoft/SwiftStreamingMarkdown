@@ -1,0 +1,58 @@
+name: Record macOS Snapshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  record-snapshots:
+    name: Record macOS Snapshots
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Enable recording mode
+        run: |
+          sed -i '' 's|// isRecording = true|isRecording = true|' \
+            Tests/MarkdownTextTests/SnapshotTestFoundation/SnapshotTestCase.swift
+
+      - name: Clear existing macOS snapshots
+        run: |
+          find Tests/MarkdownTextTests/__Snapshots__ -name "*macOS*.png" -delete
+          echo "Cleared existing macOS snapshots"
+
+      - name: Record macOS snapshots
+        id: record
+        continue-on-error: true
+        run: |
+          xcodebuild test \
+            -scheme SwiftStreamingMarkdown \
+            -destination "platform=macOS" \
+            -skipMacroValidation \
+            -disable-concurrent-testing
+
+      - name: Collect recorded snapshots
+        if: always()
+        run: |
+          mkdir -p /tmp/recorded-snapshots
+          find Tests/MarkdownTextTests/__Snapshots__ -name "*macOS*.png" -exec cp {} /tmp/recorded-snapshots/ \;
+          count=$(find /tmp/recorded-snapshots -name "*.png" | wc -l | tr -d ' ')
+          echo "Recorded $count macOS snapshots"
+          if [ "$count" -eq 0 ]; then
+            echo "::warning::No macOS snapshots were recorded"
+          else
+            ls /tmp/recorded-snapshots/
+          fi
+
+      - name: Upload recorded snapshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-snapshots
+          path: /tmp/recorded-snapshots/
+          retention-days: 3
+          if-no-files-found: warn

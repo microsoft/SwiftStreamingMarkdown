@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
+#if canImport(UIKit)
 @testable import SwiftStreamingMarkdown
 import SwiftUI
 import XCTest
@@ -115,3 +116,4 @@ final class TableViewTests: SnapshotTestCase {
   }
 
 }
+#endif

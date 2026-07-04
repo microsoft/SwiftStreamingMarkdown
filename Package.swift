@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "SwiftStreamingMarkdown",
   defaultLocalization: "en",
-  platforms: [.iOS(.v16)],
+  platforms: [.iOS(.v16), .macOS(.v14)],
   products: [
     .library(
       name: "SwiftStreamingMarkdown",

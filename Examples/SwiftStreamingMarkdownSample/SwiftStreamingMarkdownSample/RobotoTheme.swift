@@ -5,7 +5,11 @@
 
 import SwiftStreamingMarkdown
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// A completely custom `MarkdownRenderConfig` that demonstrates plugging in a
 /// different type family (Google Roboto) and a vivid teal-on-deep-purple
@@ -32,15 +36,20 @@ enum RobotoTheme {
 
   // MARK: - Fonts
 
-  private static func roboto(_ size: CGFloat, weight: String = "Regular") -> UIFont {
-    UIFont(name: "Roboto-\(weight)", size: size)
+  private static func roboto(_ size: CGFloat, weight: String = "Regular") -> MDFont {
+    MDFont(name: "Roboto-\(weight)", size: size)
       ?? .systemFont(ofSize: size, weight: weight == "Bold" ? .bold : (weight == "Medium" ? .medium : .regular))
   }
 
-  private static func robotoItalic(_ size: CGFloat, bold: Bool = false) -> UIFont {
+  private static func robotoItalic(_ size: CGFloat, bold: Bool = false) -> MDFont {
     let name = bold ? "Roboto-BoldItalic" : "Roboto-Italic"
-    return UIFont(name: name, size: size)
+    #if canImport(UIKit)
+    return MDFont(name: name, size: size)
       ?? .italicSystemFont(ofSize: size)
+    #elseif canImport(AppKit)
+    return MDFont(name: name, size: size)
+      ?? NSFontManager.shared.convert(.systemFont(ofSize: size), toHaveTrait: .italicFontMask)
+    #endif
   }
 
   private static func textFonts(size: CGFloat, lineHeight: CGFloat? = nil, letterSpacing: CGFloat? = nil) -> TextFonts {
@@ -102,7 +111,7 @@ enum RobotoTheme {
       boldTextColor: boldEmphasis,
       linkTextFont: roboto(16, weight: "Medium"),
       linkTextColor: accent,
-      codeTextFont: UIFont.monospacedSystemFont(ofSize: 15, weight: .regular),
+      codeTextFont: MDFont.monospacedSystemFont(ofSize: 15, weight: .regular),
       codeTextColor: codeForeground,
       codeBackgroundColor: codeBackground,
       codeUnderlineColor: codeUnderline
