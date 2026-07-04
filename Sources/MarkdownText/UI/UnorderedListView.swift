@@ -65,8 +65,8 @@ struct UnorderedListView: View {
   private func listItemAccessibilityLabel(for content: String, at index: Int, checkbox: MarkdownListItem.Checkbox?) -> String {
     let label = markdownListAccessibilityLabel(for: content, at: index, length: items.count)
     switch checkbox {
-    case .checked: return "\(label), checked"
-    case .unchecked: return "\(label), unchecked"
+    case .checked: return "\(label), \(String.taskListItemChecked)"
+    case .unchecked: return "\(label), \(String.taskListItemUnchecked)"
     case .none: return label
     }
   }

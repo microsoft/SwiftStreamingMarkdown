@@ -1594,6 +1594,30 @@
           }
         }
       }
+    },
+    "task_list_item_checked": {
+      "comment": "Accessibility suffix for a completed task list item",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "checked"
+          }
+        }
+      }
+    },
+    "task_list_item_unchecked": {
+      "comment": "Accessibility suffix for an incomplete task list item",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "unchecked"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
