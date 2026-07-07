@@ -85,6 +85,36 @@ equivalent iOS Simulator destination.
    user to eyeball the diff before committing — recording overwrites
    references blindly, including wrong renders.
 
+### Platform coverage: iOS records locally, macOS does not
+
+A local `xcodebuild ... -destination "platform=iOS Simulator,..."` run only
+regenerates the **iOS** variants (`iPhone16-*`, `iPadPro11-*`,
+`iPadPro11Landscape-*`). The **macOS** variants (`macOS-standard-light`,
+`macOS-standard-dark`) are *not* produced by that run.
+
+**Do not record macOS references on a developer machine.** The macOS
+variants use a strict `perceptualPrecision: 1.0`, so even a one-off
+subpixel/font-rendering difference between a local macOS version and the CI
+runner's macOS version fails validation. Locally-recorded macOS PNGs will
+almost always mismatch CI.
+
+macOS references must be recorded from the **`SPM Unit Tests (macOS)`** CI
+job (`spm-unit-tests-macos`, `runs-on: macos-26`) in
+`.github/workflows/ci.yml`. When a code change alters macOS rendering, that
+job fails, and its `Collect failed snapshots` / `Upload failed snapshots`
+steps publish the freshly-rendered PNGs as the **`failed-snapshots-macOS`**
+artifact. To update the macOS references:
+
+1. Push the change (with re-recorded iOS references) so CI runs.
+2. Let the `SPM Unit Tests (macOS)` job fail on the changed snapshots.
+3. Download the `failed-snapshots-macOS` artifact from that workflow run.
+4. Copy its PNGs over the matching files under
+   `Tests/MarkdownTextTests/__Snapshots__/<TestClass>/`, eyeball them, and
+   commit them as the new macOS references.
+
+So the normal flow for a rendering change is: record iOS locally, push, then
+backfill the macOS references from the CI artifact in a follow-up commit.
+
 ## Mode 2: validate snapshots
 
 1. **Run** the test suite using the build command above (with the
