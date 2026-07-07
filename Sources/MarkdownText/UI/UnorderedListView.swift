@@ -41,7 +41,7 @@ struct UnorderedListView: View {
   func bulletView(forListItem listItem: MarkdownListItem) -> some View {
     ZStack(alignment: .trailing) {
       if let checkbox = listItem.checkbox {
-        Image(systemName: checkbox == .checked ? "checkmark.square" : "square")
+        Image(systemName: checkbox == .checked ? "checkmark.square.fill" : "square")
           .resizable()
           .frame(width: 12, height: 12)
           .foregroundStyle( Color.Theme.Foreground.Primary.Primary450)

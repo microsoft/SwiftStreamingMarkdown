@@ -1595,7 +1595,7 @@
         }
       }
     },
-    "task_list_item_checked": {
+    "a11y_task_list_item_checked": {
       "comment": "Accessibility suffix for a completed task list item",
       "extractionState": "extracted_with_value",
       "localizations": {
@@ -1607,7 +1607,7 @@
         }
       }
     },
-    "task_list_item_unchecked": {
+    "a11y_task_list_item_unchecked": {
       "comment": "Accessibility suffix for an incomplete task list item",
       "extractionState": "extracted_with_value",
       "localizations": {

@@ -15,7 +15,7 @@ extension UnorderedList: BlockConvertible {
     for listItem in nodes {
       items.append(MarkdownListItem(children: listItem.blockConvertibleChildren.map { $0.convert(attributeContainer: attributeContainer, config: config) },
                                     startsWithBold: listItem.startsWithBold,
-                                    checkbox: listItem.markdownCheckbox ))
+                                    checkbox: listItem.checkBox ))
     }
     return .unorderedList(id: self.id, items: items, nestedLevel: self.nestedLevel)
   }

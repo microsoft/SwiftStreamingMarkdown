@@ -46,14 +46,14 @@ extension String {
   }
 
   static let taskListItemChecked = NSLocalizedString(
-    "task_list_item_checked",
+    "a11y_task_list_item_checked",
     bundle: .module,
     value: "checked",
     comment: "Accessibility suffix for a completed task list item"
   )
 
   static let taskListItemUnchecked = NSLocalizedString(
-    "task_list_item_unchecked",
+    "a11y_task_list_item_unchecked",
     bundle: .module,
     value: "unchecked",
     comment: "Accessibility suffix for an incomplete task list item"

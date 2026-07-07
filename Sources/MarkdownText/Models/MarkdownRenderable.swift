@@ -81,5 +81,11 @@ struct MarkdownListItem: Equatable {
   let children: [MarkdownRenderable]
   let startsWithBold: Bool
   /// `nil` for regular list items.
-  var checkbox: Checkbox?
+  let checkbox: Checkbox?
+
+  init(children: [MarkdownRenderable], startsWithBold: Bool, checkbox: Checkbox? = nil) {
+    self.children = children
+    self.startsWithBold = startsWithBold
+    self.checkbox = checkbox
+  }
 }
