@@ -10,7 +10,8 @@
 #
 # Optional:
 #   - diff-image (and imagemagick, which it shells out to) — used as a local
-#     visual diff helper for snapshot PNGs.
+#     visual diff helper for snapshot PNGs. If missing, this script offers to
+#     download diff-image into ~/.local/bin.
 #
 # Run this once after cloning the repo.
 
@@ -21,6 +22,8 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 XCODE_VERSION_FILE="$REPO_ROOT/.xcode-version"
 HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 DIFF_IMAGE_REPO_URL="https://github.com/ewanmellor/git-diff-image"
+DIFF_IMAGE_RAW_URL="https://raw.githubusercontent.com/ewanmellor/git-diff-image/master/diff-image"
+LOCAL_BIN_DIR="$HOME/.local/bin"
 
 echo "🔍 Running SwiftStreamingMarkdown dev environment precheck..."
 
@@ -69,6 +72,28 @@ ensure_brew_on_path() {
   fi
 
   return 1
+}
+
+# Install the standalone diff-image CLI by copying it into the user's local bin.
+# Mirrors https://github.com/ewanmellor/git-diff-image/blob/master/diff-image.
+install_diff_image() {
+  local dest="$LOCAL_BIN_DIR/diff-image"
+
+  if ! mkdir -p "$LOCAL_BIN_DIR"; then
+    echo "❌ Could not create $LOCAL_BIN_DIR"
+    return 1
+  fi
+
+  echo "⬇️  Downloading diff-image into $dest ..."
+  if ! curl -fsSL "$DIFF_IMAGE_RAW_URL" -o "$dest"; then
+    echo "❌ Failed to download diff-image from $DIFF_IMAGE_RAW_URL"
+    rm -f "$dest"
+    return 1
+  fi
+
+  chmod +x "$dest"
+  echo "✅ Installed diff-image to $dest"
+  return 0
 }
 
 # Compare two dot-separated version strings.
@@ -172,16 +197,30 @@ else
   optional_items+=("imagemagick (brew install imagemagick)")
 fi
 
-if ! has_cmd diff-image; then
-  echo "⚠️  diff-image not found. Snapshot tests can still run, but local PNG snapshot failures"
-  echo "   will not have a visual diff helper unless you install it."
-  echo "   Install with:"
-  echo "     git clone $DIFF_IMAGE_REPO_URL"
-  echo "     cd git-diff-image && ./install.sh"
-  echo "   The installer configures Git's image diff driver through git_diff_image."
-  optional_items+=("diff-image ($DIFF_IMAGE_REPO_URL)")
-else
+if ! has_cmd diff-image && [ ! -x "$LOCAL_BIN_DIR/diff-image" ]; then
+  echo "⚠️  diff-image not found. It provides a visual diff for local PNG snapshot failures."
+  echo "   Prefer a different image diff tool? You can skip this and install your own later"
+  echo "   (configure it via SnapshotTesting.diffTool) to work on snapshot tests."
+  prompt_to_run "   Download and install diff-image into $LOCAL_BIN_DIR now?" \
+    install_diff_image || true
+fi
+
+if has_cmd diff-image; then
   log_pass "diff-image available"
+elif [ -x "$LOCAL_BIN_DIR/diff-image" ]; then
+  log_pass "diff-image installed at $LOCAL_BIN_DIR/diff-image"
+  case ":$PATH:" in
+    *":$LOCAL_BIN_DIR:"*) ;;
+    *)
+      echo "   ⚠️  $LOCAL_BIN_DIR is not on your PATH. Add it so 'diff-image' is found, e.g.:"
+      echo "     echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.zshrc && source ~/.zshrc"
+      ;;
+  esac
+else
+  echo "⚠️  diff-image not installed. Snapshot tests can still run, but local PNG snapshot"
+  echo "   failures will not have a visual diff helper."
+  echo "   You can install it later from $DIFF_IMAGE_REPO_URL"
+  optional_items+=("diff-image ($DIFF_IMAGE_REPO_URL)")
 fi
 
 if [ ${#optional_items[@]} -ne 0 ]; then
