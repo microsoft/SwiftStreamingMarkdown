@@ -8,7 +8,6 @@
 #   - xcodegen
 #
 # Optional:
-#   - cloc — used by the `make cloc` line-count report.
 #   - diff-image (and imagemagick, which it shells out to) — used as a local
 #     visual diff helper for snapshot PNGs. If missing, this script offers to
 #     download diff-image into ~/.local/bin.
@@ -169,19 +168,6 @@ if has_cmd xcodegen; then
   log_pass "$(xcodegen --version 2>/dev/null)"
 else
   missing_items+=("xcodegen (brew install xcodegen)")
-fi
-
-# cloc (optional — only used by the `make cloc` line-count report).
-if ! has_cmd cloc; then
-  if ensure_brew_on_path && prompt_to_run "⚠️  cloc not found (used by 'make cloc'). Install via 'brew install cloc' now?" \
-      brew install cloc; then
-    :
-  fi
-fi
-if has_cmd cloc; then
-  log_pass "cloc $(cloc --version 2>/dev/null)"
-else
-  optional_items+=("cloc (brew install cloc)")
 fi
 
 # diff-image (optional) + imagemagick that backs it.
