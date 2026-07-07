@@ -95,6 +95,36 @@ install_diff_image() {
   return 0
 }
 
+# Snapshot diff helper presence checks.
+has_imagemagick() {
+  has_cmd magick || has_cmd compare
+}
+
+has_diff_image() {
+  has_cmd diff-image || [ -x "$LOCAL_BIN_DIR/diff-image" ]
+}
+
+# Install whichever snapshot diff helpers are missing: ImageMagick (via Homebrew)
+# and/or diff-image (downloaded into ~/.local/bin).
+install_snapshot_diff_helpers() {
+  local ok=0
+
+  if ! has_imagemagick; then
+    if ensure_brew_on_path; then
+      brew install imagemagick || ok=1
+    else
+      echo "   ⚠️  Homebrew not available; cannot install ImageMagick automatically."
+      ok=1
+    fi
+  fi
+
+  if ! has_diff_image; then
+    install_diff_image || ok=1
+  fi
+
+  return "$ok"
+}
+
 # Compare two dot-separated version strings.
 # Returns 0 if $1 >= $2, 1 otherwise.
 version_at_least() {
@@ -170,25 +200,21 @@ else
   missing_items+=("xcodegen (brew install xcodegen)")
 fi
 
-# diff-image (optional) + imagemagick that backs it.
-if ! has_cmd magick && ! has_cmd compare; then
-  if ensure_brew_on_path && prompt_to_run "⚠️  ImageMagick not found (needed by diff-image). Install via 'brew install imagemagick' now?" \
-      brew install imagemagick; then
-    :
-  fi
+# Snapshot diff helpers (optional): ImageMagick + the diff-image CLI that shells
+# out to it. Prompt once to install whichever are missing.
+if ! has_imagemagick || ! has_diff_image; then
+  echo "⚠️  Snapshot diff helpers are missing (ImageMagick and/or diff-image)."
+  echo "   They provide a visual diff for local PNG snapshot failures. Prefer a different"
+  echo "   image diff tool? You can skip this and configure your own later via"
+  echo "   SnapshotTesting.diffTool to work on snapshot tests."
+  prompt_to_run "   Install the missing helpers now?" \
+    install_snapshot_diff_helpers || true
 fi
-if has_cmd magick || has_cmd compare; then
+
+if has_imagemagick; then
   log_pass "ImageMagick available"
 else
   optional_items+=("imagemagick (brew install imagemagick)")
-fi
-
-if ! has_cmd diff-image && [ ! -x "$LOCAL_BIN_DIR/diff-image" ]; then
-  echo "⚠️  diff-image not found. It provides a visual diff for local PNG snapshot failures."
-  echo "   Prefer a different image diff tool? You can skip this and install your own later"
-  echo "   (configure it via SnapshotTesting.diffTool) to work on snapshot tests."
-  prompt_to_run "   Download and install diff-image into $LOCAL_BIN_DIR now?" \
-    install_diff_image || true
 fi
 
 if has_cmd diff-image; then
@@ -203,9 +229,6 @@ elif [ -x "$LOCAL_BIN_DIR/diff-image" ]; then
       ;;
   esac
 else
-  echo "⚠️  diff-image not installed. Snapshot tests can still run, but local PNG snapshot"
-  echo "   failures will not have a visual diff helper."
-  echo "   You can install it later from $DIFF_IMAGE_REPO_URL"
   optional_items+=("diff-image ($DIFF_IMAGE_REPO_URL)")
 fi
 
