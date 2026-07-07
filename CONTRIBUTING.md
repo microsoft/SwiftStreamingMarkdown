@@ -24,7 +24,7 @@ If we close an issue and link back to this section, it usually means one of thes
 
 PRs are very welcome. To keep the review loop short, please follow these steps before opening one:
 
-1. Run `make dev-setup` once on your machine so you have the required tools used by CI and local helper targets (SwiftLint, XcodeGen, `cloc`). ImageMagick and `diff-image` are optional helpers for visually diffing snapshot PNGs; `make dev-setup` offers to download `diff-image` into `~/.local/bin` for you.
+1. Run `make dev-setup` once on your machine so you have the required tools used by CI and local helper targets (SwiftLint, XcodeGen). `cloc` (for `make cloc`), ImageMagick, and `diff-image` are optional helpers; `make dev-setup` offers to download `diff-image` into `~/.local/bin` for you.
 2. Fork the repo and branch from the most recent `main` to minimize merge conflicts.
 3. Keep the change focused — one logical change per PR is much easier to review than a grab-bag.
 4. If you are adding behavior, add a test. The package uses XCTest under `Tests/`; many UI surfaces are covered by snapshot tests.

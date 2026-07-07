@@ -191,7 +191,7 @@ final class FooViewModel: ObservableObject {
 make dev-setup
 ```
 
-This verifies Homebrew, Xcode ≥ `.xcode-version`, SwiftLint, XcodeGen, and `cloc` are present. For the optional snapshot diff helpers it can install ImageMagick via Homebrew and offers to download `diff-image` into `~/.local/bin`.
+This verifies Homebrew, Xcode ≥ `.xcode-version`, SwiftLint, and XcodeGen are present. For optional helpers it can install `cloc` (used by `make cloc`) and ImageMagick via Homebrew, and offers to download `diff-image` into `~/.local/bin`.
 
 ### Common commands
 
