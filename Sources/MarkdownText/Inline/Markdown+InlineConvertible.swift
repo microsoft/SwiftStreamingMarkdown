@@ -149,7 +149,22 @@ extension Markdown.InlineCode: InlineConvertible {
     return self.code.hasPrefix(LaTexPreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(LaTexPreProcessorImpl.inlineCodeSuffix)
   }
 
+  var isFootnoteReference: Bool {
+    return self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
+  }
+
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
+    if self.isFootnoteReference {
+      let number = String(self
+        .code
+        .dropFirst(FootnotePreProcessorImpl.inlineCodePrefix.count)
+        .dropLast(FootnotePreProcessorImpl.inlineCodeSuffix.count))
+      let baseFont = attributeContainer[NSAttributedString.Key.font] as? MDFont ?? config.paragraphStyle.textFonts.normal
+      var container = attributeContainer
+      container[.font] = baseFont.resized(to: baseFont.pointSize * 0.7)
+      container[.baselineOffset] = baseFont.pointSize * 0.35
+      return NSMutableAttributedString(string: number).mergingAttributes(container)
+    }
     var codeContent = self.code
     if self.isInlineLatex {
       codeContent = String(self

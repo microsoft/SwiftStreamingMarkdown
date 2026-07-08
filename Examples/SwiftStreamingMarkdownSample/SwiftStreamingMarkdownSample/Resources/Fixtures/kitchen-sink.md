@@ -224,11 +224,11 @@ flowchart TD
   Supported --> Citations[Citation attachments]
 ```
 
-## Footnotes and definitions fallback
+## Footnotes and definition-list fallback
 
 Here is a footnote reference.[^streaming]
 
-[^streaming]: Footnote syntax is included to check how unsupported block extensions degrade.
+[^streaming]: Footnote definitions render in a notes section at the end of the document.
 
 Term
 : Definition list syntax is included as another compatibility check.

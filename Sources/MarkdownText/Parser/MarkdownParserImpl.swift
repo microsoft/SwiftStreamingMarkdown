@@ -14,15 +14,21 @@ public final class MarkdownParserImpl: MarkdownParser {
   ]
 
   private let latexPreprocessor: LaTexPreProcessor
+  private let footnotePreprocessor: FootnotePreProcessor
 
-  /// Create a new parser instance using the default LaTeX preprocessor.
+  /// Create a new parser instance using the default LaTeX and footnote preprocessors.
   public init() {
     self.latexPreprocessor = LaTexPreProcessorImpl()
+    self.footnotePreprocessor = FootnotePreProcessorImpl()
   }
 
   /// Parse `text` into a `MarkdownParseResult`. See `MarkdownParser.parse(text:option:)`.
   public func parse(text: String, option: MarkdownParseOption) async -> MarkdownParseResult {
-    let targetString = latexPreprocessor.process(input: text, matchingRules: option.latexMatchingRules)
+    // Footnotes run after LaTeX so their fence guard also protects the code
+    // blocks and inline code spans the LaTeX preprocessor emits.
+    let targetString = footnotePreprocessor.process(
+      input: latexPreprocessor.process(input: text, matchingRules: option.latexMatchingRules)
+    )
 
     var result: MarkdownParseResult = MarkdownParseResult(
       document: Document(parsing: targetString),
