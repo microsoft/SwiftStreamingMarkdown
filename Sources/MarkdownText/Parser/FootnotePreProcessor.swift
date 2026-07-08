@@ -47,13 +47,6 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     "]"
   }
 
-  /// A single-backtick inline code span within one line.
-  static let inlineCodeSpan = Regex {
-    "`"
-    OneOrMore(CharacterClass.anyOf("`").inverted)
-    "`"
-  }
-
   /// Marker wrapped in an inline code span so the reference number survives parsing;
   /// `Markdown.InlineCode` detects the prefix/suffix and renders a superscript.
   static let inlineCodePrefix = "[[fnref:"
@@ -84,24 +77,52 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     return result + "\n\n---\n\n" + items.joined(separator: "\n")
   }
 
+  /// An open fenced code block: its delimiter character and opening run length.
+  /// Per CommonMark, the closing fence must use the same character with a run
+  /// at least as long as the opener.
+  private struct Fence {
+    let character: Character
+    let length: Int
+  }
+
+  /// The fence run opening `trimmed`, if any (three or more backticks or tildes).
+  private func fenceRun(in trimmed: String) -> Fence? {
+    guard let first = trimmed.first, first == "`" || first == "~" else { return nil }
+    let length = trimmed.prefix(while: { $0 == first }).count
+    guard length >= 3 else { return nil }
+    return Fence(character: first, length: length)
+  }
+
+  /// Whether `trimmed` closes `fence`: same character, a run at least as long,
+  /// and nothing after the run.
+  private func isClosing(_ fence: Fence, trimmed: String) -> Bool {
+    guard let run = fenceRun(in: trimmed),
+          run.character == fence.character,
+          run.length >= fence.length
+    else {
+      return false
+    }
+    return trimmed.dropFirst(run.length).isEmpty
+  }
+
   /// Walks the input line by line, tracking fenced code blocks, and splits it into
   /// surviving content lines plus the collected `id -> text` definitions.
   private func collectDefinitions(input: String) -> (lines: [(text: String, isInsideFence: Bool)], definitions: [String: String]) {
     var lines: [(text: String, isInsideFence: Bool)] = []
     var definitions: [String: String] = [:]
-    var currentFence: String?
+    var currentFence: Fence?
 
     for line in input.components(separatedBy: "\n") {
       let trimmed = line.trimmingCharacters(in: .whitespaces)
       if let fence = currentFence {
         lines.append((line, true))
-        if trimmed.hasPrefix(fence) {
+        if isClosing(fence, trimmed: trimmed) {
           currentFence = nil
         }
         continue
       }
-      if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") {
-        currentFence = String(trimmed.prefix(3))
+      if let fence = fenceRun(in: trimmed) {
+        currentFence = fence
         lines.append((line, true))
         continue
       }
@@ -117,19 +138,62 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     return (lines, definitions)
   }
 
-  /// Replaces defined references in a line, skipping inline code spans.
+  /// Replaces defined references in a line, skipping inline code spans. Spans
+  /// follow CommonMark backtick-run rules: a span opens with a run of N backticks
+  /// and closes at the next run of exactly N, so single backticks inside a
+  /// double-backtick span stay part of the span.
   private func replacingReferences(in line: String, definitions: [String: String], numbers: inout [String: Int]) -> String {
     guard line.contains("[^") else { return line }
 
     var output = ""
-    var remainder = line[...]
-    while let span = remainder.firstMatch(of: Self.inlineCodeSpan) {
-      output += replacingReferences(inSegment: remainder[remainder.startIndex..<span.range.lowerBound], definitions: definitions, numbers: &numbers)
-      output += remainder[span.range]
-      remainder = remainder[span.range.upperBound...]
+    var segmentStart = line.startIndex
+    var index = line.startIndex
+
+    while index < line.endIndex {
+      guard line[index] == "`" else {
+        index = line.index(after: index)
+        continue
+      }
+      let runStart = index
+      var runEnd = index
+      while runEnd < line.endIndex, line[runEnd] == "`" {
+        runEnd = line.index(after: runEnd)
+      }
+      let runLength = line.distance(from: runStart, to: runEnd)
+      if let closerStart = findClosingRun(in: line, from: runEnd, length: runLength) {
+        output += replacingReferences(inSegment: line[segmentStart..<runStart], definitions: definitions, numbers: &numbers)
+        let spanEnd = line.index(closerStart, offsetBy: runLength)
+        output += line[runStart..<spanEnd]
+        segmentStart = spanEnd
+        index = spanEnd
+      } else {
+        // Unmatched run: literal backticks, keep scanning after them.
+        index = runEnd
+      }
     }
-    output += replacingReferences(inSegment: remainder, definitions: definitions, numbers: &numbers)
+    output += replacingReferences(inSegment: line[segmentStart...], definitions: definitions, numbers: &numbers)
     return output
+  }
+
+  /// The start of the first run of exactly `length` backticks at or after `start`.
+  private func findClosingRun(in line: String, from start: String.Index, length: Int) -> String.Index? {
+    var index = start
+    while index < line.endIndex {
+      guard line[index] == "`" else {
+        index = line.index(after: index)
+        continue
+      }
+      let runStart = index
+      var runEnd = index
+      while runEnd < line.endIndex, line[runEnd] == "`" {
+        runEnd = line.index(after: runEnd)
+      }
+      if line.distance(from: runStart, to: runEnd) == length {
+        return runStart
+      }
+      index = runEnd
+    }
+    return nil
   }
 
   private func replacingReferences(inSegment segment: Substring, definitions: [String: String], numbers: inout [String: Int]) -> String {

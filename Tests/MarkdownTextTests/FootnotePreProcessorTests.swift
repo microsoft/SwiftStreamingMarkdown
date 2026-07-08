@@ -165,4 +165,50 @@ final class FootnotePreProcessorTests: XCTestCase {
     """
     XCTAssertEqual(preprocessor.process(input: input), expected)
   }
+
+  func test_doubleBacktickSpan_isUntouched() {
+    let input = """
+    use ``[^1] and ` inside`` then a real one[^1]
+
+    [^1]: note
+    """
+    let expected = """
+    use ``[^1] and ` inside`` then a real one`[[fnref:1]]`
+
+    ---
+
+    1. note
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
+
+  func test_longerFence_containingShorterFenceLines_isUntouched() {
+    let input = """
+    ````
+    ```
+    [^1]: inside a fenced sample
+    reference [^1] inside too
+    ```
+    ````
+
+    outside[^1]
+
+    [^1]: real
+    """
+    let expected = """
+    ````
+    ```
+    [^1]: inside a fenced sample
+    reference [^1] inside too
+    ```
+    ````
+
+    outside`[[fnref:1]]`
+
+    ---
+
+    1. real
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
 }

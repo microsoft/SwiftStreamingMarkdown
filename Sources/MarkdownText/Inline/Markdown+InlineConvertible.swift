@@ -149,21 +149,29 @@ extension Markdown.InlineCode: InlineConvertible {
     return self.code.hasPrefix(LaTexPreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(LaTexPreProcessorImpl.inlineCodeSuffix)
   }
 
-  var isFootnoteReference: Bool {
-    return self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
+  /// The footnote number when this inline code is a preprocessor-emitted footnote
+  /// marker; `nil` for user-authored code that merely resembles one, which keeps
+  /// its normal inline-code rendering.
+  var footnoteReferenceNumber: Int? {
+    guard self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix),
+          self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
+    else {
+      return nil
+    }
+    let payload = self.code
+      .dropFirst(FootnotePreProcessorImpl.inlineCodePrefix.count)
+      .dropLast(FootnotePreProcessorImpl.inlineCodeSuffix.count)
+    guard let number = Int(payload), number > 0 else { return nil }
+    return number
   }
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
-    if self.isFootnoteReference {
-      let number = String(self
-        .code
-        .dropFirst(FootnotePreProcessorImpl.inlineCodePrefix.count)
-        .dropLast(FootnotePreProcessorImpl.inlineCodeSuffix.count))
+    if let footnoteNumber = self.footnoteReferenceNumber {
       let baseFont = attributeContainer[NSAttributedString.Key.font] as? MDFont ?? config.paragraphStyle.textFonts.normal
       var container = attributeContainer
       container[.font] = baseFont.resized(to: baseFont.pointSize * 0.7)
       container[.baselineOffset] = baseFont.pointSize * 0.35
-      return NSMutableAttributedString(string: number).mergingAttributes(container)
+      return NSMutableAttributedString(string: String(footnoteNumber)).mergingAttributes(container)
     }
     var codeContent = self.code
     if self.isInlineLatex {
