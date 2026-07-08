@@ -123,7 +123,7 @@ extension Markdown.Link: InlineConvertible {
       container[.link] = url
       container[.font] = config.inlineStyle.linkTextFont
       container[.foregroundColor] = MDColor(config.inlineStyle.linkTextColor)
-      container[.underlineStyle] = []
+      container[.underlineStyle] = NSUnderlineStyle([]).rawValue
       return buildAttributedString()
     }
   }
