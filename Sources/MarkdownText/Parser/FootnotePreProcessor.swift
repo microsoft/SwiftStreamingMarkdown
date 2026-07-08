@@ -25,8 +25,10 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
   static let footnoteID = Reference(Substring.self)
   static let footnoteText = Reference(Substring.self)
 
-  /// A whole line of the form `[^id]: text`.
+  /// A whole line of the form `[^id]: text`, allowing up to three leading spaces
+  /// (per CommonMark, four or more make the line an indented code block).
   static let definitionLine = Regex {
+    Repeat(0...3) { " " }
     "[^"
     Capture(as: footnoteID) {
       OneOrMore(CharacterClass.anyOf("] \t").inverted)
@@ -57,7 +59,9 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
   func process(input: String) -> String {
     guard input.contains("[^") else { return input }
 
-    let (contentLines, definitions) = collectDefinitions(input: input)
+    // Normalize CRLF so per-line matching and fence detection see clean lines.
+    let normalizedInput = input.replacingOccurrences(of: "\r\n", with: "\n")
+    let (contentLines, definitions) = collectDefinitions(input: normalizedInput)
     guard !definitions.isEmpty else { return input }
 
     var numbers: [String: Int] = [:]

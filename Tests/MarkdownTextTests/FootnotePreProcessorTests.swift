@@ -211,4 +211,41 @@ final class FootnotePreProcessorTests: XCTestCase {
     """
     XCTAssertEqual(preprocessor.process(input: input), expected)
   }
+
+  func test_indentedDefinition_isCollected() {
+    let input = """
+    x[^1]
+
+      [^1]: indented up to three spaces still counts
+    """
+    let expected = """
+    x`[[fnref:1]]`
+
+    ---
+
+    1. indented up to three spaces still counts
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
+
+  func test_fourSpaceIndentedDefinition_staysLiteral() {
+    let input = """
+    x[^1]
+
+        [^1]: four spaces is an indented code block
+    """
+    XCTAssertEqual(preprocessor.process(input: input), input)
+  }
+
+  func test_crlfLineEndings_areHandled() {
+    let input = "hello[^1]\r\n\r\n[^1]: note"
+    let expected = """
+    hello`[[fnref:1]]`
+
+    ---
+
+    1. note
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
 }
