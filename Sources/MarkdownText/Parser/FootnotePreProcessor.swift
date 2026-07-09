@@ -97,6 +97,19 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     return Fence(character: first, length: length)
   }
 
+  /// `line` with at most three leading spaces and all trailing whitespace
+  /// stripped, or `nil` when it's indented four or more spaces. Per CommonMark,
+  /// four or more leading spaces make a line an indented code block, so it can
+  /// never open or close a fence — mirrors `definitionLine`'s indentation
+  /// allowance. Trimming all leading whitespace here (as opposed to only the
+  /// first three spaces) would let an indented code block containing literal
+  /// backticks be misread as a fence delimiter.
+  private func fenceCandidate(in line: String) -> String? {
+    let leading = line.prefix(while: { $0 == " " })
+    guard leading.count <= 3 else { return nil }
+    return line[leading.endIndex...].trimmingCharacters(in: .whitespaces)
+  }
+
   /// Whether `trimmed` closes `fence`: same character, a run at least as long,
   /// and nothing after the run.
   private func isClosing(_ fence: Fence, trimmed: String) -> Bool {
@@ -117,15 +130,15 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     var currentFence: Fence?
 
     for line in input.components(separatedBy: "\n") {
-      let trimmed = line.trimmingCharacters(in: .whitespaces)
+      let candidate = fenceCandidate(in: line)
       if let fence = currentFence {
         lines.append((line, true))
-        if isClosing(fence, trimmed: trimmed) {
+        if let candidate, isClosing(fence, trimmed: candidate) {
           currentFence = nil
         }
         continue
       }
-      if let fence = fenceRun(in: trimmed) {
+      if let candidate, let fence = fenceRun(in: candidate) {
         currentFence = fence
         lines.append((line, true))
         continue

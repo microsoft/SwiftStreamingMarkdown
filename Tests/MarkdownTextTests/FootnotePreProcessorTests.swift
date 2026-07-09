@@ -237,6 +237,28 @@ final class FootnotePreProcessorTests: XCTestCase {
     XCTAssertEqual(preprocessor.process(input: input), input)
   }
 
+  func test_indentedLineResemblingFence_isNotTreatedAsFenceOpener() {
+    let input = """
+    first[^1]
+
+        ```indented four spaces, starts with literal backticks but is not a fence
+    second[^1]
+
+    [^1]: note
+    """
+    let expected = """
+    first`[[fnref:1]]`
+
+        ```indented four spaces, starts with literal backticks but is not a fence
+    second`[[fnref:1]]`
+
+    ---
+
+    1. note
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
+
   func test_crlfLineEndings_areHandled() {
     let input = "hello[^1]\r\n\r\n[^1]: note"
     let expected = """
