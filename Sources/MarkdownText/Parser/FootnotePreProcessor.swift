@@ -97,16 +97,19 @@ final class FootnotePreProcessorImpl: FootnotePreProcessor {
     return Fence(character: first, length: length)
   }
 
-  /// `line` with at most three leading spaces and all trailing whitespace
-  /// stripped, or `nil` when it's indented four or more spaces. Per CommonMark,
-  /// four or more leading spaces make a line an indented code block, so it can
-  /// never open or close a fence — mirrors `definitionLine`'s indentation
-  /// allowance. Trimming all leading whitespace here (as opposed to only the
-  /// first three spaces) would let an indented code block containing literal
-  /// backticks be misread as a fence delimiter.
+  /// `line` with its leading indentation and trailing whitespace stripped, or
+  /// `nil` when the line is indented four or more columns. Per CommonMark, a
+  /// leading tab always advances to the next four-column tab stop, so any tab
+  /// within the leading run reaches column 4 regardless of how many spaces
+  /// precede it (0-3 spaces then a tab all land on column 4) — such a line,
+  /// like one with four or more leading spaces, is an indented code block and
+  /// can never open or close a fence. Mirrors `definitionLine`'s indentation
+  /// allowance. Trimming all leading whitespace unconditionally (as opposed to
+  /// only a qualifying leading run) would let an indented code block
+  /// containing literal backticks be misread as a fence delimiter.
   private func fenceCandidate(in line: String) -> String? {
-    let leading = line.prefix(while: { $0 == " " })
-    guard leading.count <= 3 else { return nil }
+    let leading = line.prefix(while: { $0 == " " || $0 == "\t" })
+    guard !leading.contains("\t"), leading.count <= 3 else { return nil }
     return line[leading.endIndex...].trimmingCharacters(in: .whitespaces)
   }
 

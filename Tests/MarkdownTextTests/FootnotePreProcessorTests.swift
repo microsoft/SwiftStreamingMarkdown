@@ -259,6 +259,21 @@ final class FootnotePreProcessorTests: XCTestCase {
     XCTAssertEqual(preprocessor.process(input: input), expected)
   }
 
+  func test_tabIndentedLineResemblingFence_isNotTreatedAsFenceOpener() {
+    let input = "first[^1]\n\n\t```tab-indented, not a fence\nsecond[^1]\n\n[^1]: note"
+    let expected = """
+    first`[[fnref:1]]`
+
+    \t```tab-indented, not a fence
+    second`[[fnref:1]]`
+
+    ---
+
+    1. note
+    """
+    XCTAssertEqual(preprocessor.process(input: input), expected)
+  }
+
   func test_crlfLineEndings_areHandled() {
     let input = "hello[^1]\r\n\r\n[^1]: note"
     let expected = """
