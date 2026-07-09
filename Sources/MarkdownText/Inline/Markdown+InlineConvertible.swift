@@ -150,8 +150,8 @@ extension Markdown.InlineCode: InlineConvertible {
   }
 
   /// The footnote number when this inline code is a preprocessor-emitted footnote
-  /// marker; `nil` for user-authored code that merely resembles one, which keeps
-  /// its normal inline-code rendering.
+  /// marker; `nil` for user-authored code that merely resembles one but has a
+  /// non-numeric payload, which keeps its normal inline-code rendering.
   var footnoteReferenceNumber: Int? {
     guard self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix),
           self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
