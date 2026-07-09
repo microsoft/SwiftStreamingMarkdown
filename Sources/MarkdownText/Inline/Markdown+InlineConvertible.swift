@@ -150,11 +150,12 @@ extension Markdown.InlineCode: InlineConvertible {
   }
 
   /// The footnote number when this inline code's payload matches the marker
-  /// syntax and is a positive integer. Every inline code of that exact shape
-  /// renders as a footnote superscript, whether the preprocessor emitted it or
-  /// a user happened to author it — the same trade-off the LaTeX marker syntax
-  /// already makes. Only a non-numeric or malformed payload falls back to
-  /// normal inline-code rendering.
+  /// syntax and is a positive integer; `nil` for user-authored code that merely
+  /// resembles one but has a non-numeric payload, which keeps its normal
+  /// inline-code rendering. A numeric-payload match renders as a footnote
+  /// superscript regardless of whether the preprocessor emitted it or a user
+  /// authored it verbatim — the same trade-off the LaTeX marker syntax
+  /// already makes.
   var footnoteReferenceNumber: Int? {
     guard self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix),
           self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
