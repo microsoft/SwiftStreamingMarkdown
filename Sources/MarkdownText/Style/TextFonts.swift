@@ -10,25 +10,30 @@ import SwiftUI
 /// to style a run of text.
 public struct TextFonts: Hashable, Sendable {
   /// Regular variant. Always required.
-  public let normal: MDFont
+  public var normal: MDFont { internalNormal.font }
   /// Italic variant, or `nil` to fall back to `normal` for emphasis.
-  public let italic: MDFont?
+  public var italic: MDFont? { internalItalic?.font }
   /// Bold variant, or `nil` to fall back to `normal` for strong runs.
-  public let bold: MDFont?
+  public var bold: MDFont? { internalBold?.font }
   /// Bold-italic variant, or `nil` to fall back to `bold` then `italic`.
-  public let boldItalic: MDFont?
+  public var boldItalic: MDFont? { internalBoldItalic?.font }
   /// Optional kerning override applied via `NSAttributedString.Key.kern`.
   public let preferredLetterSpacing: CGFloat?
   /// Optional preferred line height in points. When greater than the font's
   /// natural line height, the renderer adds the difference as line spacing.
   public let preferredLineHeight: CGFloat?
 
+  private let internalNormal: SendableFont
+  private let internalItalic: SendableFont?
+  private let internalBold: SendableFont?
+  private let internalBoldItalic: SendableFont?
+
   /// Create a font set with explicit variants and optional spacing overrides.
   public init(normal: MDFont, italic: MDFont?, bold: MDFont?, boldItalic: MDFont?, preferredLetterSpacing: CGFloat?, preferredLineHeight: CGFloat?) {
-    self.normal = normal
-    self.italic = italic
-    self.bold = bold
-    self.boldItalic = boldItalic
+    self.internalNormal = SendableFont(normal)
+    self.internalItalic = italic.map(SendableFont.init)
+    self.internalBold = bold.map(SendableFont.init)
+    self.internalBoldItalic = boldItalic.map(SendableFont.init)
     self.preferredLetterSpacing = preferredLetterSpacing
     self.preferredLineHeight = preferredLineHeight
   }

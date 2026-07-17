@@ -129,11 +129,11 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     /// Foreground color applied to bold-emphasis runs.
     public let boldTextColor: Color
     /// Font used for link runs.
-    public let linkTextFont: MDFont
+    public var linkTextFont: MDFont { internalLinkTextFont.font }
     /// Foreground color applied to link runs.
     public let linkTextColor: Color
     /// Font used for inline code spans.
-    public let codeTextFont: MDFont
+    public var codeTextFont: MDFont { internalCodeTextFont.font }
     /// Foreground color applied to inline code spans.
     public let codeTextColor: Color
     /// Background fill behind inline code spans.
@@ -141,12 +141,15 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     /// Underline color drawn beneath inline code spans.
     public let codeUnderlineColor: Color
 
+    private let internalLinkTextFont: SendableFont
+    private let internalCodeTextFont: SendableFont
+
     /// Create an inline text style with the supplied fonts and color palette.
     public init(boldTextColor: Color, linkTextFont: MDFont, linkTextColor: Color, codeTextFont: MDFont, codeTextColor: Color, codeBackgroundColor: Color, codeUnderlineColor: Color) {
       self.boldTextColor = boldTextColor
-      self.linkTextFont = linkTextFont
+      self.internalLinkTextFont = SendableFont(linkTextFont)
       self.linkTextColor = linkTextColor
-      self.codeTextFont = codeTextFont
+      self.internalCodeTextFont = SendableFont(codeTextFont)
       self.codeTextColor = codeTextColor
       self.codeBackgroundColor = codeBackgroundColor
       self.codeUnderlineColor = codeUnderlineColor
@@ -160,11 +163,13 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     /// Encoder/decoder used to embed citation payloads into the markdown.
     public let coder: CitationCoder
     /// Font applied to the rendered citation chip.
-    public let font: MDFont
+    public var font: MDFont { internalFont.font }
     /// Foreground color of the citation chip text.
     public let textColor: Color
     /// Background fill of the citation chip.
     public let backgroundColor: Color
+
+    private let internalFont: SendableFont
 
     /// Create a citation configuration.
     /// - Parameters:
@@ -182,7 +187,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     ) {
       self.isEnabled = isEnabled
       self.coder = coder
-      self.font = font
+      self.internalFont = SendableFont(font)
       self.textColor = textColor
       self.backgroundColor = backgroundColor
     }
