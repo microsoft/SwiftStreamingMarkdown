@@ -41,11 +41,11 @@ extension String {
       NSLocalizedString(
         "markdown_list_item",
         bundle: bundle,
-        value: "List with %1$@ items, item %2$@: %3$@",
+        value: "List with %1$d items, item %2$d: %3$@",
         comment: "Accessibility label describing a list item's position, the list length, and the item's text"
       ),
-      String(length),
-      String(index),
+      length,
+      index,
       item)
   }
 

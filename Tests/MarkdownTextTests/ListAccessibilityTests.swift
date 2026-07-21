@@ -33,9 +33,13 @@ final class ListAccessibilityTests: XCTestCase {
   }
 
   private func localizedBundle(for localization: String) throws -> Bundle {
-    guard let path = String.markdownTextResources.path(forResource: localization, ofType: "lproj") else {
+    if String.markdownTextResources.url(forResource: "Localizable", withExtension: "xcstrings") != nil {
       throw XCTSkip("String Catalog localization tests require xcodebuild")
     }
+    let path = try XCTUnwrap(
+      String.markdownTextResources.path(forResource: localization, ofType: "lproj"),
+      "Missing compiled localization for \(localization)"
+    )
     return try XCTUnwrap(Bundle(path: path))
   }
 }
