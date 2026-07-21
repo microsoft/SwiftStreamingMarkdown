@@ -74,7 +74,7 @@ struct QuoteDivider: View {
   }
 }
 
-indirect enum BlockQuoteType: Equatable, Hashable {
+indirect enum BlockQuoteType: Equatable, Hashable, Codable {
   case text(String)
   case nested([BlockQuoteType])
 

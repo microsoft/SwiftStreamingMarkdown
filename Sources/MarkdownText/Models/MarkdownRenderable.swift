@@ -12,17 +12,16 @@ import AppKit
 
 /// Markdown element representation that is ready to be rendered by a SwiftUI View
 /// The representation already have all the parsing and processing completed to minimize rendering overhead on UI thread.
-/// This data structure is not thread safe due to the usage of `NSMutableAttributedString`, this needs to be addressed as a future improvement
-indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
+indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable, Codable {
 
   /// To be rendered as a paragraph
-  case paragraph(id: String, content: NSMutableAttributedString)
+  case paragraph(id: String, content: AttributedString)
 
   /// To be rendered as LaTeX (Math formatting)
   case latex(id: String, content: String)
 
   /// To be rendered as a heading
-  case heading(id: String, level: Int, content: NSMutableAttributedString)
+  case heading(id: String, level: Int, content: AttributedString)
 
   /// To be rendered as a ordered list view
   case orderedList(id: String, items: [MarkdownListItem])
@@ -34,7 +33,7 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   case codeBlock(id: String, language: String?, code: String)
 
   /// To be rendered as a table
-  case table(id: String, headers: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], rawMarkdown: String)
+  case table(id: String, headers: [AttributedString], rows: [[AttributedString]], rawMarkdown: String)
 
   /// To be rendered as thematic break
   case thematicBreak(id: String)
@@ -76,9 +75,9 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   }
 }
 
-struct MarkdownListItem: Equatable {
+struct MarkdownListItem: Equatable, Codable {
   /// Checkbox state for a GitHub-flavored task list item (`- [ ]` / `- [x]`).
-  enum Checkbox {
+  enum Checkbox: Codable {
     case checked
     case unchecked
   }

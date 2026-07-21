@@ -11,10 +11,10 @@ import Markdown
 ///
 /// - Important: Image support is **experimental**. See
 ///   `MarkdownRenderConfig.imageConfig`.
-struct ImageData: Equatable, Sendable {
+struct ImageData: Equatable, Sendable, Codable {
 
   /// A resolved image source that the active `ImageConfig` permits.
-  enum Source: Equatable, Sendable {
+  enum Source: Equatable, Sendable, Codable {
     /// A remote image loaded asynchronously over `https`.
     case remote(URL)
     /// A bundled image resolved from the app's asset catalog by name.

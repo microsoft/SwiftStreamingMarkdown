@@ -40,6 +40,6 @@ extension Heading: BlockConvertible {
     }
     newContainer[.foregroundColor] = MDColor(config.headingStyle.textColor)
     let paragraphContent = buildParagraphContent(container: newContainer, config: config)
-    return .heading(id: self.id, level: self.level, content: paragraphContent)
+    return .heading(id: self.id, level: self.level, content: AttributedString(paragraphContent))
   }
 }

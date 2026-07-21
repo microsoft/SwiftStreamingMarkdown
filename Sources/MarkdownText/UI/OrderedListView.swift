@@ -22,10 +22,10 @@ struct OrderedListView: View {
           if let firstChild = items[idx].children.first {
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment. This is to fix the mis-alignment when the view is rendered off-screen, e.g. snapshot.
-              ListItemContentWrapper(paragraphContents: contents) {
+              ListItemContentWrapper(paragraphContents: NSMutableAttributedString(attributedString: NSAttributedString(contents))) {
                 SingleBlockView(renderable: firstChild)
               }
-              .accessibilityLabel(Text(markdownListAccessibilityLabel(for: contents.string, at: idx, length: items.count)))
+              .accessibilityLabel(Text(markdownListAccessibilityLabel(for: String(contents.characters), at: idx, length: items.count)))
             } else {
               SingleBlockView(renderable: firstChild)
             }
@@ -103,7 +103,7 @@ func markdownListAccessibilityLabel(for item: String, at index: Int, length: Int
 
 #Preview(body: {
   let items: [MarkdownListItem] = (0..<40).map { i in
-    MarkdownListItem(children: [.paragraph(id: "\(i)", content: NSMutableAttributedString(string: "item \(i + 1)"))], startsWithBold: false)
+    MarkdownListItem(children: [.paragraph(id: "\(i)", content: AttributedString("item \(i + 1)"))], startsWithBold: false)
   }
   return ScrollView {
     OrderedListView(items: items)

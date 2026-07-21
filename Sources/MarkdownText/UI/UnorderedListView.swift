@@ -19,10 +19,10 @@ struct UnorderedListView: View {
           if let firstChild = items[idx].children.first {
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment
-              ListItemContentWrapper(paragraphContents: contents) {
+              ListItemContentWrapper(paragraphContents: NSMutableAttributedString(attributedString: NSAttributedString(contents))) {
                 SingleBlockView(renderable: firstChild)
               }
-              .accessibilityLabel(Text(listItemAccessibilityLabel(for: contents.string, at: idx, checkbox: items[idx].checkbox)))
+              .accessibilityLabel(Text(listItemAccessibilityLabel(for: String(contents.characters), at: idx, checkbox: items[idx].checkbox)))
             } else {
               SingleBlockView(renderable: firstChild)
             }
@@ -86,20 +86,20 @@ extension VerticalAlignment {
 #Preview(body: {
   return UnorderedListView(items: [
     MarkdownListItem(children: [.paragraph(id: "1-1",
-                                           content: NSMutableAttributedString(string: "item 1"))],
+                                           content: AttributedString("item 1"))],
                      startsWithBold: false),
     MarkdownListItem(children: [.paragraph(id: "1-2",
-                                           content: NSMutableAttributedString(string: "item 2"))],
+                                           content: AttributedString("item 2"))],
                      startsWithBold: false),
     MarkdownListItem(children: [.paragraph(id: "1-3",
-                                           content: NSMutableAttributedString(string: "item 3, this is a very long item with a lot of texts. it may create a multi-line paragraph."))],
+                                           content: AttributedString("item 3, this is a very long item with a lot of texts. it may create a multi-line paragraph."))],
                      startsWithBold: false),
     MarkdownListItem(children: [.paragraph(id: "1-4",
-                                           content: NSMutableAttributedString(string: "a completed task"))],
+                                           content: AttributedString("a completed task"))],
                      startsWithBold: false,
                      checkbox: .checked),
     MarkdownListItem(children: [.paragraph(id: "1-5",
-                                           content: NSMutableAttributedString(string: "an open task"))],
+                                           content: AttributedString("an open task"))],
                      startsWithBold: false,
                      checkbox: .unchecked)
   ],

@@ -40,14 +40,14 @@ struct SingleBlockView: View {
       switch renderable {
       case .heading(_, _, let contents):
         HStack(spacing: 0) {
-          ParagraphView(contents: contents)
+          ParagraphView(contents: NSMutableAttributedString(attributedString: NSAttributedString(contents)))
             .transition(.opacity)
             .accessibilityAddTraits(.isHeader)
           Spacer()
         }
       case .paragraph(_, let contents):
         HStack(spacing: 0) {
-          ParagraphView(contents: contents, lineSpacing: 5)
+          ParagraphView(contents: NSMutableAttributedString(attributedString: NSAttributedString(contents)), lineSpacing: 5)
             .fixedSize(horizontal: false, vertical: true)
             .transition(.opacity)
           Spacer()
@@ -69,8 +69,8 @@ struct SingleBlockView: View {
       case .thematicBreak:
         ThematicBreakView()
       case .table(_, let headers, let rows, let rawMarkdown):
-        TableView(headings: headers,
-                  rows: rows,
+        TableView(headings: headers.map { NSMutableAttributedString(attributedString: NSAttributedString($0)) },
+                  rows: rows.map { row in row.map { NSMutableAttributedString(attributedString: NSAttributedString($0)) } },
                   rawMarkdown: rawMarkdown)
       case .blockQuote(_, let item):
         BlockQuoteView(item: item)

@@ -26,7 +26,7 @@ extension Paragraph: BlockConvertible {
     }
     container[.foregroundColor] = MDColor(config.paragraphStyle.textColor)
     let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config)
-    return MarkdownRenderable.paragraph(id: self.id, content: paragraphContent)
+    return MarkdownRenderable.paragraph(id: self.id, content: AttributedString(paragraphContent))
   }
 
   private var imageOnlyChild: Markdown.Image? {

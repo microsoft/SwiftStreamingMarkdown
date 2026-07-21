@@ -20,7 +20,7 @@ extension Markdown.Table: BlockConvertible {
       .head
       .children
       .compactMap { $0 as? Cell }
-      .map { $0.convert(attributeContainer: headerContainer, config: config) }
+      .map { AttributedString($0.convert(attributeContainer: headerContainer, config: config)) }
     let rows = self
       .body
       .children
@@ -29,7 +29,7 @@ extension Markdown.Table: BlockConvertible {
       .filter { $0.childCount == headerCells.count }
       .map { row in
         let cells = row.children.compactMap { $0 as? Cell }
-        return cells.map { $0.convert(attributeContainer: bodyContainer, config: config) }
+        return cells.map { AttributedString($0.convert(attributeContainer: bodyContainer, config: config)) }
       }
     // swift-markdown's MarkupFormatter.visitTable crashes with an array index
     // out of bounds when any body row has fewer columns than the header

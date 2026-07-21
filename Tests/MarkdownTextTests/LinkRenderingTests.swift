@@ -19,9 +19,10 @@ final class LinkRenderingTests: XCTestCase {
     let document = await parser.parse(text: "check the [docs](https://example.com) here")
     let renderables = document.convert(with: .default)
 
-    guard case .paragraph(_, let content) = renderables.first else {
+    guard case .paragraph(_, let attributedContent) = renderables.first else {
       return XCTFail("Expected a single paragraph")
     }
+    let content = NSAttributedString(attributedContent)
 
     var foundUnderlineAttribute = false
     var underlineNumber: NSNumber?

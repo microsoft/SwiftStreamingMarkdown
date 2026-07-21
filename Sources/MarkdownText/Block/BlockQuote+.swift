@@ -29,6 +29,6 @@ extension BlockQuote: BlockConvertible {
   }
 }
 
-struct BlockQuoteRenderable: Equatable {
+struct BlockQuoteRenderable: Equatable, Codable {
   let quoteType: BlockQuoteType
 }

@@ -15,7 +15,7 @@ import AppKit
 /// A `MarkdownRenderConfig`-aware snapshot of a parsed markdown `Document`,
 /// ready to be handed to a `MarkdownView` for rendering. Producing one is
 /// the heavyweight step; rendering it is cheap.
-public struct RenderableDocument: Equatable, Sendable {
+public struct RenderableDocument: Equatable, Sendable, Codable {
   let renderables: [MarkdownRenderable]
 
   var containsCodeBlock: Bool {
@@ -50,7 +50,7 @@ public struct RenderableDocument: Equatable, Sendable {
       attributes[.kern] = kern
     }
     let content = NSMutableAttributedString(string: plainText, attributes: attributes)
-    self.init(renderables: [.paragraph(id: UUID().uuidString, content: content)])
+    self.init(renderables: [.paragraph(id: UUID().uuidString, content: AttributedString(content))])
   }
 
   init(renderables: [MarkdownRenderable]) {
@@ -83,7 +83,7 @@ extension MarkdownRenderable {
   var plainText: String? {
     switch self {
     case .paragraph(_, let content), .heading(_, _, let content):
-      return content.string
+      return String(content.characters)
     case .latex(_, let content):
       return content
     case .orderedList(_, let items):
@@ -93,8 +93,8 @@ extension MarkdownRenderable {
     case .codeBlock(_, _, let code):
       return code
     case .table(_, let headers, let rows, _):
-      let headerLine = headers.map { $0.string }.joined(separator: "\t")
-      let rowLines = rows.map { row in row.map { $0.string }.joined(separator: "\t") }
+      let headerLine = headers.map { String($0.characters) }.joined(separator: "\t")
+      let rowLines = rows.map { row in row.map { String($0.characters) }.joined(separator: "\t") }
       return ([headerLine] + rowLines).joined(separator: "\n")
     case .blockQuote(_, let item):
       return item.quoteType.plainText
@@ -130,13 +130,13 @@ extension MarkdownRenderable {
   func extractAttributedStrings() -> [NSAttributedString] {
     switch self {
     case .paragraph(_, let str):
-      return [str]
+      return [NSAttributedString(str)]
     case .orderedList(_, let items):
       return items.flatMap { $0.attributedStrings() }
     case .unorderedList(_, let items, _):
       return items.flatMap { $0.attributedStrings() }
     case .table(_, let headers, let rows, _):
-      return headers + rows.flatMap { $0 }
+      return (headers + rows.flatMap { $0 }).map { NSAttributedString($0) }
     default:
       return []
     }
