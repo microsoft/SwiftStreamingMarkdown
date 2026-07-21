@@ -32,6 +32,15 @@ final class InlineCitationAttachment: NSTextAttachment {
   static let textInsets = MDEdgeInsets(top: 2, left: 4, bottom: 2, right: 4)
   static let cornerRadius: CGFloat = 6
 
+  // MARK: - Secure Coding
+
+  override class var supportsSecureCoding: Bool { true }
+
+  private static let payloadCoderKey = "payload"
+  private static let fontCoderKey = "font"
+  private static let textColorCoderKey = "textColor"
+  private static let backgroundColorCoderKey = "backgroundColor"
+
   #if canImport(UIKit)
   override var image: UIImage? {
     get {
@@ -68,22 +77,9 @@ final class InlineCitationAttachment: NSTextAttachment {
     self.font = citationConfig.font
     self.textColor = MDColor(citationConfig.textColor)
     self.backgroundColor = MDColor(citationConfig.backgroundColor)
-
-    if let title = citationData?.title {
-      self.lightPreviewImage = Self.renderCitationImage(
-        title: title, font: self.font,
-        textColor: self.textColor, backgroundColor: self.backgroundColor,
-        appearance: .light
-      )
-      self.darkPreviewImage = Self.renderCitationImage(
-        title: title, font: self.font,
-        textColor: self.textColor, backgroundColor: self.backgroundColor,
-        appearance: .dark
-      )
-    } else {
-      self.lightPreviewImage = nil
-      self.darkPreviewImage = nil
-    }
+    (self.lightPreviewImage, self.darkPreviewImage) = Self.previewImages(
+      title: citationData?.title, font: self.font, textColor: self.textColor, backgroundColor: self.backgroundColor
+    )
 
     super.init(data: payload, ofType: UTType.url.identifier)
   }
@@ -97,11 +93,52 @@ final class InlineCitationAttachment: NSTextAttachment {
     self.init(payload: payload, citationConfig: citationConfig)
   }
 
+  /// Reconstructs the attachment from an archive. Since `NSCoder` has no access to a
+  /// live `MarkdownRenderConfig.CitationConfig`, the font/colors used to render the
+  /// preview images are persisted directly alongside the citation payload.
   required init?(coder: NSCoder) {
-    return nil
+    guard let payload = coder.decodeObject(of: NSData.self, forKey: Self.payloadCoderKey) as Data?,
+          let font = coder.decodeObject(of: MDFont.self, forKey: Self.fontCoderKey),
+          let textColor = coder.decodeObject(of: MDColor.self, forKey: Self.textColorCoderKey),
+          let backgroundColor = coder.decodeObject(of: MDColor.self, forKey: Self.backgroundColorCoderKey) else {
+      return nil
+    }
+
+    let decoded = try? JSONDecoder().decode(InlineAttachmentData.self, from: payload)
+    let citationData = (decoded?.type == .citation) ? decoded : nil
+    self.citationData = citationData
+
+    self.font = font
+    self.textColor = textColor
+    self.backgroundColor = backgroundColor
+    (self.lightPreviewImage, self.darkPreviewImage) = Self.previewImages(
+      title: citationData?.title, font: font, textColor: textColor, backgroundColor: backgroundColor
+    )
+
+    super.init(data: payload, ofType: UTType.url.identifier)
+  }
+
+  override func encode(with coder: NSCoder) {
+    super.encode(with: coder)
+    if let payload = self.contents {
+      coder.encode(payload as NSData, forKey: Self.payloadCoderKey)
+    }
+    coder.encode(font, forKey: Self.fontCoderKey)
+    coder.encode(textColor, forKey: Self.textColorCoderKey)
+    coder.encode(backgroundColor, forKey: Self.backgroundColorCoderKey)
   }
 
   // MARK: - Preview Image Rendering
+
+  private static func previewImages(
+    title: String?, font: MDFont, textColor: MDColor, backgroundColor: MDColor
+  ) -> (light: MDImage?, dark: MDImage?) {
+    guard let title else { return (nil, nil) }
+    return (
+      renderCitationImage(title: title, font: font, textColor: textColor, backgroundColor: backgroundColor, appearance: .light),
+      renderCitationImage(title: title, font: font, textColor: textColor, backgroundColor: backgroundColor, appearance: .dark)
+    )
+  }
 
   private static func renderCitationImage(
     title: String, font: MDFont,

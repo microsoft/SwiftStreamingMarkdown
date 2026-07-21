@@ -31,8 +31,9 @@ final class TypographyPropagationTests: XCTestCase {
 
     let renderable = heading.convert(attributeContainer: .init(), config: config)
 
-    if case .heading(_, let level, let attributedString) = renderable {
+    if case .heading(_, let level, let content) = renderable {
       XCTAssertEqual(level, 1)
+      let attributedString = NSAttributedString(content)
 
       // The attributed string should have the .font attribute set to extraLarge normal
       // and for the italic part, it should be extraLarge italic.
@@ -69,7 +70,8 @@ final class TypographyPropagationTests: XCTestCase {
     let config = MarkdownRenderConfig.default
     let renderable = paragraph.convert(attributeContainer: .init(), config: config)
 
-    if case .paragraph(_, let attributedString) = renderable {
+    if case .paragraph(_, let content) = renderable {
+      let attributedString = NSAttributedString(content)
       let string = attributedString.string
       guard let strongItalicRange = string.range(of: "strong italic") else {
         XCTFail("Should find 'strong italic' in string")

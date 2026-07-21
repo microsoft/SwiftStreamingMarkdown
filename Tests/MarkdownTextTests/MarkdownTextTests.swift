@@ -264,11 +264,12 @@ final class MarkdownTextTests: XCTestCase {
     let paragraphFonts = Typography.baseTextFonts
 
     // 1. Inspect Heading
-    guard case let .heading(_, level, headingContent) = renderables[0] else {
+    guard case let .heading(_, level, headingAttributedContent) = renderables[0] else {
       XCTFail("First renderable should be a heading")
       return
     }
     XCTAssertEqual(level, 1)
+    let headingContent = NSAttributedString(headingAttributedContent)
 
     // Check that "italic" has italic font
     let italicRange = (headingContent.string as NSString).range(of: "italic")
@@ -286,10 +287,11 @@ final class MarkdownTextTests: XCTestCase {
     XCTAssertEqual(bothFont, headingFonts.boldItalic)
 
     // 2. Inspect Paragraph
-    guard case let .paragraph(_, paragraphContent) = renderables[1] else {
+    guard case let .paragraph(_, paragraphAttributedContent) = renderables[1] else {
       XCTFail("Second renderable should be a paragraph")
       return
     }
+    let paragraphContent = NSAttributedString(paragraphAttributedContent)
 
     // Check "nested " (part of **nested *italic* inside**)
     let nestedRange = (paragraphContent.string as NSString).range(of: "nested ")
