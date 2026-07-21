@@ -8,6 +8,8 @@ import Markdown
 
 extension String {
 
+  static let markdownTextResources = Bundle.module
+
   public func markdownToPlainText(removeHeading: Bool = false, coder: CitationCoder = .default) async -> String {
     let markdownParser = MarkdownParserImpl()
     let document = await markdownParser.parse(text: self)
@@ -34,15 +36,17 @@ extension String {
       ), citationLabel)
   }
 
-  static func markdownList(length: String) -> String {
+  static func markdownListItem(length: Int, index: Int, item: String, bundle: Bundle = markdownTextResources) -> String {
     return String(format:
       NSLocalizedString(
-        "markdown_list",
-        bundle: .module,
-        value: "List with %@ items",
-        comment: "Description for a list with some items"
+        "markdown_list_item",
+        bundle: bundle,
+        value: "List with %1$@ items, item %2$@: %3$@",
+        comment: "Accessibility label describing a list item's position, the list length, and the item's text"
       ),
-      length)
+      String(length),
+      String(index),
+      item)
   }
 
   static let taskListItemChecked = NSLocalizedString(
