@@ -37,4 +37,31 @@ final class LinkRenderingTests: XCTestCase {
       "underlineStyle must bridge to NSNumber — AppKit's TextKit calls -integerValue on it and crashes on any other type"
     )
   }
+
+  func test_linkUnderlineStyle_usesConfiguredStyle() async {
+    let document = await parser.parse(text: "check the [docs](https://example.com) here")
+    let defaults = MarkdownRenderConfig.defaultInlineStyle
+    let inlineStyle = MarkdownRenderConfig.MarkdownInlineTextStyle(
+      boldTextColor: defaults.boldTextColor,
+      linkTextFont: defaults.linkTextFont,
+      linkTextColor: defaults.linkTextColor,
+      linkUnderlineStyle: .single,
+      codeTextFont: defaults.codeTextFont,
+      codeTextColor: defaults.codeTextColor,
+      codeBackgroundColor: defaults.codeBackgroundColor,
+      codeUnderlineColor: defaults.codeUnderlineColor
+    )
+    let config = MarkdownRenderConfig.default.withInlineStyle(value: inlineStyle)
+    let renderables = document.convert(with: config)
+
+    guard case .paragraph(_, let content) = renderables.first else {
+      return XCTFail("Expected a single paragraph")
+    }
+
+    let linkLocation = content.string.range(of: "docs")?.lowerBound.utf16Offset(in: content.string)
+    let underline = linkLocation.flatMap {
+      content.attribute(.underlineStyle, at: $0, effectiveRange: nil) as? NSNumber
+    }
+    XCTAssertEqual(underline?.intValue, NSUnderlineStyle.single.rawValue)
+  }
 }

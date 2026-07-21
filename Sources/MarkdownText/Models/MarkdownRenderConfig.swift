@@ -132,6 +132,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     public let linkTextFont: MDFont
     /// Foreground color applied to link runs.
     public let linkTextColor: Color
+    /// Underline style applied to link runs.
+    public let linkUnderlineStyle: NSUnderlineStyle
     /// Font used for inline code spans.
     public let codeTextFont: MDFont
     /// Foreground color applied to inline code spans.
@@ -143,9 +145,24 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
     /// Create an inline text style with the supplied fonts and color palette.
     public init(boldTextColor: Color, linkTextFont: MDFont, linkTextColor: Color, codeTextFont: MDFont, codeTextColor: Color, codeBackgroundColor: Color, codeUnderlineColor: Color) {
+      self.init(
+        boldTextColor: boldTextColor,
+        linkTextFont: linkTextFont,
+        linkTextColor: linkTextColor,
+        linkUnderlineStyle: [],
+        codeTextFont: codeTextFont,
+        codeTextColor: codeTextColor,
+        codeBackgroundColor: codeBackgroundColor,
+        codeUnderlineColor: codeUnderlineColor
+      )
+    }
+
+    /// Create an inline text style with the supplied fonts, color palette, and link underline style.
+    public init(boldTextColor: Color, linkTextFont: MDFont, linkTextColor: Color, linkUnderlineStyle: NSUnderlineStyle, codeTextFont: MDFont, codeTextColor: Color, codeBackgroundColor: Color, codeUnderlineColor: Color) {
       self.boldTextColor = boldTextColor
       self.linkTextFont = linkTextFont
       self.linkTextColor = linkTextColor
+      self.linkUnderlineStyle = linkUnderlineStyle
       self.codeTextFont = codeTextFont
       self.codeTextColor = codeTextColor
       self.codeBackgroundColor = codeBackgroundColor
