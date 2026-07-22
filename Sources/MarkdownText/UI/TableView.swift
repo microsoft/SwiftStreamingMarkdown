@@ -136,7 +136,7 @@ struct TableView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      if controller != nil {
+      if config.tableStyle.showTableActions, controller != nil {
         scrollView.onTapGesture {
           withAnimation(.easeInOut(duration: 0.2)) {
             isExpanded.toggle()
@@ -146,7 +146,7 @@ struct TableView: View {
         scrollView
       }
 
-      if isExpanded {
+      if config.tableStyle.showTableActions, isExpanded {
         HStack(spacing: 0) {
           tableCopyButton
           tableDownloadButton
