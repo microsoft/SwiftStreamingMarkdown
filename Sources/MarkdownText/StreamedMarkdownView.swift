@@ -51,10 +51,12 @@ public struct StreamedMarkdownView: View {
       listener: controller.listener
     )
     .task {
-      controller.start()
+      await controller.start()
     }
     .onDisappear {
-      controller.end()
+      Task {
+        await controller.end()
+      }
     }
   }
 }
@@ -79,7 +81,7 @@ final class StreamedMarkdownController: ObservableObject {
     self.listener = listener
   }
 
-  func start() {
+  func start() async {
     task?.cancel()
     task = Task { [weak self] in
       guard let self else { return }
@@ -94,7 +96,7 @@ final class StreamedMarkdownController: ObservableObject {
     }
   }
 
-  func end() {
+  func end() async {
     task?.cancel()
     task = nil
   }

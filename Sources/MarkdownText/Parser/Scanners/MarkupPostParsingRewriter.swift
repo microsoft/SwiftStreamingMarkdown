@@ -51,3 +51,16 @@ final class PartialTableMarkupPostParsingRewriter: MarkupPostParsingRewriter {
     return rewriter.visit(document) as? Document
   }
 }
+
+/// Splits paragraphs that contain images into block-level image-only
+/// paragraphs. See `ImageBlockRewriter`.
+///
+/// - Important: Experimental. Only applied when `MarkdownParseOption.imageSupport`
+///   is enabled.
+final class ImageBlockMarkupPostParsingRewriter: MarkupPostParsingRewriter {
+
+  func rewriteIfApplicable(document: Document) -> Document? {
+    var rewriter = ImageBlockRewriter()
+    return rewriter.visit(document) as? Document
+  }
+}

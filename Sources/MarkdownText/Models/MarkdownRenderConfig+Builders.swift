@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension MarkdownRenderConfig {
   /// Returns a copy with `shouldAnimateText` replaced.
@@ -18,7 +19,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -34,7 +38,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -50,7 +57,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -66,7 +76,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -82,7 +95,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -98,7 +114,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -114,7 +133,10 @@ extension MarkdownRenderConfig {
       inlineStyle: value,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -131,7 +153,10 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: value,
       citationConfig: citationConfig,
-      blockSpacing: blockSpacing
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
     )
   }
 
@@ -147,7 +172,88 @@ extension MarkdownRenderConfig {
       inlineStyle: inlineStyle,
       textContextMenu: textContextMenu,
       citationConfig: citationConfig,
-      blockSpacing: value
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: value,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
+    )
+  }
+
+  /// Returns a copy with `codeBlockConfig` replaced.
+  public func withCodeBlockConfig(value: CodeBlockConfig) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: value,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor
+    )
+  }
+
+  /// Returns a copy with `textSelectionConfig` replaced. Pass a config with
+  /// `isEnabled: false` to hide the built-in "Select more text" edit-menu action.
+  public func withTextSelectionConfig(value: TextSelectionConfig) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: value,
+      thematicBreakColor: thematicBreakColor
+    )
+  }
+
+  /// Returns a copy with `thematicBreakColor` replaced.
+  public func withThematicBreakColor(value: Color) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: value
+    )
+  }
+
+  /// Returns a copy with `imageConfig` replaced. Image support is experimental.
+  public func withImageConfig(_ value: ImageConfig) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor,
+      imageConfig: value
     )
   }
 }

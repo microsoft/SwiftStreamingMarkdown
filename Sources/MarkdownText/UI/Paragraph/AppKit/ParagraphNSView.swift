@@ -74,15 +74,34 @@ class ParagraphNSView: NSTextView {
       targetWidth = NSScreen.main?.frame.width ?? 800
     }
 
-    guard let textContainer, let layoutManager = textContainer.layoutManager else {
+    let measuredSize = measureSize(fittingWidth: targetWidth)
+    cachedSize = CachedParagraphNSViewSize(size: measuredSize, targetWidth: targetWidth)
+    return measuredSize
+  }
+
+  /// Measures the size required to lay out the current content within `width`.
+  ///
+  /// Uses a dedicated, throwaway layout stack instead of the view's own text container.
+  /// The display container has `widthTracksTextView = true`, so its width follows the
+  /// view's frame width regardless of any `containerSize` we set. When the view is
+  /// measured before it has been given a frame (e.g. mid navigation transition) that
+  /// tracked width is `0`, which yields a zero height and collapses the paragraph. A
+  /// standalone container whose width we set directly always measures correctly.
+  func measureSize(fittingWidth width: CGFloat) -> CGSize {
+    guard let textStorage, textStorage.length > 0, width > 0, width.isFinite else {
       return .zero
     }
-    textContainer.containerSize = NSSize(width: targetWidth, height: CGFloat.greatestFiniteMagnitude)
-    layoutManager.ensureLayout(for: textContainer)
-    let usedRect = layoutManager.usedRect(for: textContainer)
-    let roundedUpSize = CGSize(width: usedRect.width.rounded(.up), height: usedRect.height.rounded(.up))
-    cachedSize = CachedParagraphNSViewSize(size: roundedUpSize, targetWidth: targetWidth)
-    return roundedUpSize
+    let measuringTextStorage = NSTextStorage(attributedString: textStorage)
+    let measuringLayoutManager = NSLayoutManager()
+    let measuringContainer = NSTextContainer(size: NSSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+    measuringContainer.lineFragmentPadding = 0
+    measuringContainer.maximumNumberOfLines = 0
+    measuringContainer.lineBreakMode = .byWordWrapping
+    measuringLayoutManager.addTextContainer(measuringContainer)
+    measuringTextStorage.addLayoutManager(measuringLayoutManager)
+    measuringLayoutManager.ensureLayout(for: measuringContainer)
+    let usedRect = measuringLayoutManager.usedRect(for: measuringContainer)
+    return CGSize(width: usedRect.width.rounded(.up), height: usedRect.height.rounded(.up))
   }
 
   override func layout() {
@@ -321,47 +340,65 @@ class ParagraphNSView: NSTextView {
     let clampedRange = NSIntersectionRange(selectedRange, NSRange(location: 0, length: textStorage.length))
     let selectedText = textStorage.attributedSubstring(from: clampedRange).string
 
-    let menu = NSMenu()
+    // Start from the native context menu so system items (Copy, Look Up,
+    // Translate, Share, Services, …) are preserved, then inject the configured
+    // groups at the top, above the system items.
+    let menu = super.menu(for: event) ?? NSMenu()
 
-    // Add standard Copy item
-    let copyItem = NSMenuItem(title: "Copy", action: #selector(copy(_:)), keyEquivalent: "c")
-    menu.addItem(copyItem)
-    menu.addItem(.separator())
-
-    // Add custom groups
+    var injected: [NSMenuItem] = []
+    // The built-in "Select more text" group (when enabled) is prepended by
+    // `MarkdownRenderConfig.resolvedTextContextMenu`, so it renders first.
     for group in textContextMenu.menuGroups {
       if group.displayInline {
         for item in group.items {
-          let menuItem = NSMenuItem(title: item.title, action: #selector(contextMenuItemTapped(_:)), keyEquivalent: "")
-          menuItem.representedObject = ContextMenuAction(id: item.id, selectedText: selectedText)
-          menuItem.target = self
-          menu.addItem(menuItem)
+          injected.append(makeMenuItem(for: item, selectedText: selectedText))
         }
       } else {
         let submenu = NSMenu(title: group.title ?? "")
         for item in group.items {
-          let menuItem = NSMenuItem(title: item.title, action: #selector(contextMenuItemTapped(_:)), keyEquivalent: "")
-          menuItem.representedObject = ContextMenuAction(id: item.id, selectedText: selectedText)
-          menuItem.target = self
-          submenu.addItem(menuItem)
+          submenu.addItem(makeMenuItem(for: item, selectedText: selectedText))
         }
         let submenuItem = NSMenuItem(title: group.title ?? "", action: nil, keyEquivalent: "")
         submenuItem.submenu = submenu
-        menu.addItem(submenuItem)
+        injected.append(submenuItem)
       }
-      menu.addItem(.separator())
+      injected.append(.separator())
     }
 
-    // Notify controller of menu appearance
+    // Insert the block in order at the top; its trailing separator divides it
+    // from the native items (Copy, …) that follow.
+    var insertAt = 0
+    for item in injected {
+      menu.insertItem(item, at: insertAt)
+      insertAt += 1
+    }
+
+    // Notify controller of menu appearance (excluding the built-in item)
     if let markdownController {
       for group in textContextMenu.menuGroups {
-        for item in group.items {
+        for item in group.items where item.id != TextSelectionConfig.selectMoreItemID {
           markdownController.onContextMenuAppear(id: item.id, selectedContent: selectedText)
         }
       }
     }
 
     return menu
+  }
+
+  private func makeMenuItem(for item: TextContextMenuItem, selectedText: String) -> NSMenuItem {
+    if item.id == TextSelectionConfig.selectMoreItemID {
+      let menuItem = NSMenuItem(title: item.title, action: #selector(selectMoreTextTapped), keyEquivalent: "")
+      menuItem.target = self
+      return menuItem
+    }
+    let menuItem = NSMenuItem(title: item.title, action: #selector(contextMenuItemTapped(_:)), keyEquivalent: "")
+    menuItem.representedObject = ContextMenuAction(id: item.id, selectedText: selectedText)
+    menuItem.target = self
+    return menuItem
+  }
+
+  @objc private func selectMoreTextTapped() {
+    markdownController?.requestTextSelection()
   }
 
   @objc private func contextMenuItemTapped(_ sender: NSMenuItem) {

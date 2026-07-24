@@ -101,7 +101,7 @@ struct StreamingControlPanelView: View {
     .padding(.top, 6)
     .padding(.bottom, 12)
     .safeAreaPadding(.bottom, 8)
-    .frame(maxWidth: .infinity)
+    .frame(maxWidth: panelMaxWidth)
     .background {
       UnevenRoundedRectangle(
         topLeadingRadius: 18,
@@ -116,6 +116,14 @@ struct StreamingControlPanelView: View {
     .padding(.horizontal, 0)
     .padding(.top, 8)
     .padding(.bottom, 0)
+  }
+
+  private var panelMaxWidth: CGFloat {
+    #if os(macOS)
+    620
+    #else
+    .infinity
+    #endif
   }
 
   private var controls: some View {

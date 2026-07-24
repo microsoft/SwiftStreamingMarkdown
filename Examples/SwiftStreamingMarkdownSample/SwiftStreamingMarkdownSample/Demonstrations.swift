@@ -12,6 +12,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
   case multiParagraph = "Multi-paragraph"
   case tables = "Tables"
   case math = "Math"
+  case images = "Images"
   case robotoTheme = "Roboto Themed"
   case `default` = "Default"
 
@@ -27,6 +28,8 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
       "Top 10 populous cities and basic info"
     case .math:
       "Top 10 most popular math equations"
+    case .images:
+      "Block-level images: asset-catalog, bundled-resource, and remote sources with tap-to-zoom"
     case .robotoTheme:
       "Fully custom MarkdownRenderConfig: Roboto fonts + teal-on-purple palette"
     case .default:
@@ -40,6 +43,7 @@ enum Demonstration: String, CaseIterable, Identifiable, Hashable {
     case .multiParagraph: "multi-paragraph"
     case .tables: "tables"
     case .math: "math"
+    case .images: "images"
     case .robotoTheme: "roboto"
     case .default: "roboto"
     }

@@ -32,9 +32,27 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   public let textContextMenu: TextContextMenu?
   /// Configuration that controls inline citation parsing and rendering.
   public let citationConfig: CitationConfig
+  /// Configuration that controls code-block syntax-highlighting styling.
+  public let codeBlockConfig: CodeBlockConfig
   /// Vertical spacing between adjacent blocks (paragraphs, headings,
   /// code blocks, lists, etc.). Defaults to 30.
   public let blockSpacing: CGFloat
+  /// Configuration for the built-in "Select more text" edit-menu action and the
+  /// modal it presents. Enabled by default.
+  public let textSelectionConfig: TextSelectionConfig
+  /// Color of the horizontal rule rendered for a thematic break (`---`).
+  public let thematicBreakColor: Color
+
+  /// Configuration controlling whether and how Markdown images are rendered as
+  /// block-level content.
+  ///
+  /// When enabled, image-only paragraphs are rendered as block images (loaded
+  /// asynchronously). Pair with `MarkdownParseOption.imageSupport` so that
+  /// images embedded alongside text are split out into their own blocks.
+  ///
+  /// - Important: Image support is **experimental**. The behavior, API, and
+  ///   rendering output may change in future releases. Defaults to `.disabled`.
+  public let imageConfig: ImageConfig
 
   /// Font and color style for a uniformly-styled run of markdown text.
   public struct MarkdownTextStyle: Hashable, Sendable {
@@ -179,7 +197,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
   /// Default inter-block spacing.
   public static let defaultBlockSpacing: CGFloat = 30
-
+  /// Default color for `thematicBreakColor`.
+  public static let defaultThematicBreakColor: Color = Color.Theme.Stroke.Default.Default300
   /// Default styling for `blockQuoteStyle`.
   public static let defaultBlockQuoteStyle = MarkdownTextStyle(
     textFonts: Typography.baseTextFonts,
@@ -243,7 +262,11 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     inlineStyle: MarkdownInlineTextStyle = MarkdownRenderConfig.defaultInlineStyle,
     textContextMenu: TextContextMenu? = nil,
     citationConfig: CitationConfig = .default,
-    blockSpacing: CGFloat = MarkdownRenderConfig.defaultBlockSpacing
+    codeBlockConfig: CodeBlockConfig = .default,
+    blockSpacing: CGFloat = MarkdownRenderConfig.defaultBlockSpacing,
+    textSelectionConfig: TextSelectionConfig = .default,
+    thematicBreakColor: Color = MarkdownRenderConfig.defaultThematicBreakColor,
+    imageConfig: ImageConfig = .disabled
   ) {
     self.shouldAnimateText = shouldAnimateText
     self.blockQuoteStyle = blockQuoteStyle
@@ -254,10 +277,35 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     self.inlineStyle = inlineStyle
     self.textContextMenu = textContextMenu
     self.citationConfig = citationConfig
+    self.codeBlockConfig = codeBlockConfig
     self.blockSpacing = blockSpacing
+    self.textSelectionConfig = textSelectionConfig
+    self.thematicBreakColor = thematicBreakColor
+    self.imageConfig = imageConfig
   }
 
   /// The default render config, equivalent to calling `init()` with no
   /// arguments.
   public static let `default` = MarkdownRenderConfig(shouldAnimateText: false)
+
+  /// The context menu actually rendered on text selection: the consumer-supplied
+  /// `textContextMenu` with the built-in "Select more text" group prepended (so
+  /// it sits right after the system Copy group) when
+  /// `textSelectionConfig.isEnabled` is `true`. Returns the raw `textContextMenu`
+  /// unchanged when text selection is disabled.
+  var resolvedTextContextMenu: TextContextMenu? {
+    guard textSelectionConfig.isEnabled else { return textContextMenu }
+    let selectMoreGroup = TextContextMenuGroup(
+      title: nil,
+      image: nil,
+      displayInline: true,
+      items: [
+        TextContextMenuItem(
+          id: TextSelectionConfig.selectMoreItemID,
+          title: String.selectMoreTextLabel
+        )
+      ]
+    )
+    return TextContextMenu(menuGroups: [selectMoreGroup] + (textContextMenu?.menuGroups ?? []))
+  }
 }

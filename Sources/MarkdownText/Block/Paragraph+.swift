@@ -15,6 +15,9 @@ import AppKit
 extension Paragraph: BlockConvertible {
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
+    if config.imageConfig.enabled, let image = self.imageOnlyChild {
+      return .image(id: self.id, data: ImageData(image: image, imageConfig: config.imageConfig))
+    }
     var container = attributeContainer
     container[.font] = config.paragraphStyle.textFonts.normal
     container[.typography] = config.paragraphStyle.textFonts
@@ -24,6 +27,13 @@ extension Paragraph: BlockConvertible {
     container[.foregroundColor] = MDColor(config.paragraphStyle.textColor)
     let paragraphContent: NSMutableAttributedString = self.buildParagraphContent(container: container, config: config)
     return MarkdownRenderable.paragraph(id: self.id, content: paragraphContent)
+  }
+
+  private var imageOnlyChild: Markdown.Image? {
+    guard self.childCount == 1 else {
+      return nil
+    }
+    return self.child(at: 0) as? Markdown.Image
   }
 }
 

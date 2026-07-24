@@ -32,4 +32,36 @@ final class MarkdownParserTests: XCTestCase {
     XCTAssertTrue(parsed.speculativeRewritten)
     XCTAssertEqual(parsed.document.child(at: 1)?.childCount, 2)
   }
+
+  func test_imageSupport_disabled_keeps_image_inline() async {
+    let text = """
+beforebeforebeforebeforebefore
+
+middlemiddle![alt](https://example.com/img.png)middlemiddlemiddlemiddle
+
+afterafterafterafterafterafter
+"""
+
+    let parsed = await parser.parse(text: text, option: .init(speculativeRewrite: false))
+    XCTAssertEqual(parsed.document.childCount, 3)
+    XCTAssertEqual(parsed.document.child(at: 1)?.childCount, 3)
+  }
+
+  func test_imageSupport_enabled_splits_image_into_block_paragraphs() async {
+    let text = """
+beforebeforebeforebeforebefore
+
+middlemiddle![alt](https://example.com/img.png)middlemiddlemiddlemiddle
+
+afterafterafterafterafterafter
+"""
+
+    let parsed = await parser.parse(
+      text: text,
+      option: .init(speculativeRewrite: false, imageSupport: true)
+    )
+
+    XCTAssertEqual(parsed.document.childCount, 5)
+    XCTAssertFalse(parsed.speculativeRewritten)
+  }
 }

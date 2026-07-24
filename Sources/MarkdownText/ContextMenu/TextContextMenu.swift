@@ -42,7 +42,11 @@ public struct TextContextMenu: Hashable, Sendable {
           subtitle: item.subtitle,
           image: item.image?.withRenderingMode(.alwaysTemplate),
         ) { _ in
-          markdownController?.onContextMenuTap(id: item.id, selectedContent: selectedText)
+          if item.id == TextSelectionConfig.selectMoreItemID {
+            markdownController?.requestTextSelection()
+          } else {
+            markdownController?.onContextMenuTap(id: item.id, selectedContent: selectedText)
+          }
         }
         groupActions.append(uiAction)
       }
@@ -55,14 +59,16 @@ public struct TextContextMenu: Hashable, Sendable {
       customMenu.append(submenu)
     }
 
-    // Combine: system suggested actions first, then custom actions
-    let filteredSuggestedActions = suggestedActions.filter { menuItem in
-      if let menuItem = menuItem as? UIMenu {
-        return menuItem.identifier == .standardEdit
-      }
-      return false
+    // Layout: the system standard-edit group (Copy, …) first, then the custom
+    // groups, then any remaining system suggestions (Look Up, Translate, Share,
+    // …) so the consumer's actions stay prominent and system extras trail.
+    let standardEditActions = suggestedActions.filter {
+      ($0 as? UIMenu)?.identifier == .standardEdit
     }
-    return UIMenu(children: filteredSuggestedActions + customMenu)
+    let otherSuggestedActions = suggestedActions.filter {
+      ($0 as? UIMenu)?.identifier != .standardEdit
+    }
+    return UIMenu(children: standardEditActions + customMenu + otherSuggestedActions)
   }
   #endif
 }

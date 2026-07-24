@@ -23,7 +23,7 @@ struct ParagraphView: UIViewRepresentable {
     let view = ParagraphViewCache.shared.createOrReuseView(contents: contents, lineSpacing: lineSpacing)
     view.onUrlTap = openUrlFunction
     view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
-    view.setTextContextMenu(config.textContextMenu)
+    view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
 
     if config.shouldAnimateText {
@@ -41,7 +41,7 @@ struct ParagraphView: UIViewRepresentable {
       let shouldAnimate = view.window != nil && config.shouldAnimateText // only animate when visible
       view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
     }
-    view.setTextContextMenu(config.textContextMenu)
+    view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
   }
 

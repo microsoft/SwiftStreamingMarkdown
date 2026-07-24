@@ -89,6 +89,10 @@ class LoggingMarkdownListener: MarkdownListener, ObservableObject {
     print("[MarkdownListener] onContextMenuTap(id: \(id), selectedContent: \(selectedContent))")
   }
 
+  func onImageTap(image: MarkdownImage) async {
+    print("[MarkdownListener] onImageTap(image: \(image))")
+  }
+
   #if canImport(UIKit)
   @MainActor
   private func presentCopyConfirmation() {

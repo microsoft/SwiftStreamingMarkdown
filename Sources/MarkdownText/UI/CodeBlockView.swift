@@ -7,47 +7,10 @@ import Foundation
 import HighlightSwift
 import SwiftUI
 
-private actor HighlightTaskManager: ObservableObject {
-  /// Shared Highlight instance to avoid creating multiple JSContext/HLJS instances.
-  /// Each Highlight() creates its own JSContext and evaluates highlight.min.js (~600KB).
-  /// When multiple CodeBlockViews render concurrently, N separate JSContexts cause
-  /// JavaScriptCore OOM crashes (COPILOT-IOS-3F9C, 3F7Z, 3FSQ).
-  private static let sharedHighlight = Highlight()
-
-  private var latestCode: String?
-  private var isProcessing = false
-
-  func enqueueCode(_ code: String, completion: @escaping (AttributedString) -> Void) {
-    latestCode = code
-
-    if !isProcessing {
-      Task {
-        await processQueue(completion: completion)
-      }
-    }
-  }
-
-  private func processQueue(completion: @escaping (AttributedString) -> Void) async {
-    guard !isProcessing else { return }
-
-    isProcessing = true
-
-    while let codeToProcess = latestCode {
-      latestCode = nil
-
-      let css: String = await CodeBlockView.syntaxHighlightingCss
-      if let result = try? await Self.sharedHighlight.attributedText(codeToProcess, colors: .custom(css: css, background: "")) {
-        await MainActor.run {
-          completion(result)
-        }
-      }
-    }
-
-    isProcessing = false
-  }
-}
-
 struct CodeBlockView: View {
+
+  @Environment(\.markdownConfig) private var config: MarkdownRenderConfig
+  @Environment(\.colorScheme) private var colorScheme
 
   let language: String
   let code: String
@@ -63,10 +26,19 @@ struct CodeBlockView: View {
     self.onCodeCopied = onCodeCopied
   }
 
-  private func updateAttributedString(code: String) async {
-    await taskManager.enqueueCode(code) { newAttributedString in
+  private func updateAttributedString(code: String, scheme: ColorScheme) async {
+    let colors = config.codeBlockConfig.theme.highlightColors(for: scheme)
+    await taskManager.enqueueCode(code, colors: colors) { newAttributedString in
       self.attributedString = newAttributedString
     }
+  }
+
+  private var backgroundColor: Color? {
+    config.codeBlockConfig.backgroundColor
+  }
+
+  private var foregroundColor: Color {
+    config.codeBlockConfig.foregroundColor ?? Color.Static.Stone.Stone350
   }
 
   @ViewBuilder
@@ -99,16 +71,16 @@ struct CodeBlockView: View {
       HStack(alignment: .top) {
         Text(language)
           .font(Typography.smallTextFonts)
-          .foregroundStyle(Color.Static.Stone.Stone350)
+          .foregroundStyle(foregroundColor)
         Spacer()
         HStack(alignment: .firstTextBaseline, spacing: 6.0) {
           Image("copyIcon14", bundle: .module)
             .renderingMode(.template)
-            .foregroundStyle(Color.Static.Stone.Stone350)
+            .foregroundStyle(foregroundColor)
           Text(copied ? String.codeCopiedLabel : String.codeCopyLabel)
             .accessibilityAddTraits(.isButton)
             .font(Typography.smallTextFonts)
-            .foregroundStyle(Color.Static.Stone.Stone350)
+            .foregroundStyle(foregroundColor)
             .onTapGesture {
               copied = true
               #if canImport(UIKit)
@@ -126,7 +98,7 @@ struct CodeBlockView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-          Color.Theme.Component.CodeBlock.Background.Background750
+          backgroundColor
             .clipShape(.rect(
               topLeadingRadius: 20,
               bottomLeadingRadius: 0,
@@ -137,14 +109,17 @@ struct CodeBlockView: View {
       codeblock
         .fixedSize(horizontal: false, vertical: true)
         .scrollIndicators(.automatic)
-        .background(Color.Theme.Component.CodeBlock.Background.Background750
-          .clipShape(.rect(
-            topLeadingRadius: 0,
-            bottomLeadingRadius: 20,
-            bottomTrailingRadius: 20,
-            topTrailingRadius: 0
-          ))
-        )
+        .if(backgroundColor != nil, content: { view in
+          let color = backgroundColor ?? Color.clear
+          return view.background(color
+            .clipShape(.rect(
+              topLeadingRadius: 0,
+              bottomLeadingRadius: 20,
+              bottomTrailingRadius: 20,
+              topTrailingRadius: 0
+            ))
+          )
+        })
     }.onChange(of: copied, perform: { isCopied in
       if isCopied {
         Task {
@@ -155,12 +130,22 @@ struct CodeBlockView: View {
     })
     .onChange(of: code, perform: { value in
       Task {
-        await updateAttributedString(code: value)
+        await updateAttributedString(code: value, scheme: colorScheme)
+      }
+    })
+    .onChange(of: colorScheme, perform: { newValue in
+      Task {
+        await updateAttributedString(code: code, scheme: newValue)
+      }
+    })
+    .onChange(of: config, perform: { _ in
+      Task {
+        await updateAttributedString(code: code, scheme: colorScheme)
       }
     })
     .onAppear(perform: {
       Task {
-        await updateAttributedString(code: code)
+        await updateAttributedString(code: code, scheme: colorScheme)
       }
     })
   }

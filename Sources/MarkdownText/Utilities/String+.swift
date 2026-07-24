@@ -73,6 +73,34 @@ extension String {
     comment: "Button label shown after a code block has been copied to clipboard"
   )
 
+  static let selectMoreTextLabel = NSLocalizedString(
+    "select_more_text",
+    bundle: .module,
+    value: "Select more text",
+    comment: "Edit-menu action and modal title for selecting the full document text"
+  )
+
+  static let textSelectionCloseLabel = NSLocalizedString(
+    "a11y_text_selection_close",
+    bundle: .module,
+    value: "Close",
+    comment: "Accessibility label for the button that dismisses the text selection modal"
+  )
+
+  static let imageLabel = NSLocalizedString(
+    "a11y_image",
+    bundle: .module,
+    value: "Image",
+    comment: "Accessibility label for a block image that has no alt text"
+  )
+
+  static let imageViewerCloseLabel = NSLocalizedString(
+    "a11y_image_viewer_close",
+    bundle: .module,
+    value: "Close",
+    comment: "Accessibility label for the button that dismisses the fullscreen image viewer"
+  )
+
 }
 
 extension Markdown.Document {

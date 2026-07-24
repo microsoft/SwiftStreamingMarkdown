@@ -20,10 +20,14 @@ struct ParagraphView: NSViewRepresentable {
 
   func makeNSView(context: Context) -> ParagraphNSView {
     let openUrlFunction = openURL.callAsFunction(_:)
-    let view = ParagraphViewCache.shared.createOrReuseView(contents: contents, lineSpacing: lineSpacing)
+    // Do not reuse paragraph views on macOS. Reused NSTextView instances can retain
+    // stale attachment subviews (e.g. LaTeX views vended by LatexViewProvider) from a
+    // previously displayed document, which then render at the wrong positions. Each
+    // paragraph gets its own view instead.
+    let view = ParagraphNSView()
     view.onUrlTap = openUrlFunction
     view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
-    view.setTextContextMenu(config.textContextMenu)
+    view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
 
     if config.shouldAnimateText {
@@ -42,7 +46,7 @@ struct ParagraphView: NSViewRepresentable {
       let shouldAnimate = view.window != nil && config.shouldAnimateText
       view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
     }
-    view.setTextContextMenu(config.textContextMenu)
+    view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
   }
 
@@ -63,15 +67,7 @@ struct ParagraphView: NSViewRepresentable {
       return cachedSize
     }
 
-    guard let textContainer = nsView.textContainer,
-          let layoutManager = textContainer.layoutManager else {
-      return nil
-    }
-
-    textContainer.containerSize = NSSize(width: width, height: CGFloat.greatestFiniteMagnitude)
-    layoutManager.ensureLayout(for: textContainer)
-    let usedRect = layoutManager.usedRect(for: textContainer)
-    let calculatedSize = CGSize(width: usedRect.width.rounded(.up), height: usedRect.height.rounded(.up))
+    let calculatedSize = nsView.measureSize(fittingWidth: width)
 
     context.coordinator.sizeCache[cacheKey] = calculatedSize
     return calculatedSize
