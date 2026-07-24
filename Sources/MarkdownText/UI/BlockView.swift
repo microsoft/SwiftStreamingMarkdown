@@ -39,19 +39,30 @@ struct SingleBlockView: View {
     Group {
       switch renderable {
       case .heading(_, _, let contents):
-        HStack(spacing: 0) {
-          ParagraphView(contents: contents)
-            .transition(.opacity)
-            .accessibilityAddTraits(.isHeader)
-          Spacer()
-        }
+        // No `HStack { ParagraphView(); Spacer() }` wrapper (see the .paragraph case below
+        // for why) - headings have the same hugging requirement as paragraphs.
+        ParagraphView(contents: contents)
+          .transition(.opacity)
+          .accessibilityAddTraits(.isHeader)
       case .paragraph(_, let contents):
-        HStack(spacing: 0) {
-          ParagraphView(contents: contents, lineSpacing: 5)
-            .fixedSize(horizontal: false, vertical: true)
-            .transition(.opacity)
-          Spacer()
-        }
+        // Deliberately NOT `HStack { ParagraphView(...); Spacer() }` (the previous
+        // implementation). An unqualified `Spacer()` always consumes whatever width its
+        // parent HStack is offered - which is correct for *filling* a full-bleed layout, but
+        // it means the HStack's own reported width upward is always "whatever was proposed,"
+        // never "what the text actually needs." Any ancestor that hugs its content to the
+        // text's natural width (e.g. a chat bubble capping itself at N% of the screen via its
+        // own trailing Spacer(minLength:)) receives that inflated report and can never shrink
+        // below its cap, even for a one-word reply. `ParagraphView` itself already renders
+        // left-aligned (`UITextView.textAlignment = .left`) and BlockView's outer VStack is
+        // `alignment: .leading`, so left alignment doesn't depend on the Spacer at all -
+        // dropping it fixes hugging with no visible change to left-aligned rendering. A
+        // consumer that *wants* full-width fill (e.g. embedding `MarkdownView` in a layout
+        // that should always stretch) can still get it by applying
+        // `.frame(maxWidth: .infinity, alignment: .leading)` to the whole `MarkdownView` from
+        // the outside - that's the caller's decision to make, not this library's default.
+        ParagraphView(contents: contents, lineSpacing: 5)
+          .fixedSize(horizontal: false, vertical: true)
+          .transition(.opacity)
       case .latex(_, let latexString):
         ScrollView(.horizontal) {
           HStack(spacing: 0) {
