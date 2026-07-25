@@ -100,10 +100,9 @@ struct ListItemContentWrapper<Content: View>: View {
 func markdownListAccessibilityLabel(
   for item: String,
   at index: Int,
-  length: Int,
-  bundle: Bundle = String.markdownTextResources
+  length: Int
 ) -> String {
-  String.markdownListItem(length: length, index: index + 1, item: item, bundle: bundle)
+  String.markdownListItem(length: length, index: index + 1, item: item)
 }
 
 #Preview(body: {

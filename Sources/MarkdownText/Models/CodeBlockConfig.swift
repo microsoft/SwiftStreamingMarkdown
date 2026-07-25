@@ -74,12 +74,12 @@ public struct CodeBlockConfig: Hashable, Sendable {
   /// copy control). `nil` falls back to the bundled `Stone350`.
   public let foregroundColor: Color?
 
-  /// Font set applied to the code text. `nil` uses the bundled code fonts.
-  public let codeTextFonts: TextFonts?
+  /// Font set applied to the code text. Defaults to the bundled code fonts.
+  public let codeTextFonts: TextFonts
 
-  /// Font set applied to the language label and copy control. `nil` uses the
+  /// Font set applied to the language label and copy control. Defaults to the
   /// bundled small-text fonts.
-  public let chromeTextFonts: TextFonts?
+  public let chromeTextFonts: TextFonts
 
   /// Create a code-block configuration.
   /// - Parameters:
@@ -117,8 +117,8 @@ public struct CodeBlockConfig: Hashable, Sendable {
     self.theme = theme
     self.backgroundColor = backgroundColor
     self.foregroundColor = foregroundColor
-    self.codeTextFonts = codeTextFonts
-    self.chromeTextFonts = chromeTextFonts
+    self.codeTextFonts = codeTextFonts ?? Typography.codeTextFonts
+    self.chromeTextFonts = chromeTextFonts ?? Typography.smallTextFonts
   }
 
   /// The default code-block configuration, which keeps the bundled dark
@@ -186,14 +186,6 @@ extension CodeBlockConfig.Theme {
 }
 
 extension CodeBlockConfig {
-  var resolvedCodeTextFonts: TextFonts {
-    codeTextFonts ?? Typography.codeTextFonts
-  }
-
-  var resolvedChromeTextFonts: TextFonts {
-    chromeTextFonts ?? Typography.smallTextFonts
-  }
-
   /// The bundled default highlight.js CSS, tuned for a dark code-block chrome.
   static let defaultCSS = """
   code {

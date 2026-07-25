@@ -9,7 +9,7 @@ import XCTest
 
 final class CodeBlockConfigTests: XCTestCase {
 
-  func testCustomTextFontsAreStoredAndResolvedForRendering() {
+  func testCustomTextFontsAreStoredForRendering() {
     let codeTextFonts = textFonts(size: 24)
     let chromeTextFonts = textFonts(size: 18)
     let config = CodeBlockConfig(
@@ -19,17 +19,13 @@ final class CodeBlockConfigTests: XCTestCase {
 
     XCTAssertEqual(config.codeTextFonts, codeTextFonts)
     XCTAssertEqual(config.chromeTextFonts, chromeTextFonts)
-    XCTAssertEqual(config.resolvedCodeTextFonts, codeTextFonts)
-    XCTAssertEqual(config.resolvedChromeTextFonts, chromeTextFonts)
   }
 
   func testDefaultTextFontsPreserveBundledTypography() {
     let config = CodeBlockConfig.default
 
-    XCTAssertNil(config.codeTextFonts)
-    XCTAssertNil(config.chromeTextFonts)
-    XCTAssertEqual(config.resolvedCodeTextFonts, Typography.codeTextFonts)
-    XCTAssertEqual(config.resolvedChromeTextFonts, Typography.smallTextFonts)
+    XCTAssertEqual(config.codeTextFonts, Typography.codeTextFonts)
+    XCTAssertEqual(config.chromeTextFonts, Typography.smallTextFonts)
   }
 
   func testOriginalInitializerFunctionTypeRemainsSourceCompatible() {
@@ -41,8 +37,8 @@ final class CodeBlockConfigTests: XCTestCase {
 
     let config = initializer(.default, nil, nil)
 
-    XCTAssertNil(config.codeTextFonts)
-    XCTAssertNil(config.chromeTextFonts)
+    XCTAssertEqual(config.codeTextFonts, Typography.codeTextFonts)
+    XCTAssertEqual(config.chromeTextFonts, Typography.smallTextFonts)
   }
 
   private func textFonts(size: CGFloat) -> TextFonts {
