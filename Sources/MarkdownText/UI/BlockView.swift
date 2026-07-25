@@ -49,12 +49,13 @@ struct SingleBlockView: View {
         // implementation). An unqualified `Spacer()` always consumes whatever width its
         // parent HStack is offered - which is correct for *filling* a full-bleed layout, but
         // it means the HStack's own reported width upward is always "whatever was proposed,"
-        // never "what the text actually needs." Any ancestor that hugs its content to the
+        // never "what the text actually needs." An ancestor that hugs its content to the
         // text's natural width (e.g. a chat bubble capping itself at N% of the screen via its
         // own trailing Spacer(minLength:)) receives that inflated report and can never shrink
         // below its cap, even for a one-word reply. `ParagraphView` itself already renders
-        // left-aligned (`UITextView.textAlignment = .left`) and BlockView's outer VStack is
-        // `alignment: .leading`, so left alignment doesn't depend on the Spacer at all -
+        // left-aligned (`UITextView.textAlignment = .left` on iOS, `NSTextView`'s paragraph
+        // style alignment on macOS) and BlockView's outer VStack is `alignment: .leading`, so
+        // left alignment doesn't depend on the Spacer at all -
         // dropping it fixes hugging with no visible change to left-aligned rendering. A
         // consumer that *wants* full-width fill (e.g. embedding `MarkdownView` in a layout
         // that should always stretch) can still get it by applying

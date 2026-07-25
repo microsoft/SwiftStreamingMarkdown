@@ -3,7 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
-import Foundation
 import SwiftUI
 @testable import SwiftStreamingMarkdown
 import XCTest
