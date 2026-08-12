@@ -8,6 +8,8 @@ import SwiftUI
 
 struct UnorderedListView: View {
 
+  @Environment(\.markdownConfig) var config: MarkdownRenderConfig
+
   let items: [MarkdownListItem]
   let nestedLevel: Int
 
@@ -44,19 +46,19 @@ struct UnorderedListView: View {
         Image(systemName: checkbox == .checked ? "checkmark.square.fill" : "square")
           .resizable()
           .frame(width: 12, height: 12)
-          .foregroundStyle( Color.Theme.Foreground.Primary.Primary450)
+          .foregroundStyle(config.orderedListStyle.textColor)
           .transition(.opacity)
       } else if nestedLevel % 2 == 0 {
         Image(systemName: "circle.fill")
           .resizable()
           .frame(width: 4, height: 4)
-          .foregroundStyle( Color.Theme.Foreground.Primary.Primary450)
+          .foregroundStyle(config.orderedListStyle.textColor)
           .transition(.opacity)
       } else {
         Image(systemName: "circle")
           .resizable()
           .frame(width: 4, height: 4)
-          .foregroundStyle( Color.Theme.Foreground.Primary.Primary450)
+          .foregroundStyle(config.orderedListStyle.textColor)
           .transition(.opacity)
       }
     }.frame(width: 22.0)
