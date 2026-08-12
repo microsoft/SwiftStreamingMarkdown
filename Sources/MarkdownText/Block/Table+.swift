@@ -38,6 +38,15 @@ extension Markdown.Table: BlockConvertible {
     let headerColumnCount = self.head.childCount
     let isWellFormed = self.body.children.allSatisfy { $0.childCount == headerColumnCount }
     let rawMarkdown = isWellFormed ? self.format() : ""
-    return .table(id: self.id, headers: headerCells, rows: rows, rawMarkdown: rawMarkdown)
+    let alignments = (0..<headerCells.count).map { index -> MarkdownColumnAlignment in
+      guard index < self.columnAlignments.count else { return .leading }
+      switch self.columnAlignments[index] {
+      case .left: return .leading
+      case .center: return .center
+      case .right: return .trailing
+      case .none: return .leading
+      }
+    }
+    return .table(id: self.id, headers: headerCells, rows: rows, alignments: alignments, rawMarkdown: rawMarkdown)
   }
 }

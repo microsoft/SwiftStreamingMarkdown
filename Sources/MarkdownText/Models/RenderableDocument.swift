@@ -92,7 +92,7 @@ extension MarkdownRenderable {
       return items.plainText(separator: "\n")
     case .codeBlock(_, _, let code):
       return code
-    case .table(_, let headers, let rows, _):
+    case .table(_, let headers, let rows, _, _):
       let headerLine = headers.map { $0.string }.joined(separator: "\t")
       let rowLines = rows.map { row in row.map { $0.string }.joined(separator: "\t") }
       return ([headerLine] + rowLines).joined(separator: "\n")
@@ -135,7 +135,7 @@ extension MarkdownRenderable {
       return items.flatMap { $0.attributedStrings() }
     case .unorderedList(_, let items, _):
       return items.flatMap { $0.attributedStrings() }
-    case .table(_, let headers, let rows, _):
+    case .table(_, let headers, let rows, _, _):
       return headers + rows.flatMap { $0 }
     default:
       return []
