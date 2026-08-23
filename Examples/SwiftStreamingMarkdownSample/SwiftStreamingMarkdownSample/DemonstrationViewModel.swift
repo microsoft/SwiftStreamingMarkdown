@@ -50,8 +50,8 @@ final class DemonstrationViewModel: ObservableObject, StreamedMarkdownSource {
 
   init(
     text: String,
-    chunkSize: Int = 48,
-    chunkInterval: TimeInterval = 0.2
+    chunkSize: Int = 24,
+    chunkInterval: TimeInterval = 0.15
   ) {
     self.fullText = text
     self.chunkSize = max(1, chunkSize)

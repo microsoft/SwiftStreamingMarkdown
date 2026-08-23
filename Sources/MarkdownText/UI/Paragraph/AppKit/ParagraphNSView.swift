@@ -17,28 +17,36 @@ private struct CachedParagraphNSViewSize {
 
 class ParagraphNSView: NSTextView {
   private static let jsonEncoder = JSONEncoder()
-  static let animationDuration: CFTimeInterval = ParagraphAnimationConstants.fadeInDuration
 
   private(set) var paragraphContents: NSMutableAttributedString = NSMutableAttributedString()
   private(set) var lineSpacing: CGFloat?
-  private var activeAnimations: [FadeAnimationData] = []
-  private var fadeAnimationDisplayLink: CADisplayLink?
+  private var finalAttributedText = NSAttributedString()
+  private var activeAnimation: FadeAnimationData?
+  private let characterStreamingState = CharacterStreamingState()
+  private var characterStreamingTimer: Timer?
+  private var textAnimationDisplayLink: CADisplayLink?
+  private var textAnimation: MarkdownRenderConfig.TextAnimation = .none
+  private var isStreamComplete = true
   private var cachedSize: CachedParagraphNSViewSize?
 
+  private(set) var supportsCharacterStreaming = false
   var textContextMenu: TextContextMenu?
   var markdownController: MarkdownController?
 
   var onUrlTap: (URL) -> Void = { NSWorkspace.shared.open($0) }
 
-  convenience init() {
+  convenience init(characterStreaming: Bool = false) {
     let textStorage = NSTextStorage()
-    let layoutManager = NSLayoutManager()
+    let layoutManager = characterStreaming
+      ? CharacterStreamingLayoutManager()
+      : NSLayoutManager()
     textStorage.addLayoutManager(layoutManager)
     let textContainer = NSTextContainer(containerSize: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
     textContainer.widthTracksTextView = true
     textContainer.heightTracksTextView = false
     layoutManager.addTextContainer(textContainer)
     self.init(frame: .zero, textContainer: textContainer)
+    supportsCharacterStreaming = characterStreaming
   }
 
   override init(frame frameRect: NSRect, textContainer container: NSTextContainer?) {
@@ -53,7 +61,8 @@ class ParagraphNSView: NSTextView {
 
   deinit {
     tearDownDisplayLink()
-    activeAnimations.removeAll()
+    characterStreamingTimer?.invalidate()
+    activeAnimation = nil
   }
 
   // MARK: - Appearance
@@ -61,6 +70,13 @@ class ParagraphNSView: NSTextView {
   override func viewDidChangeEffectiveAppearance() {
     super.viewDidChangeEffectiveAppearance()
     AppAppearance.update(appearance: effectiveAppearance)
+  }
+
+  override func viewWillMove(toWindow newWindow: NSWindow?) {
+    super.viewWillMove(toWindow: newWindow)
+    if newWindow == nil, textAnimation == .characterStreaming {
+      finishTextAnimation()
+    }
   }
 
   // MARK: - Intrinsic Content Size
@@ -114,56 +130,117 @@ class ParagraphNSView: NSTextView {
 
   // MARK: - Content Update
 
-  func setParagraphContents(_ newContents: NSMutableAttributedString, lineSpacing: CGFloat? = nil, animatedByWord: Bool) {
+  func setParagraphContents(
+    _ newContents: NSMutableAttributedString,
+    lineSpacing: CGFloat? = nil,
+    textAnimation: MarkdownRenderConfig.TextAnimation,
+    isStreamComplete: Bool
+  ) {
     AppAppearance.update(appearance: effectiveAppearance)
 
-    guard paragraphContents != newContents || self.lineSpacing != lineSpacing else {
-      return
-    }
-    self.paragraphContents = newContents
-    self.lineSpacing = lineSpacing
-
-    let oldLength = textStorage?.length ?? 0
     let finalString: NSMutableAttributedString
     if lineSpacing != nil {
       finalString = applyLineSpacing(to: newContents, lineSpacing: lineSpacing)
     } else {
       finalString = newContents
     }
+    let previousAttributedText = finalAttributedText
+    let previousText = previousAttributedText.string
+    let contentsChanged = paragraphContents != newContents
+      || self.lineSpacing != lineSpacing
+    let modeChanged = self.textAnimation != textAnimation
+    let completionChanged = self.isStreamComplete != isStreamComplete
+    guard contentsChanged || modeChanged || completionChanged else {
+      return
+    }
 
-    tearDownDisplayLink()
+    if modeChanged {
+      stopCharacterStreaming()
+      activeAnimation = nil
+      tearDownDisplayLink()
+    }
+    self.paragraphContents = newContents
+    self.lineSpacing = lineSpacing
+    self.textAnimation = textAnimation
+    self.isStreamComplete = isStreamComplete
+    finalAttributedText = NSAttributedString(attributedString: finalString)
     invalidateCachedSize()
-    textStorage?.setAttributedString(finalString)
-
     configureAccessibility(for: finalString)
 
-    invalidateIntrinsicContentSize()
-
-    let newContentLength = (textStorage?.length ?? 0) - oldLength
-
-    if animatedByWord, newContentLength > 0 {
-      let newContentRange = NSRange(location: oldLength, length: newContentLength)
-      let wordRanges = finalString.splitIntoWords(withIn: newContentRange)
-      let wordCount = wordRanges.count
-      let delayBetweenWords: Double = ParagraphAnimationConstants.delayBetweenWordsRatio / Double(max(wordCount, 1))
-      let baseStartTime = CACurrentMediaTime()
-      for (index, wordRange) in wordRanges.enumerated() {
-        let animationData = FadeAnimationData(
-          startTime: baseStartTime + Double(index) * delayBetweenWords,
-          duration: Self.animationDuration,
-          range: wordRange
+    switch textAnimation {
+    case .none:
+      stopCharacterStreaming()
+      activeAnimation = nil
+      tearDownDisplayLink()
+      textStorage?.setAttributedString(finalString)
+    case .fade:
+      stopCharacterStreaming()
+      guard contentsChanged || modeChanged else {
+        invalidateIntrinsicContentSize()
+        return
+      }
+      textStorage?.setAttributedString(finalString)
+      let revealPlan = contentsChanged
+        ? ParagraphRevealPlan.appendedText(
+          previousText: previousText,
+          newText: finalString.string
         )
-        activeAnimations.append(animationData)
+        : nil
+      guard let revealPlan else {
+        activeAnimation = nil
+        tearDownDisplayLink()
+        invalidateIntrinsicContentSize()
+        return
       }
-
-      updateTextViewWithCurrentAnimations()
-
-      if fadeAnimationDisplayLink == nil {
-        setUpDisplayLink()
+      let currentTime = CACurrentMediaTime()
+      let previousAnimation = modeChanged ? nil : activeAnimation
+      activeAnimation = FadeAnimationData(
+        plan: revealPlan,
+        startTime: currentTime,
+        previousAnimation: previousAnimation,
+        contentLength: finalString.length
+      )
+      updateTextViewWithCurrentAnimations(at: currentTime)
+      setUpDisplayLink()
+    case .characterStreaming:
+      activeAnimation = nil
+      let currentTime = CACurrentMediaTime()
+      if modeChanged {
+        characterStreamingState.reset()
+        if previousAttributedText.length > 0 {
+          characterStreamingState.update(
+            target: previousAttributedText,
+            isComplete: true,
+            at: currentTime
+          )
+          characterStreamingState.settle()
+        }
       }
-    } else {
-      activeAnimations.removeAll()
+      characterStreamingState.update(
+        target: finalString,
+        isComplete: isStreamComplete,
+        at: currentTime
+      )
+      synchronizeCharacterStreamingText()
+      if characterStreamingTimer == nil {
+        releaseOneCharacter(at: currentTime)
+      }
     }
+
+    invalidateIntrinsicContentSize()
+  }
+
+  func finishTextAnimation() {
+    if let activeAnimation {
+      restoreFinalAttributes(in: activeAnimation.segments.map(\.range))
+      self.activeAnimation = nil
+    }
+    if textAnimation == .characterStreaming {
+      characterStreamingState.settle()
+      synchronizeCharacterStreamingText()
+      stopCharacterStreaming()
+    }
+    tearDownDisplayLink()
   }
 
   // MARK: - Line Spacing
@@ -239,71 +316,148 @@ class ParagraphNSView: NSTextView {
     }
   }
 
-  // MARK: - Fade Animation
+  // MARK: - Text Animation
 
-  @objc private func updateFadeAnimation() {
+  @objc private func updateTextAnimation() {
     let currentTime = CACurrentMediaTime()
-    var completedAnimations: [UUID] = []
-
-    updateTextViewWithCurrentAnimations()
-
-    for animation in activeAnimations {
-      let elapsed = currentTime - animation.startTime
-      let progress = elapsed / animation.duration
-      if progress >= 1.0 {
-        completedAnimations.append(animation.id)
-      }
-    }
-    activeAnimations.removeAll { completedAnimations.contains($0.id) }
-
-    if activeAnimations.isEmpty {
+    switch textAnimation {
+    case .none:
       tearDownDisplayLink()
+    case .fade:
+      guard let activeAnimation else {
+        tearDownDisplayLink()
+        return
+      }
+      updateTextViewWithCurrentAnimations(at: currentTime)
+      if currentTime >= activeAnimation.endTime {
+        self.activeAnimation = nil
+        tearDownDisplayLink()
+      }
+    case .characterStreaming:
+      updateCharacterStreamingAnimations(at: currentTime)
+      if characterStreamingState.activeAnimations.isEmpty {
+        tearDownDisplayLink()
+      }
     }
   }
 
-  private func updateTextViewWithCurrentAnimations() {
+  private func updateTextViewWithCurrentAnimations(at currentTime: CFTimeInterval = CACurrentMediaTime()) {
+    guard let activeAnimation else { return }
     guard let textStorage else { return }
-    let currentTime = CACurrentMediaTime()
 
     textStorage.beginEditing()
     defer { textStorage.endEditing() }
 
-    for animation in activeAnimations {
-      guard animation.range.location + animation.range.length <= textStorage.length else {
+    for segment in activeAnimation.segments {
+      guard NSMaxRange(segment.range) <= textStorage.length else {
         continue
       }
-      let elapsed = currentTime - animation.startTime
-      let animatedAlpha: CGFloat
+      let elapsed = currentTime - segment.startTime
+      let progress = min(max(elapsed / ParagraphAnimationConstants.fadeInDuration, 0), 1)
+      applyRevealProgress(paragraphEaseOut(progress), to: segment.range)
+    }
+  }
 
-      if elapsed < 0 {
-        animatedAlpha = 0.0
-      } else {
-        let progress = min(max(elapsed / animation.duration, 0.0), 1.0)
-        let easedProgress = paragraphEaseOut(progress)
-        animatedAlpha = easedProgress
-      }
+  private func applyRevealProgress(_ progress: CGFloat, to range: NSRange) {
+    guard let textStorage else { return }
+    let defaultColor = NSColor(Color.Theme.Foreground.Primary.Primary750)
+    finalAttributedText.enumerateAttributes(in: range, options: []) { attributes, attributeRange, _ in
+      var attributes = attributes
+      let baseColor = (attributes[.foregroundColor] as? NSColor) ?? defaultColor
+      attributes[.foregroundColor] = baseColor.withAlphaComponent(
+        baseColor.alphaComponent * progress
+      )
+      textStorage.setAttributes(attributes, range: attributeRange)
+    }
+  }
 
-      let defaultColor = NSColor(Color.Theme.Foreground.Primary.Primary750)
-      textStorage.enumerateAttribute(.foregroundColor, in: animation.range, options: []) { value, range, _ in
-        let baseColor = (value as? NSColor) ?? defaultColor
-        textStorage.addAttribute(.foregroundColor, value: baseColor.withAlphaComponent(animatedAlpha), range: range)
+  private func restoreFinalAttributes(in ranges: [NSRange]) {
+    guard let textStorage else { return }
+    textStorage.beginEditing()
+    defer { textStorage.endEditing() }
+    for range in ranges where NSMaxRange(range) <= finalAttributedText.length {
+      finalAttributedText.enumerateAttributes(in: range, options: []) { attributes, attributeRange, _ in
+        textStorage.setAttributes(attributes, range: attributeRange)
       }
     }
   }
 
+  private func releaseOneCharacter(
+    at currentTime: CFTimeInterval = CACurrentMediaTime()
+  ) {
+    guard textAnimation == .characterStreaming else {
+      return
+    }
+    if characterStreamingState.releaseNext(at: currentTime) != nil {
+      synchronizeCharacterStreamingText()
+      updateCharacterStreamingAnimations(at: currentTime)
+      setUpDisplayLink()
+    }
+    scheduleNextCharacterRelease()
+  }
+
+  private func synchronizeCharacterStreamingText() {
+    textStorage?.setAttributedString(characterStreamingState.visibleAttributedText)
+    invalidateCachedSize()
+    invalidateIntrinsicContentSize()
+  }
+
+  private func scheduleNextCharacterRelease() {
+    guard textAnimation == .characterStreaming,
+          characterStreamingState.hasPendingGrapheme,
+          characterStreamingTimer == nil else {
+      return
+    }
+
+    let timer = Timer(
+      timeInterval: characterStreamingState.releaseDelay(
+        at: CACurrentMediaTime()
+      ),
+      repeats: false
+    ) { [weak self] _ in
+      guard let self else { return }
+      self.characterStreamingTimer = nil
+      self.releaseOneCharacter()
+    }
+    RunLoop.main.add(timer, forMode: .common)
+    characterStreamingTimer = timer
+  }
+
+  private func updateCharacterStreamingAnimations(at currentTime: CFTimeInterval) {
+    characterStreamingState.pruneAnimations(at: currentTime)
+    let animations = characterStreamingState.activeAnimations
+    characterStreamingLayoutManager?.updateAnimations(
+      animations,
+      at: currentTime
+    )
+  }
+
+  private func stopCharacterStreaming() {
+    characterStreamingTimer?.invalidate()
+    characterStreamingTimer = nil
+    characterStreamingLayoutManager?.clearAnimations()
+  }
+
+  private var characterStreamingLayoutManager: CharacterStreamingLayoutManager? {
+    layoutManager as? CharacterStreamingLayoutManager
+  }
+
   private func setUpDisplayLink() {
+    guard textAnimationDisplayLink == nil else {
+      return
+    }
     let link = displayLink(
       target: self,
-      selector: #selector(updateFadeAnimation)
+      selector: #selector(updateTextAnimation)
     )
     link.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 60, preferred: 60)
     link.add(to: .main, forMode: .common)
-    fadeAnimationDisplayLink = link
+    textAnimationDisplayLink = link
   }
 
   private func tearDownDisplayLink() {
-    fadeAnimationDisplayLink?.invalidate()
-    fadeAnimationDisplayLink = nil
+    textAnimationDisplayLink?.invalidate()
+    textAnimationDisplayLink = nil
   }
 
   private func invalidateCachedSize() {

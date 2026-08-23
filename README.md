@@ -251,7 +251,7 @@ by composing the `withXxx` helpers on `.default`:
 
 ```swift
 let config = MarkdownRenderConfig.default
-  .withShouldAnimateText(value: true)
+  .withTextAnimation(.characterStreaming)
   .withHeadingStyle(value: MarkdownRenderConfig.defaultHeadingStyle)
   .withParagraphStyle(value: MarkdownRenderConfig.defaultParagraphStyle)
 ```

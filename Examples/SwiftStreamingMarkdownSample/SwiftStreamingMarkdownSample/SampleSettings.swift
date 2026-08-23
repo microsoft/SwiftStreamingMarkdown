@@ -4,11 +4,34 @@
 //
 
 import SwiftUI
+import SwiftStreamingMarkdown
 
 enum SampleSettings {
   static let preferStreamedMarkdownKey = "preferStreamedMarkdown"
   static let appearanceModeKey = "appearanceMode"
   static let markdownThemeKey = "markdownTheme"
+  static let streamingTextAnimationKey = "streamingTextAnimation"
+}
+
+enum SampleStreamingTextAnimation: String, CaseIterable, Identifiable {
+  case characterStreaming
+  case standardFade
+
+  var id: String { rawValue }
+
+  var displayName: String {
+    switch self {
+    case .characterStreaming: "Character Streaming"
+    case .standardFade: "Standard Fade"
+    }
+  }
+
+  var renderAnimation: MarkdownRenderConfig.TextAnimation {
+    switch self {
+    case .characterStreaming: .characterStreaming
+    case .standardFade: .fade
+    }
+  }
 }
 
 enum AppearanceMode: String, CaseIterable, Identifiable {

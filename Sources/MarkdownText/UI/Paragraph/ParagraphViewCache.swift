@@ -14,11 +14,22 @@ class ParagraphViewCache {
 
   static let shared: ParagraphViewCache = .init()
 
-  func createOrReuseView(contents: NSMutableAttributedString, lineSpacing: CGFloat?) -> MDParagraphView {
-    if let availableView = findAvailableCachedView() {
+  func createOrReuseView(
+    contents: NSMutableAttributedString,
+    lineSpacing: CGFloat?,
+    characterStreaming: Bool
+  ) -> MDParagraphView {
+    if let availableView = findAvailableCachedView(
+      characterStreaming: characterStreaming
+    ) {
       return availableView
     }
-    let newView = MDParagraphView()
+    let newView: MDParagraphView
+    if characterStreaming {
+      newView = MDParagraphView(characterStreaming: true)
+    } else {
+      newView = MDParagraphView()
+    }
     if $cachedViews.read(closure: { $0.count }) < maxCacheSize {
       $cachedViews.mutate { $0.append(newView) }
     }
@@ -29,10 +40,14 @@ class ParagraphViewCache {
     $cachedViews.mutate { $0.removeAll() }
   }
 
-  private func findAvailableCachedView() -> MDParagraphView? {
+  private func findAvailableCachedView(
+    characterStreaming: Bool
+  ) -> MDParagraphView? {
     $cachedViews.read(closure: { cachedView in
       cachedView.first { view in
-        view.superview == nil && view.window == nil
+        view.superview == nil
+          && view.window == nil
+          && view.supportsCharacterStreaming == characterStreaming
       }
     })
   }

@@ -73,6 +73,15 @@ final class TableViewTests: SnapshotTestCase {
     assert(view)
   }
 
+  func testAttachmentCellAnimationModeMapping() {
+    XCTAssertEqual(tableAttachmentTextAnimation(.none), .none)
+    XCTAssertEqual(tableAttachmentTextAnimation(.fade), .fade)
+    XCTAssertEqual(
+      tableAttachmentTextAnimation(.characterStreaming),
+      .none
+    )
+  }
+
   // MARK: - Helpers
 
   @ViewBuilder

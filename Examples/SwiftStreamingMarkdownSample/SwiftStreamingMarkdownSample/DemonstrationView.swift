@@ -10,6 +10,7 @@ struct DemonstrationView: View {
   @AppStorage(SampleSettings.preferStreamedMarkdownKey) private var preferStreamedMarkdown = true
   @AppStorage(SampleSettings.appearanceModeKey) private var appearanceMode = AppearanceMode.device
   @AppStorage(SampleSettings.markdownThemeKey) private var markdownTheme = SampleMarkdownTheme.automatic
+  @AppStorage(SampleSettings.streamingTextAnimationKey) private var streamingTextAnimation = SampleStreamingTextAnimation.characterStreaming
 
   let demonstration: Demonstration
   let markdownText: String
@@ -29,14 +30,22 @@ struct DemonstrationView: View {
           if preferStreamedMarkdown {
             StreamedMarkdownView(
               source: viewModel,
-              config: demonstration.renderConfig(theme: markdownTheme, isStreaming: true),
+              config: demonstration.renderConfig(
+                theme: markdownTheme,
+                isStreaming: true,
+                streamingTextAnimation: streamingTextAnimation
+              ),
               listener: listener
             )
             .id(streamedContentID)
           } else {
             MarkdownView(
               text: markdownText,
-              config: demonstration.renderConfig(theme: markdownTheme, isStreaming: false),
+              config: demonstration.renderConfig(
+                theme: markdownTheme,
+                isStreaming: false,
+                streamingTextAnimation: streamingTextAnimation
+              ),
               listener: listener
             )
             .id(staticContentID)
@@ -104,6 +113,12 @@ struct DemonstrationView: View {
           Picker("Appearance", selection: $appearanceMode) {
             ForEach(AppearanceMode.allCases) { mode in
               Text(mode.displayName).tag(mode)
+            }
+          }
+
+          Picker("Streaming Text", selection: $streamingTextAnimation) {
+            ForEach(SampleStreamingTextAnimation.allCases) { animation in
+              Text(animation.displayName).tag(animation)
             }
           }
         } label: {

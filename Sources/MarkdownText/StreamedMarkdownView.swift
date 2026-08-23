@@ -50,6 +50,7 @@ public struct StreamedMarkdownView: View {
       config: config,
       listener: controller.listener
     )
+    .environment(\.isMarkdownStreamComplete, controller.isComplete)
     .task {
       await controller.start()
     }
@@ -64,6 +65,7 @@ public struct StreamedMarkdownView: View {
 final class StreamedMarkdownController: ObservableObject {
 
   @Published var markdownToRender: RenderableDocument = .empty
+  @Published var isComplete = false
   let config: MarkdownRenderConfig
   let listener: MarkdownListener?
 
@@ -83,6 +85,9 @@ final class StreamedMarkdownController: ObservableObject {
 
   func start() async {
     task?.cancel()
+    await MainActor.run {
+      isComplete = false
+    }
     task = Task { [weak self] in
       guard let self else { return }
       for await text in self.source.text {
@@ -93,11 +98,19 @@ final class StreamedMarkdownController: ObservableObject {
           self.markdownToRender = renderable
         }
       }
+      if !Task.isCancelled {
+        await MainActor.run {
+          self.isComplete = true
+        }
+      }
     }
   }
 
   func end() async {
     task?.cancel()
     task = nil
+    await MainActor.run {
+      isComplete = true
+    }
   }
 }

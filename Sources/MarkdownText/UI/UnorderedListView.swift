@@ -10,6 +10,7 @@ struct UnorderedListView: View {
 
   let items: [MarkdownListItem]
   let nestedLevel: Int
+  @Environment(\.isMarkdownStreamingTailBranch) var isStreamingTailBranch
 
   var body: some View {
     VStack(alignment: .leading, spacing: 8, content: {
@@ -17,20 +18,45 @@ struct UnorderedListView: View {
         HStack(alignment: .centerOfFirstLine, spacing: 1) {
           bulletView(forListItem: items[idx])
           if let firstChild = items[idx].children.first {
+            let firstChildIsTail = isTrailingStreamingElement(
+              at: 0,
+              count: items[idx].children.count,
+              parentIsTrailing: isTrailingStreamingElement(
+                at: idx,
+                count: items.count,
+                parentIsTrailing: isStreamingTailBranch
+              )
+            )
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment
               ListItemContentWrapper(paragraphContents: contents) {
                 SingleBlockView(renderable: firstChild)
+                  .environment(
+                    \.isMarkdownStreamingTailBranch,
+                    firstChildIsTail
+                  )
               }
               .accessibilityLabel(Text(listItemAccessibilityLabel(for: contents.string, at: idx, checkbox: items[idx].checkbox)))
             } else {
               SingleBlockView(renderable: firstChild)
+                .environment(
+                  \.isMarkdownStreamingTailBranch,
+                  firstChildIsTail
+                )
             }
           }
           Spacer()
         }
         if items[idx].children.count > 1 {
           BlockView(renderables: Array(items[idx].children.dropFirst()))
+            .environment(
+              \.isMarkdownStreamingTailBranch,
+              isTrailingStreamingElement(
+                at: idx,
+                count: items.count,
+                parentIsTrailing: isStreamingTailBranch
+              )
+            )
             .padding([.leading], 0)
         }
       }

@@ -77,7 +77,7 @@ enum RobotoTheme {
   // MARK: - Config
 
   static let renderConfig: MarkdownRenderConfig = MarkdownRenderConfig(
-    shouldAnimateText: false,
+    textAnimation: .none,
     blockQuoteStyle: .init(
       textFonts: textFonts(size: 16, lineHeight: 24),
       textColor: mutedForeground

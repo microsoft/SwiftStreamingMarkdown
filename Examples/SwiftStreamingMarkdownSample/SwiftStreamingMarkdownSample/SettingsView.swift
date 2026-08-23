@@ -9,10 +9,17 @@ struct SettingsView: View {
   @AppStorage(SampleSettings.preferStreamedMarkdownKey) private var preferStreamedMarkdown = true
   @AppStorage(SampleSettings.appearanceModeKey) private var appearanceMode = AppearanceMode.device
   @AppStorage(SampleSettings.markdownThemeKey) private var markdownTheme = SampleMarkdownTheme.automatic
+  @AppStorage(SampleSettings.streamingTextAnimationKey) private var streamingTextAnimation = SampleStreamingTextAnimation.characterStreaming
 
   var body: some View {
     Form {
       Toggle("Streamed", isOn: $preferStreamedMarkdown)
+      Picker("Streaming Text", selection: $streamingTextAnimation) {
+        ForEach(SampleStreamingTextAnimation.allCases) { animation in
+          Text(animation.displayName).tag(animation)
+        }
+      }
+      .pickerStyle(.menu)
       Picker("Markdown Theme", selection: $markdownTheme) {
         ForEach(SampleMarkdownTheme.allCases) { theme in
           Text(theme.displayName).tag(theme)

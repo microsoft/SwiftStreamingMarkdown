@@ -9,6 +9,7 @@ import SwiftUI
 struct BlockView: View {
 
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
+  @Environment(\.isMarkdownStreamingTailBranch) var isStreamingTailBranch
 
   let renderables: [MarkdownRenderable]
 
@@ -18,11 +19,27 @@ struct BlockView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: config.blockSpacing) {
-      ForEach(renderables) { renderable in
-        SingleBlockView(renderable: renderable)
+      ForEach(renderables.indices, id: \.self) { index in
+        SingleBlockView(renderable: renderables[index])
+          .environment(
+            \.isMarkdownStreamingTailBranch,
+            isTrailingStreamingElement(
+              at: index,
+              count: renderables.count,
+              parentIsTrailing: isStreamingTailBranch
+            )
+          )
       }
     }
   }
+}
+
+func isTrailingStreamingElement(
+  at index: Int,
+  count: Int,
+  parentIsTrailing: Bool
+) -> Bool {
+  parentIsTrailing && index == count - 1
 }
 
 struct SingleBlockView: View {

@@ -11,17 +11,12 @@ import UIKit
 import AppKit
 #endif
 
-enum RowContent: Equatable {
-  case text(string: AttributedString)
-  case containsAttachment(string: NSAttributedString)
-}
-
 struct TableView: View {
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
   @Environment(\.markdownController) var controller: MarkdownController?
 
-  let headings: [AttributedString]
-  let rows: [[RowContent]]
+  let headings: [NSMutableAttributedString]
+  let rows: [[NSMutableAttributedString]]
   let columnMaxWidths: [Int: CGFloat]
 
   private let defaultMaxColumnWidth: CGFloat = 200
@@ -33,15 +28,9 @@ struct TableView: View {
   private let rawMarkdown: String
 
   init(headings: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], columnMaxWidths: [Int: CGFloat] = [:], rawMarkdown: String = "") {
-    self.headings = headings.map { AttributedString($0) }
+    self.headings = headings.map { NSMutableAttributedString(attributedString: $0) }
     self.rows = rows.map { row in
-      row.map { content in
-        if content.containsAttachments(in: NSRange(location: 0, length: content.length)) {
-          return .containsAttachment(string: content)
-        } else {
-          return .text(string: AttributedString(content))
-        }
-      }
+      row.map { NSMutableAttributedString(attributedString: $0) }
     }
 
     self.columnMaxWidths = columnMaxWidths
@@ -54,14 +43,11 @@ struct TableView: View {
 
   private func headerView(colIdx: Int) -> some View {
     HStack(spacing: 0) {
-      Text(headings[colIdx])
-        .foregroundStyle(config.tableStyle.headerTextColor)
-        .lineLimit(nil)
-        .multilineTextAlignment(.leading)
+      tableText(
+        headings[colIdx],
+        color: config.tableStyle.headerTextColor
+      )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .if(config.shouldAnimateText) { view in
-          view.fadeInTextTransition(attributedString: headings[colIdx])
-        }
         .accessibilityValue(String.itemPositionInTable(rowIndex: 1, totalRow: numOfRows + 1, columnIndex: colIdx + 1, totalColumn: headings.count))
       Spacer()
     }
@@ -102,36 +88,19 @@ struct TableView: View {
   @ViewBuilder
   private func gridCellViewFor(rowIdx: Int, colIdx: Int) -> some View {
     let content = rows[rowIdx][colIdx]
-    switch content {
-    case .containsAttachment(let nsAttributedString):
-      HStack(spacing: 0) {
-        ParagraphView(contents: applyTypographyThemingAndGetContent(nsAttributedString))
-          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-          .accessibilityValue(String.itemPositionInTable(rowIndex: rowIdx + 2, totalRow: numOfRows + 1, columnIndex: colIdx + 1, totalColumn: headings.count))
-        Spacer()
-      }
-      .frame(maxHeight: .infinity)
-      .padding(12)
-      .id("\(colIdx)-\(rowIdx)")
-      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows, color: config.tableStyle.borderColor)
-    case .text(let attributedString):
-      HStack(spacing: 0) {
-        Text(attributedString)
-          .foregroundStyle(config.tableStyle.regularTextColor)
-          .lineLimit(nil)
-          .multilineTextAlignment(.leading)
-          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-          .if(config.shouldAnimateText) { view in
-            view.fadeInTextTransition(attributedString: attributedString)
-          }
-          .accessibilityValue(String.itemPositionInTable(rowIndex: rowIdx + 2, totalRow: numOfRows + 1, columnIndex: colIdx + 1, totalColumn: headings.count))
-        Spacer()
-      }
-      .frame(maxHeight: .infinity)
-      .padding(12)
-      .id("\(colIdx)-\(rowIdx)")
-      .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows, color: config.tableStyle.borderColor)
+    HStack(spacing: 0) {
+      tableText(
+        content,
+        color: config.tableStyle.regularTextColor
+      )
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .accessibilityValue(String.itemPositionInTable(rowIndex: rowIdx + 2, totalRow: numOfRows + 1, columnIndex: colIdx + 1, totalColumn: headings.count))
+      Spacer()
     }
+    .frame(maxHeight: .infinity)
+    .padding(12)
+    .id("\(colIdx)-\(rowIdx)")
+    .applyCellBorder(colIndex: colIdx, colCount: headings.count, rowIndex: rowIdx, rowCount: numOfRows, color: config.tableStyle.borderColor)
   }
 
   var body: some View {
@@ -256,13 +225,6 @@ extension View {
     return border(width: 1, edges: edges, color: color)
   }
 
-  @ViewBuilder
-  func fadeInTextTransition(attributedString: AttributedString) -> some View {
-    self.fadeInTextTransition(config: .variableDuration(
-      glyphCount: attributedString.characters.count,
-      glyphDelay: 0.02,
-      glyphDuration: 0.2))
-  }
 }
 
 struct TableLayout: Layout {
@@ -335,18 +297,15 @@ struct TableLayout: Layout {
 // MARK: - Helper Functions
 extension TableView {
   /// Apply typography theming and return themed content for use with ParagraphView
-  private func applyTypographyThemingAndGetContent(_ attributedString: NSAttributedString) -> NSMutableAttributedString {
-    // Apply typography theming for table cells
-    let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
+  private func applyTypographyThemingAndGetContent(
+    _ attributedString: NSAttributedString,
+    color: Color
+  ) -> NSMutableAttributedString {
+    let mutableAttributedString = applyingForegroundColor(
+      color,
+      to: attributedString
+    )
     let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
-    let themeColor = MDColor(config.tableStyle.regularTextColor)
-
-    // Apply theme color to text that doesn't already have a foreground color
-    mutableAttributedString.enumerateAttribute(.foregroundColor, in: fullRange, options: []) { existingColor, range, _ in
-      if existingColor == nil {
-        mutableAttributedString.addAttribute(.foregroundColor, value: themeColor, range: range)
-      }
-    }
 
     // Apply citation baseline offset for proper alignment
     // This is needed because table cells bypass Paragraph+ parsing where baseline offset is normally applied
@@ -388,6 +347,63 @@ extension TableView {
     // we can return the themed string directly
     return mutableAttributedString
   }
+
+  private func applyingForegroundColor(
+    _ color: Color,
+    to attributedString: NSAttributedString
+  ) -> NSMutableAttributedString {
+    let result = NSMutableAttributedString(attributedString: attributedString)
+    let fullRange = NSRange(location: 0, length: result.length)
+    let themeColor = MDColor(color)
+    result.enumerateAttribute(.foregroundColor, in: fullRange, options: []) { existingColor, range, _ in
+      if existingColor == nil {
+        result.addAttribute(.foregroundColor, value: themeColor, range: range)
+      }
+    }
+    return result
+  }
+
+  @ViewBuilder
+  private func tableText(
+    _ content: NSMutableAttributedString,
+    color: Color
+  ) -> some View {
+    let containsAttachments = content.containsAttachments(
+      in: NSRange(location: 0, length: content.length)
+    )
+    if containsAttachments {
+      ParagraphView(contents: applyTypographyThemingAndGetContent(
+        content,
+        color: color
+      ))
+      .environment(
+        \.markdownConfig,
+        config.withTextAnimation(
+          tableAttachmentTextAnimation(config.textAnimation)
+        )
+      )
+    } else if config.textAnimation == .fade {
+      Text(AttributedString(content))
+        .foregroundStyle(color)
+        .lineLimit(nil)
+        .multilineTextAlignment(.leading)
+        .hidden()
+        .overlay(alignment: .topLeading) {
+          ParagraphView(contents: applyingForegroundColor(color, to: content))
+        }
+    } else {
+      Text(AttributedString(content))
+        .foregroundStyle(color)
+        .lineLimit(nil)
+        .multilineTextAlignment(.leading)
+    }
+  }
+}
+
+func tableAttachmentTextAnimation(
+  _ animation: MarkdownRenderConfig.TextAnimation
+) -> MarkdownRenderConfig.TextAnimation {
+  animation == .characterStreaming ? .none : animation
 }
 
 #if DEBUG

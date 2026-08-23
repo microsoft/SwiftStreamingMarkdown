@@ -49,10 +49,13 @@ enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
     }
   }
 
-  func renderConfig(for demonstration: Demonstration, isStreaming: Bool) -> MarkdownRenderConfig {
+  func renderConfig(
+    for demonstration: Demonstration,
+    textAnimation: MarkdownRenderConfig.TextAnimation
+  ) -> MarkdownRenderConfig {
     resolvedConfig(for: demonstration)
       .withTextContextMenu(value: demonstration.customContextMenu)
-      .withShouldAnimateText(value: isStreaming)
+      .withTextAnimation(textAnimation)
       .withImageConfig(ImageConfig(
         enabled: true,
         allowedImageTypes: [.remote(allowedDomains: ["markdownguide.org"]), .assetCatalog, .bundledResource]
@@ -88,7 +91,7 @@ enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
 
   private static func paletteConfig(_ palette: Palette) -> MarkdownRenderConfig {
     MarkdownRenderConfig(
-      shouldAnimateText: false,
+      textAnimation: .none,
       blockQuoteStyle: .init(
         textFonts: MarkdownRenderConfig.defaultBlockQuoteStyle.textFonts,
         textColor: palette.secondaryForeground

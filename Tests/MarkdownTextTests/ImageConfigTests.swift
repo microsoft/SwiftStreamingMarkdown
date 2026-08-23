@@ -93,4 +93,31 @@ final class ImageConfigTests: XCTestCase {
     let off = ImageConfig(enabled: true, allowedImageTypes: [.assetCatalog], fullscreenViewerEnabled: false)
     XCTAssertNotEqual(on, off)
   }
+
+  func test_builders_preserve_image_config() {
+    let imageConfig = ImageConfig(
+      enabled: true,
+      allowedImageTypes: [.assetCatalog],
+      fullscreenViewerEnabled: false
+    )
+    let config = MarkdownRenderConfig(imageConfig: imageConfig)
+    let results = [
+      config.withTextAnimation(.characterStreaming),
+      config.withBlockQuoteStyle(value: config.blockQuoteStyle),
+      config.withHeadingStyle(value: config.headingStyle),
+      config.withOrderedListStyle(value: config.orderedListStyle),
+      config.withParagraphStyle(value: config.paragraphStyle),
+      config.withTableStyle(value: config.tableStyle),
+      config.withInlineStyle(value: config.inlineStyle),
+      config.withTextContextMenu(value: config.textContextMenu),
+      config.withBlockSpacing(value: config.blockSpacing),
+      config.withCodeBlockConfig(value: config.codeBlockConfig),
+      config.withTextSelectionConfig(value: config.textSelectionConfig),
+      config.withThematicBreakColor(value: config.thematicBreakColor)
+    ]
+
+    for result in results {
+      XCTAssertEqual(result.imageConfig, imageConfig)
+    }
+  }
 }

@@ -13,8 +13,18 @@ import SwiftUI
 /// Use `MarkdownRenderConfig.default` or the `with…` builders on the type for
 /// incremental overrides.
 public struct MarkdownRenderConfig: Hashable, Sendable {
-  /// When `true`, newly appended text fades in instead of appearing instantly.
-  public let shouldAnimateText: Bool
+  /// The animation applied as streamed text arrives.
+  public enum TextAnimation: Hashable, Sendable {
+    /// Display each render immediately.
+    case none
+    /// Fade newly appended text without changing its release cadence.
+    case fade
+    /// Buffer attributed text and release one composed character at a time.
+    case characterStreaming
+  }
+
+  /// The animation applied as streamed text arrives.
+  public let textAnimation: TextAnimation
   /// Styling applied to block-quote content.
   public let blockQuoteStyle: MarkdownTextStyle
   /// Per-level heading styling.
@@ -270,7 +280,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   /// matches the bundled `Typography`/`Color.Theme` palette, so callers can
   /// override only the fields they care about.
   public init(
-    shouldAnimateText: Bool = false,
+    textAnimation: TextAnimation = .none,
     blockQuoteStyle: MarkdownTextStyle = MarkdownRenderConfig.defaultBlockQuoteStyle,
     headingStyle: MarkdownHeadingTextStyle = MarkdownRenderConfig.defaultHeadingStyle,
     orderedListStyle: MarkdownTextStyle = MarkdownRenderConfig.defaultOrderedListStyle,
@@ -285,7 +295,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     thematicBreakColor: Color = MarkdownRenderConfig.defaultThematicBreakColor,
     imageConfig: ImageConfig = .disabled
   ) {
-    self.shouldAnimateText = shouldAnimateText
+    self.textAnimation = textAnimation
     self.blockQuoteStyle = blockQuoteStyle
     self.headingStyle = headingStyle
     self.orderedListStyle = orderedListStyle
@@ -303,7 +313,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
 
   /// The default render config, equivalent to calling `init()` with no
   /// arguments.
-  public static let `default` = MarkdownRenderConfig(shouldAnimateText: false)
+  public static let `default` = MarkdownRenderConfig()
 
   /// The context menu actually rendered on text selection: the consumer-supplied
   /// `textContextMenu` with the built-in "Select more text" group prepended (so

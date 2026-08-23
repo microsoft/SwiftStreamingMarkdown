@@ -192,6 +192,262 @@ struct ParagraphViewTests {
     #expect(textContent.string == "", "Text content should be empty")
   }
 
+  @Test("Reused paragraph clears stale accessibility content")
+  @MainActor
+  func prepareForReuseClearsAccessibilityContent() {
+    let view = ParagraphUIView()
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "Previous paragraph"),
+      textAnimation: .none,
+      isStreamComplete: true
+    )
+
+    #expect(view.accessibilityLabel == "Previous paragraph")
+
+    view.prepareForReuse()
+
+    #expect(view.attributedText.length == 0)
+    #expect(view.accessibilityLabel == nil)
+    #expect(view.accessibilityCustomActions == nil)
+  }
+
+  @Test("Character Streaming keeps one attributed paragraph and full accessibility")
+  @MainActor
+  func characterStreamingParagraphIntegration() throws {
+    let url = try #require(URL(string: "https://example.com"))
+    let contents = NSMutableAttributedString(string: "AB")
+    contents.addAttribute(
+      .link,
+      value: url,
+      range: NSRange(location: 0, length: 1)
+    )
+    let view = ParagraphUIView(characterStreaming: true)
+
+    view.setParagraphContents(
+      contents,
+      textAnimation: .characterStreaming,
+      isStreamComplete: false
+    )
+
+    #expect(view.attributedText.string == "A")
+    #expect(view.accessibilityLabel == "AB")
+    #expect(view.layoutManager is CharacterStreamingLayoutManager)
+    #expect(
+      view.attributedText.attribute(
+        .shadow,
+        at: 0,
+        effectiveRange: nil
+      ) == nil
+    )
+    #expect(
+      view.attributedText.attribute(
+        .link,
+        at: 0,
+        effectiveRange: nil
+      ) as? URL == url
+    )
+
+    view.finishTextAnimation()
+
+    #expect(view.attributedText.string == "AB")
+    #expect(view.accessibilityLabel == "AB")
+  }
+
+  @Test("Rapid snapshots preserve the pending Character Streaming deadline")
+  @MainActor
+  func characterStreamingRapidSnapshots() {
+    let view = ParagraphUIView(characterStreaming: true)
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "ABCDE"),
+      textAnimation: .characterStreaming,
+      isStreamComplete: false
+    )
+    #expect(view.attributedText.string == "A")
+
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "ABCDEF"),
+      textAnimation: .characterStreaming,
+      isStreamComplete: false
+    )
+
+    #expect(view.attributedText.string == "A")
+    view.finishTextAnimation()
+  }
+
+  @Test("A drained queue still enforces Character Streaming cadence")
+  @MainActor
+  func characterStreamingDrainedQueueCadence() {
+    let view = ParagraphUIView(characterStreaming: true)
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "A"),
+      textAnimation: .characterStreaming,
+      isStreamComplete: true
+    )
+    #expect(view.attributedText.string == "A")
+
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "AB"),
+      textAnimation: .characterStreaming,
+      isStreamComplete: true
+    )
+
+    #expect(view.attributedText.string == "A")
+    view.finishTextAnimation()
+  }
+
+  @Test("Detaching settles Character Streaming and stops scheduled work")
+  @MainActor
+  func characterStreamingSettlesWhenDetached() {
+    let view = ParagraphUIView(characterStreaming: true)
+    view.setParagraphContents(
+      NSMutableAttributedString(string: "AB"),
+      textAnimation: .characterStreaming,
+      isStreamComplete: true
+    )
+    #expect(view.attributedText.string == "A")
+
+    let window = UIWindow()
+    window.addSubview(view)
+    view.removeFromSuperview()
+
+    #expect(view.attributedText.string == "AB")
+  }
+
+  @Test("Character Streaming remains settled when Reduce Motion turns off")
+  @MainActor
+  func characterStreamingReduceMotionToggle() {
+    let contents = NSMutableAttributedString(string: "Already visible")
+    let view = ParagraphUIView(characterStreaming: true)
+    view.setParagraphContents(
+      contents,
+      textAnimation: .none,
+      isStreamComplete: false
+    )
+
+    view.setParagraphContents(
+      contents,
+      textAnimation: .characterStreaming,
+      isStreamComplete: false
+    )
+
+    #expect(view.attributedText.string == contents.string)
+    #expect(view.layoutManager is CharacterStreamingLayoutManager)
+    view.finishTextAnimation()
+  }
+
+  @Test("Completion-only updates preserve an active Fade")
+  @MainActor
+  func fadeCompletionPreservesAnimation() throws {
+    let view = ParagraphUIView()
+    let initial = NSMutableAttributedString(
+      string: "A",
+      attributes: [.foregroundColor: UIColor.black]
+    )
+    view.setParagraphContents(
+      initial,
+      textAnimation: .none,
+      isStreamComplete: false
+    )
+
+    let updated = NSMutableAttributedString(
+      string: "AB",
+      attributes: [.foregroundColor: UIColor.black]
+    )
+    view.setParagraphContents(
+      updated,
+      textAnimation: .fade,
+      isStreamComplete: false
+    )
+    let before = try #require(
+      view.attributedText.attribute(
+        .foregroundColor,
+        at: 1,
+        effectiveRange: nil
+      ) as? UIColor
+    ).cgColor.alpha
+
+    view.setParagraphContents(
+      updated,
+      textAnimation: .fade,
+      isStreamComplete: true
+    )
+    let after = try #require(
+      view.attributedText.attribute(
+        .foregroundColor,
+        at: 1,
+        effectiveRange: nil
+      ) as? UIColor
+    ).cgColor.alpha
+
+    #expect(before < 1)
+    #expect(after == before)
+    view.finishTextAnimation()
+  }
+
+  @Test("Character Streaming wrapped size grows with its visible prefix")
+  @MainActor
+  func characterStreamingWrappedMeasurement() {
+    let view = ParagraphUIView(characterStreaming: true)
+    view.setParagraphContents(
+      NSMutableAttributedString(
+        string: "This paragraph grows across several narrow wrapped lines."
+      ),
+      textAnimation: .characterStreaming,
+      isStreamComplete: true
+    )
+    let initial = view.sizeThatFits(
+      CGSize(width: 70, height: CGFloat.greatestFiniteMagnitude)
+    )
+
+    view.finishTextAnimation()
+    let settled = view.sizeThatFits(
+      CGSize(width: 70, height: CGFloat.greatestFiniteMagnitude)
+    )
+
+    #expect(settled.height > initial.height)
+  }
+
+  @Test("Streaming size cache evicts prior visible prefixes")
+  @MainActor
+  func characterStreamingSizeCacheIsBounded() {
+    let coordinator = ParagraphView.Coordinator()
+    let key = ParagraphSizeCacheKey(width: 70, visibleUTF16Length: 1)
+    coordinator.sizeCache[key] = CGSize(width: 70, height: 20)
+
+    coordinator.updateVisibleUTF16Length(2)
+
+    #expect(coordinator.sizeCache.isEmpty)
+    #expect(coordinator.lastVisibleUTF16Length == 2)
+  }
+
+  @Test("UIKit Character Streaming translates positive offsets below baseline")
+  func characterStreamingBaselineDirection() {
+    #expect(CharacterStreamingLayoutManager.baselineTranslation(5) == 5)
+  }
+
+  @Test("UIKit renders blurred glyph pixels before crossfading to sharp")
+  @MainActor
+  func characterStreamingBitmapBlur() throws {
+    let initial = try renderedGlyphMetrics(
+      for: .value(at: 0)
+    )
+    let intermediate = try renderedGlyphMetrics(
+      for: .value(at: 0.5)
+    )
+    let settled = try renderedGlyphMetrics(
+      for: .value(at: 1)
+    )
+
+    #expect(initial.maximumAlpha > 0)
+    #expect(initial.maximumAlpha < intermediate.maximumAlpha)
+    #expect(intermediate.maximumAlpha < settled.maximumAlpha)
+    #expect(initial.faintPixelCount > 0)
+    #expect(initial.opaquePixelCount == 0)
+    #expect(settled.opaquePixelCount > 0)
+    #expect(initial.redPixelCount > 0)
+    #expect(intermediate.redPixelCount > 0)
+  }
+
   @Test("Long text overflow handling")
   func longTextOverflow() {
     let longText = String(repeating: "This is a very long text that should test overflow behavior. ", count: 20)
@@ -286,6 +542,74 @@ struct ParagraphViewTests {
     #expect(citationData?.title == "Test Source", "Should preserve citation title")
     #expect(citationData?.accessibilityLabel == "Test Source", "Should preserve accessibility label")
     #expect(citationData?.url != nil, "Should have valid URL")
+  }
+
+  @MainActor
+  private func renderedGlyphMetrics(
+    for transform: CharacterStreamingTransform
+  ) throws -> CharacterStreamingGlyphImageMetrics {
+    let textStorage = NSTextStorage(
+      attributedString: NSAttributedString(
+        string: "A",
+        attributes: [
+          .font: UIFont.systemFont(ofSize: 40),
+          .foregroundColor: UIColor.red
+        ]
+      )
+    )
+    let layoutManager = CharacterStreamingLayoutManager()
+    let textContainer = NSTextContainer(
+      size: CGSize(width: 100, height: 100)
+    )
+    textContainer.lineFragmentPadding = 0
+    layoutManager.addTextContainer(textContainer)
+    textStorage.addLayoutManager(layoutManager)
+    let glyphRange = layoutManager.glyphRange(for: textContainer)
+    layoutManager.updateAnimationFrames([
+      CharacterStreamingGlyphAnimationFrame(
+        range: NSRange(location: 0, length: 1),
+        transform: transform,
+        startTime: 0
+      )
+    ])
+
+    func renderImage() -> UIImage {
+      UIGraphicsImageRenderer(
+        size: CGSize(width: 100, height: 100)
+      ).image { _ in
+        layoutManager.drawGlyphs(
+          forGlyphRange: glyphRange,
+          at: CGPoint(x: 20, y: 20)
+        )
+      }
+    }
+
+    let image = renderImage()
+    if transform.blurRadius > 0 {
+      let sourceCount = layoutManager.cachedGlyphImageCount
+      let blurredCount = layoutManager.cachedBlurredImageCount
+      _ = renderImage()
+      #expect(sourceCount == 1)
+      #expect(blurredCount == 1)
+      #expect(layoutManager.cachedGlyphImageCount == sourceCount)
+      #expect(layoutManager.cachedBlurredImageCount == blurredCount)
+      #expect(layoutManager.renderedGlyphImageCount == 1)
+      textStorage.addAttribute(
+        .foregroundColor,
+        value: UIColor.blue,
+        range: NSRange(location: 0, length: textStorage.length)
+      )
+      _ = renderImage()
+      #expect(layoutManager.renderedGlyphImageCount == 2)
+      #expect(layoutManager.cachedGlyphImageCount == 1)
+      #expect(layoutManager.cachedBlurredImageCount == 1)
+      layoutManager.clearAnimations()
+      #expect(layoutManager.cachedGlyphImageCount == 0)
+      #expect(layoutManager.cachedBlurredImageCount == 0)
+    }
+    return characterStreamingGlyphImageMetrics(
+      for: try #require(image.cgImage)
+    )
   }
 }
 #endif

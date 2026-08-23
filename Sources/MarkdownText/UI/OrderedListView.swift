@@ -10,6 +10,7 @@ struct OrderedListView: View {
 
   let items: [MarkdownListItem]
   @Environment(\.markdownConfig) var config: MarkdownRenderConfig
+  @Environment(\.isMarkdownStreamingTailBranch) var isStreamingTailBranch
 
   var body: some View {
     VStack(alignment: .leading, spacing: 8, content: {
@@ -20,20 +21,45 @@ struct OrderedListView: View {
             .foregroundStyle(config.orderedListStyle.textColor)
             .transition(.opacity)
           if let firstChild = items[idx].children.first {
+            let firstChildIsTail = isTrailingStreamingElement(
+              at: 0,
+              count: items[idx].children.count,
+              parentIsTrailing: isTrailingStreamingElement(
+                at: idx,
+                count: items.count,
+                parentIsTrailing: isStreamingTailBranch
+              )
+            )
             if case .paragraph(_, let contents) = firstChild {
               // Wrap the SingleBlockView to provide proper baseline alignment. This is to fix the mis-alignment when the view is rendered off-screen, e.g. snapshot.
               ListItemContentWrapper(paragraphContents: contents) {
                 SingleBlockView(renderable: firstChild)
+                  .environment(
+                    \.isMarkdownStreamingTailBranch,
+                    firstChildIsTail
+                  )
               }
               .accessibilityLabel(Text(markdownListAccessibilityLabel(for: contents.string, at: idx, length: items.count)))
             } else {
               SingleBlockView(renderable: firstChild)
+                .environment(
+                  \.isMarkdownStreamingTailBranch,
+                  firstChildIsTail
+                )
             }
           }
           Spacer()
         }
         if items[idx].children.count > 1 {
           BlockView(renderables: Array(items[idx].children.dropFirst()))
+            .environment(
+              \.isMarkdownStreamingTailBranch,
+              isTrailingStreamingElement(
+                at: idx,
+                count: items.count,
+                parentIsTrailing: isStreamingTailBranch
+              )
+            )
             .padding([.leading], 0)
         }
       }
