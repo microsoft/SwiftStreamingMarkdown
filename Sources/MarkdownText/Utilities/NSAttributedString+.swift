@@ -11,6 +11,30 @@ import AppKit
 #endif
 
 extension NSAttributedString {
+  /// Splits `range` into one `NSRange` per composed character sequence
+  /// (grapheme). Unlike `splitIntoWords`, the returned ranges are contiguous
+  /// and cover every character — including whitespace and attachments — which
+  /// makes it suitable for per-character animation waves.
+  func splitIntoCharacters(withIn range: NSRange) -> [NSRange] {
+    var characters: [NSRange] = []
+    let string = self.string as NSString
+
+    guard range.location != NSNotFound,
+          range.location >= 0,
+          NSMaxRange(range) <= string.length else {
+      return characters
+    }
+
+    string.enumerateSubstrings(
+      in: range,
+      options: [.byComposedCharacterSequences, .substringNotRequired]
+    ) { (_, substringRange, _, _) in
+      characters.append(substringRange)
+    }
+
+    return characters
+  }
+
   func splitIntoWords(withIn range: NSRange) -> [NSRange] {
     var words: [NSRange] = []
     let string = self.string as NSString

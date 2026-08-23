@@ -25,7 +25,9 @@ class ParagraphUIView: UITextView {
 
   private(set) var paragraphContents: NSMutableAttributedString = NSMutableAttributedString()
   private(set) var lineSpacing: CGFloat?
+  var animationStyle: ParagraphAnimationStyle = .fade
   private var activeAnimations: [FadeAnimationData] = []
+  private var nextWaveStartTime: CFTimeInterval = 0
   private var fadeAnimationDisplayLink: CADisplayLink?
   private var cachedSize: CachedParagraphUIViewSize?
 
@@ -135,19 +137,37 @@ class ParagraphUIView: UITextView {
 
     if animatedByWord,
        newContentLength > 0 {
-      // Animate word by word
       let newContentRange = NSRange(location: oldAttributedString.length, length: newContentLength)
-      let wordRanges = attributedText.splitIntoWords(withIn: newContentRange)
-      let wordCount = wordRanges.count
-      let delayBetweenWords: Double = ParagraphAnimationConstants.delayBetweenWordsRatio / Double(wordCount)
       let baseStartTime = CACurrentMediaTime()
-      for (index, wordRange) in wordRanges.enumerated() {
-        let animationData = FadeAnimationData(
-          startTime: baseStartTime + Double(index) * delayBetweenWords,
-          duration: Self.animationDuration,
-          range: wordRange
-        )
-        activeAnimations.append(animationData)
+
+      if animationStyle.rises {
+        // Rise: animate per character so each glyph ripples in, rather than
+        // whole words moving as rigid blocks. The stagger cursor is chained
+        // across streamed chunks (and capped by maxWaveLead) so the wave stays
+        // continuous instead of restarting per chunk.
+        let characterRanges = attributedText.splitIntoCharacters(withIn: newContentRange)
+        var cursor = min(max(baseStartTime, nextWaveStartTime), baseStartTime + ParagraphAnimationConstants.maxWaveLead)
+        for range in characterRanges {
+          activeAnimations.append(FadeAnimationData(
+            startTime: cursor,
+            duration: Self.animationDuration,
+            range: range
+          ))
+          cursor += ParagraphAnimationConstants.delayBetweenCharacters
+        }
+        nextWaveStartTime = cursor
+      } else {
+        // Fade: animate word by word (original behavior).
+        let wordRanges = attributedText.splitIntoWords(withIn: newContentRange)
+        let wordCount = wordRanges.count
+        let delayBetweenWords: Double = ParagraphAnimationConstants.delayBetweenWordsRatio / Double(max(wordCount, 1))
+        for (index, wordRange) in wordRanges.enumerated() {
+          activeAnimations.append(FadeAnimationData(
+            startTime: baseStartTime + Double(index) * delayBetweenWords,
+            duration: Self.animationDuration,
+            range: wordRange
+          ))
+        }
       }
 
       updateTextViewWithCurrentAnimations()
@@ -158,6 +178,7 @@ class ParagraphUIView: UITextView {
     } else {
       // If no animation needed anymore, clean up all existings animations if any.
       activeAnimations.removeAll()
+      nextWaveStartTime = 0
     }
   }
 
@@ -294,23 +315,29 @@ class ParagraphUIView: UITextView {
         continue
       }
       let elapsed = currentTime - animation.startTime
-      let animatedAlpha: CGFloat
-
+      let progress: CGFloat
       if elapsed < 0 {
-        animatedAlpha = 0.0
+        progress = 0.0
       } else {
-        let progress = min(max(elapsed / animation.duration, 0.0), 1.0)
-        let easedProgress = paragraphEaseOut(progress)
-        animatedAlpha = easedProgress
+        progress = paragraphEaseOut(min(max(elapsed / animation.duration, 0.0), 1.0))
       }
 
-      // Apply alpha to this animation's range, preserving each span's
+      // Vertical offset: start below the baseline and settle up to 0. Negative
+      // baselineOffset lowers the glyphs; it eases back to 0 as progress → 1.
+      if animationStyle.rises {
+        let offset = -ParagraphAnimationConstants.riseDistance * (1 - progress)
+        textStorage.addAttribute(.baselineOffset, value: offset, range: animation.range)
+      }
+
+      // Opacity: apply alpha to this animation's range, preserving each span's
       // existing foreground color. Spans with no foreground color get a
       // sensible default so they still fade in instead of disappearing.
-      let defaultColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
-      textStorage.enumerateAttribute(.foregroundColor, in: animation.range, options: []) { value, range, _ in
-        let baseColor = (value as? UIColor) ?? defaultColor
-        textStorage.addAttribute(.foregroundColor, value: baseColor.withAlphaComponent(animatedAlpha), range: range)
+      if animationStyle.fades {
+        let defaultColor = UIColor(Color.Theme.Foreground.Primary.Primary750)
+        textStorage.enumerateAttribute(.foregroundColor, in: animation.range, options: []) { value, range, _ in
+          let baseColor = (value as? UIColor) ?? defaultColor
+          textStorage.addAttribute(.foregroundColor, value: baseColor.withAlphaComponent(progress), range: range)
+        }
       }
     }
   }

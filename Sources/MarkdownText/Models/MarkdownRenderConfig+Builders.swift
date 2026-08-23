@@ -241,6 +241,7 @@ extension MarkdownRenderConfig {
   public func withImageConfig(_ value: ImageConfig) -> MarkdownRenderConfig {
     MarkdownRenderConfig(
       shouldAnimateText: shouldAnimateText,
+      paragraphAnimationStyle: paragraphAnimationStyle,
       blockQuoteStyle: blockQuoteStyle,
       headingStyle: headingStyle,
       orderedListStyle: orderedListStyle,
@@ -254,6 +255,28 @@ extension MarkdownRenderConfig {
       textSelectionConfig: textSelectionConfig,
       thematicBreakColor: thematicBreakColor,
       imageConfig: value
+    )
+  }
+
+  /// Returns a copy with `paragraphAnimationStyle` replaced. Only takes effect
+  /// when `shouldAnimateText` is `true`.
+  public func withParagraphAnimationStyle(value: ParagraphAnimationStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      paragraphAnimationStyle: value,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor,
+      imageConfig: imageConfig
     )
   }
 }

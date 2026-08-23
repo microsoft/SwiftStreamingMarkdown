@@ -57,6 +57,7 @@ enum SampleMarkdownTheme: String, CaseIterable, Identifiable {
         enabled: true,
         allowedImageTypes: [.remote(allowedDomains: ["markdownguide.org"]), .assetCatalog, .bundledResource]
       ))
+      .withParagraphAnimationStyle(value: .fadeAndRise)
   }
 
   private func resolvedTheme(for demonstration: Demonstration) -> SampleMarkdownTheme {
