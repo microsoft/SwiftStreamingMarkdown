@@ -173,7 +173,7 @@ extension Markdown.InlineCode: InlineConvertible {
       )
       let encoder = JSONEncoder()
       if let payload = try? encoder.encode(attachmentData) {
-        let attachment = NSTextAttachment(data: payload, ofType: UTType.data.identifier)
+        let attachment = LatexAttachment(data: payload, ofType: UTType.data.identifier)
         return NSMutableAttributedString(attachment: attachment)
       }
     }
