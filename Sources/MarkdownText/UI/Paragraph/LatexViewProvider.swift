@@ -4,12 +4,52 @@
 //
 
 import Foundation
+import CoreGraphics
 import iosMath
 import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
 import AppKit
+#endif
+
+#if canImport(UIKit)
+final class LatexAttachment: NSTextAttachment {
+  private static let transparentImage = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { _ in }
+
+  override func image(for bounds: CGRect,
+                      attributes: [NSAttributedString.Key: Any],
+                      location: any NSTextLocation,
+                      textContainer: NSTextContainer?) -> UIImage? {
+    Self.transparentImage
+  }
+}
+#elseif canImport(AppKit)
+final class LatexAttachment: NSTextAttachment {
+  private static let transparentImage: NSImage = {
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+    guard let context = CGContext(
+      data: nil,
+      width: 1,
+      height: 1,
+      bitsPerComponent: 8,
+      bytesPerRow: 0,
+      space: colorSpace,
+      bitmapInfo: bitmapInfo
+    ), let cgImage = context.makeImage() else {
+      return NSImage(size: NSSize(width: 1, height: 1))
+    }
+    return NSImage(cgImage: cgImage, size: NSSize(width: 1, height: 1))
+  }()
+
+  override func image(for bounds: NSRect,
+                      attributes: [NSAttributedString.Key: Any],
+                      location: any NSTextLocation,
+                      textContainer: NSTextContainer?) -> NSImage? {
+    Self.transparentImage
+  }
+}
 #endif
 
 // MARK: - LatexAttachmentData Color Resolution
@@ -89,6 +129,10 @@ final class LatexViewProvider: NSTextAttachmentViewProvider {
 
   override func loadView() {
     let label = MTMathUILabel()
+    #if canImport(UIKit)
+    label.isOpaque = false
+    #endif
+    label.backgroundColor = .clear
     label.latex = latex
     label.textColor = textColor
     label.displayErrorInline = false
