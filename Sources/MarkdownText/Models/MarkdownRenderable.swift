@@ -13,6 +13,15 @@ import AppKit
 /// Markdown element representation that is ready to be rendered by a SwiftUI View
 /// The representation already have all the parsing and processing completed to minimize rendering overhead on UI thread.
 /// This data structure is not thread safe due to the usage of `NSMutableAttributedString`, this needs to be addressed as a future improvement
+/// Per-column text alignment declared by a GFM table's delimiter row
+/// (`:---`, `:---:`, `---:`). `.leading` is the GFM default for a column that
+/// declares nothing.
+enum MarkdownColumnAlignment: Equatable, Sendable {
+  case leading
+  case center
+  case trailing
+}
+
 indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
 
   /// To be rendered as a paragraph
@@ -34,7 +43,7 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   case codeBlock(id: String, language: String?, code: String)
 
   /// To be rendered as a table
-  case table(id: String, headers: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], rawMarkdown: String)
+  case table(id: String, headers: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], alignments: [MarkdownColumnAlignment], rawMarkdown: String)
 
   /// To be rendered as thematic break
   case thematicBreak(id: String)
@@ -54,7 +63,7 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
     case .orderedList(let id, _): return id
     case .unorderedList(let id, _, _): return id
     case .codeBlock(let id, _, _): return id
-    case .table(let id, _, _, _): return id
+    case .table(let id, _, _, _, _): return id
     case .thematicBreak(let id): return id
     case .blockQuote(let id, _): return id
     case .image(let id, _): return id

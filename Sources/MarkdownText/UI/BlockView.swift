@@ -62,9 +62,10 @@ struct SingleBlockView: View {
                       code: code)
       case .thematicBreak:
         ThematicBreakView()
-      case .table(_, let headers, let rows, let rawMarkdown):
+      case .table(_, let headers, let rows, let alignments, let rawMarkdown):
         TableView(headings: headers,
                   rows: rows,
+                  alignments: alignments,
                   rawMarkdown: rawMarkdown)
       case .blockQuote(_, let item):
         BlockQuoteView(item: item)

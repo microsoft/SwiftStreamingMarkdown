@@ -22,6 +22,7 @@ struct TableView: View {
 
   let headings: [AttributedString]
   let rows: [[RowContent]]
+  let alignments: [MarkdownColumnAlignment]
   let columnMaxWidths: [Int: CGFloat]
 
   private let defaultMaxColumnWidth: CGFloat = 200
@@ -32,7 +33,8 @@ struct TableView: View {
 
   private let rawMarkdown: String
 
-  init(headings: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], columnMaxWidths: [Int: CGFloat] = [:], rawMarkdown: String = "") {
+  init(headings: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], alignments: [MarkdownColumnAlignment] = [], columnMaxWidths: [Int: CGFloat] = [:], rawMarkdown: String = "") {
+    self.alignments = alignments
     self.headings = headings.map { AttributedString($0) }
     self.rows = rows.map { row in
       row.map { content in
@@ -52,13 +54,36 @@ struct TableView: View {
     return rows.count
   }
 
+  /// The GFM delimiter row's alignment for a column, defaulting to `.leading`
+  /// for a table that declares none.
+  private func alignment(forColumn index: Int) -> MarkdownColumnAlignment {
+    guard index < alignments.count else { return .leading }
+    return alignments[index]
+  }
+
+  private func textAlignment(forColumn index: Int) -> TextAlignment {
+    switch alignment(forColumn: index) {
+    case .leading: return .leading
+    case .center: return .center
+    case .trailing: return .trailing
+    }
+  }
+
+  private func frameAlignment(forColumn index: Int) -> Alignment {
+    switch alignment(forColumn: index) {
+    case .leading: return .topLeading
+    case .center: return .top
+    case .trailing: return .topTrailing
+    }
+  }
+
   private func headerView(colIdx: Int) -> some View {
     HStack(spacing: 0) {
       Text(headings[colIdx])
         .foregroundStyle(config.tableStyle.headerTextColor)
         .lineLimit(nil)
-        .multilineTextAlignment(.leading)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .multilineTextAlignment(textAlignment(forColumn: colIdx))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: frameAlignment(forColumn: colIdx))
         .if(config.shouldAnimateText) { view in
           view.fadeInTextTransition(attributedString: headings[colIdx])
         }
@@ -106,7 +131,7 @@ struct TableView: View {
     case .containsAttachment(let nsAttributedString):
       HStack(spacing: 0) {
         ParagraphView(contents: applyTypographyThemingAndGetContent(nsAttributedString))
-          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: frameAlignment(forColumn: colIdx))
           .accessibilityValue(String.itemPositionInTable(rowIndex: rowIdx + 2, totalRow: numOfRows + 1, columnIndex: colIdx + 1, totalColumn: headings.count))
         Spacer()
       }
@@ -119,8 +144,8 @@ struct TableView: View {
         Text(attributedString)
           .foregroundStyle(config.tableStyle.regularTextColor)
           .lineLimit(nil)
-          .multilineTextAlignment(.leading)
-          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+          .multilineTextAlignment(textAlignment(forColumn: colIdx))
+          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: frameAlignment(forColumn: colIdx))
           .if(config.shouldAnimateText) { view in
             view.fadeInTextTransition(attributedString: attributedString)
           }
