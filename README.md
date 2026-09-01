@@ -113,13 +113,13 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [x] Inline LaTeX math via `\( … \)`
 - [x] Display LaTeX math via `$$ … $$`
 - [x] Inline citation pills
+- [x] GitHub alerts (`> [!NOTE]`) — rendered as block quotes with icon and color
 
 ### Not yet supported
 
 - [ ] Footnotes (`[^1]`)
 - [ ] Highlight (`==text==`), superscript (`^x^`), subscript (`~x~`)
 - [ ] Raw HTML (`<details>`, `<kbd>`, `<aside>`, …) — kept inline as text
-- [ ] GitHub alerts (`> [!NOTE]`) — rendered as plain block quotes
 - [ ] Container directives (`::: warning … :::`) and admonitions (`!!! note`)
 - [ ] Mermaid / PlantUML diagrams — rendered as fenced code
 

@@ -53,6 +53,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   /// - Important: Image support is **experimental**. The behavior, API, and
   ///   rendering output may change in future releases. Defaults to `.disabled`.
   public let imageConfig: ImageConfig
+  /// Per-kind styling applied to block-quote alerts (`> [!NOTE]`).
+  public let blockQuoteAlertStyle: [BlockQuoteAlertKind: MarkdownBlockQuoteAlertStyle]
 
   /// Font and color style for a uniformly-styled run of markdown text.
   public struct MarkdownTextStyle: Hashable, Sendable {
@@ -93,6 +95,30 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
       self.borderColor = borderColor
       self.actionButtonColor = actionButtonColor
     }
+  }
+
+  /// Styling applied to a block-quote alert of a given `BlockQuoteAlertKind`.
+  public struct MarkdownBlockQuoteAlertStyle: Hashable, Sendable {
+    /// Color of the leading accent bar.
+    public let accentColor: Color
+    /// Fill color behind the alert content.
+    public let backgroundColor: Color
+		/// SF Symbols icon name
+		public let imageName: String
+
+    /// Create an alert style with the supplied accent and background colors.
+		public init(accentColor: Color, backgroundColor: Color, imageName: String) {
+      self.accentColor = accentColor
+      self.backgroundColor = backgroundColor
+			self.imageName = imageName
+    }
+
+    /// A neutral fallback used when a kind is missing from the style map.
+    public static let `default` = MarkdownBlockQuoteAlertStyle(
+      accentColor: .blue,
+      backgroundColor: .blue.opacity(0.08),
+      imageName: "info.circle"
+    )
   }
 
   /// Per-level fonts and shared foreground color for markdown headings.
@@ -222,6 +248,15 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     textColor: Color.Theme.Foreground.Primary.Primary750
   )
 
+  /// Default per-kind styling for block-quote alerts.
+  public static let defaultBlockQuoteAlertStyle: [BlockQuoteAlertKind: MarkdownBlockQuoteAlertStyle] = [
+		.note: MarkdownBlockQuoteAlertStyle(accentColor: .blue, backgroundColor: .blue.opacity(0.08), imageName: "note.text"),
+		.tip: MarkdownBlockQuoteAlertStyle(accentColor: .green, backgroundColor: .green.opacity(0.08), imageName: "lightbulb.circle"),
+		.important: MarkdownBlockQuoteAlertStyle(accentColor: .purple, backgroundColor: .purple.opacity(0.08), imageName: "info.circle"),
+    .warning: MarkdownBlockQuoteAlertStyle(accentColor: .yellow, backgroundColor: .yellow.opacity(0.08), imageName: "exclamationmark.triangle"),
+    .caution: MarkdownBlockQuoteAlertStyle(accentColor: .red, backgroundColor: .red.opacity(0.08), imageName: "exclamationmark.octagon")
+  ]
+
   /// Default styling for `headingStyle`.
   public static let defaultHeadingStyle = MarkdownHeadingTextStyle(
     h1Font: Typography.extraLargeTextFonts,
@@ -283,7 +318,8 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     blockSpacing: CGFloat = MarkdownRenderConfig.defaultBlockSpacing,
     textSelectionConfig: TextSelectionConfig = .default,
     thematicBreakColor: Color = MarkdownRenderConfig.defaultThematicBreakColor,
-    imageConfig: ImageConfig = .disabled
+    imageConfig: ImageConfig = .disabled,
+    blockQuoteAlertStyle: [BlockQuoteAlertKind: MarkdownBlockQuoteAlertStyle] = MarkdownRenderConfig.defaultBlockQuoteAlertStyle
   ) {
     self.shouldAnimateText = shouldAnimateText
     self.blockQuoteStyle = blockQuoteStyle
@@ -299,6 +335,7 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
     self.textSelectionConfig = textSelectionConfig
     self.thematicBreakColor = thematicBreakColor
     self.imageConfig = imageConfig
+    self.blockQuoteAlertStyle = blockQuoteAlertStyle
   }
 
   /// The default render config, equivalent to calling `init()` with no

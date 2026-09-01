@@ -10,18 +10,43 @@ import SwiftUI
 extension BlockQuote: BlockConvertible {
   var quoteTypes: BlockQuoteType {
     var finalQuoteTypes = [BlockQuoteType]()
+    var alertKind: BlockQuoteAlertKind?
 
     for child in children {
       if let inlineContainer = child as? InlineContainer {
-        // Use our custom extractPlainText method instead of the built-in plainText property
-        // to properly handle attachment citations
-        finalQuoteTypes.append(.text(inlineContainer.extractPlainText(removeHeading: false)))
+        let text = inlineContainer.extractPlainText(removeHeading: false)
+        if alertKind == nil, let (kind, rest) = Self.parseAlertTag(text) {
+          alertKind = kind
+          if !rest.isEmpty {
+            finalQuoteTypes.append(.text(rest, alertKind))
+          }
+        } else {
+          finalQuoteTypes.append(.text(text, alertKind))
+        }
       } else if let blockQuoteContainer = child as? BlockQuote {
         finalQuoteTypes.append(blockQuoteContainer.quoteTypes)
       }
     }
 
-    return .nested(finalQuoteTypes)
+    return .nested(finalQuoteTypes, alertKind)
+  }
+
+  /// Recognizes a leading GitHub-style `[!KIND]` alert marker, returning the
+  /// parsed kind and the remaining text with the marker stripped.
+  static func parseAlertTag(_ text: String) -> (kind: BlockQuoteAlertKind, rest: String)? {
+    guard text.hasPrefix("[!"),
+      let close = text.firstIndex(of: "]"),
+      close > text.index(text.startIndex, offsetBy: 2),
+      let kind = BlockQuoteAlertKind(rawValue: String(text[text.index(text.startIndex, offsetBy: 2)..<close]).lowercased())
+    else {
+      return nil
+    }
+
+    var rest = String(text[text.index(after: close)...])
+    if rest.hasPrefix(" ") {
+      rest.removeFirst()
+    }
+    return (kind, rest)
   }
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {

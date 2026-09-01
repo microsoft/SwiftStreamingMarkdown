@@ -193,10 +193,10 @@ final class MarkdownTextTests: XCTestCase {
     // Extract the text from the quote types
     var extractedText = ""
     switch quoteTypes {
-    case .nested(let types):
+    case .nested(let types, _):
       for type in types {
         switch type {
-        case .text(let text):
+        case .text(let text, _):
           extractedText = text
         default:
           break

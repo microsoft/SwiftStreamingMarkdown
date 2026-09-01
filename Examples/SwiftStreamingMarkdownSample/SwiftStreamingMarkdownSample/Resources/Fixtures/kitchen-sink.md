@@ -142,7 +142,7 @@ Container directives from Markdown-it and GitHub-style alerts are extension synt
 :::
 
 > [!NOTE]
-> GitHub alert syntax is included as another block quote extension. Unsupported renderers should display it as quoted text.
+> GitHub alert syntax is included as another block quote extension.  This should display with a colored bar and icon to the left.
 
 > [!WARNING]
 > Alerts with multiple paragraphs should still wrap and stream without corrupting following content.

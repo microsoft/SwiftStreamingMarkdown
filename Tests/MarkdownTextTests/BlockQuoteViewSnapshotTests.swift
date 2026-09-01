@@ -18,8 +18,8 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0)
-    ]))
+      .text(TestStrings.l0, nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -30,11 +30,11 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1)
-      ])
-    ]))
+        .text(TestStrings.l1, nil)
+      ], nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -45,15 +45,15 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_l0_l1_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1)
-      ]),
-      .text(TestStrings.l0),
+        .text(TestStrings.l1, nil)
+      ], nil),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1)
-      ])
-    ]))
+        .text(TestStrings.l1, nil)
+      ], nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -64,12 +64,12 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_l0_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1)
-      ]),
-      .text(TestStrings.l0)
-    ]))
+        .text(TestStrings.l1, nil)
+      ], nil),
+      .text(TestStrings.l0, nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -80,16 +80,16 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_l2_l1_l0_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1),
+        .text(TestStrings.l1, nil),
         .nested([
-          .text(TestStrings.l2)
-        ]),
-        .text(TestStrings.l1)
-      ]),
-      .text(TestStrings.l0)
-    ]))
+          .text(TestStrings.l2, nil)
+        ], nil),
+        .text(TestStrings.l1, nil)
+      ], nil),
+      .text(TestStrings.l0, nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -100,17 +100,17 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_l2_l3_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1),
+        .text(TestStrings.l1, nil),
         .nested([
-          .text(TestStrings.l2),
+          .text(TestStrings.l2, nil),
           .nested([
-            .text(TestStrings.l3)
-          ])
-        ])
-      ])
-    ]))
+            .text(TestStrings.l3, nil)
+          ], nil)
+        ], nil)
+      ], nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
@@ -121,28 +121,28 @@ final class BlockQuoteViewSnapshotTests: SnapshotTestCase {
 
   func test_l0_l1_l0_l1_l2_l1_l2_l3_l2_l1_l0_quote() throws {
     let renderable = BlockQuoteRenderable(quoteType: .nested([
-      .text(TestStrings.l0),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1)
-      ]),
-      .text(TestStrings.l0),
+        .text(TestStrings.l1, nil)
+      ], nil),
+      .text(TestStrings.l0, nil),
       .nested([
-        .text(TestStrings.l1),
+        .text(TestStrings.l1, nil),
         .nested([
-          .text(TestStrings.l2)
-        ]),
-        .text(TestStrings.l1),
+          .text(TestStrings.l2, nil)
+        ], nil),
+        .text(TestStrings.l1, nil),
         .nested([
-          .text(TestStrings.l2),
+          .text(TestStrings.l2, nil),
           .nested([
-            .text(TestStrings.l3)
-          ]),
-          .text(TestStrings.l2)
-        ]),
-        .text(TestStrings.l1)
-      ]),
-      .text(TestStrings.l0)
-    ]))
+            .text(TestStrings.l3, nil)
+          ], nil),
+          .text(TestStrings.l2, nil)
+        ], nil),
+        .text(TestStrings.l1, nil)
+      ], nil),
+      .text(TestStrings.l0, nil)
+    ], nil))
 
     let view = CanvasView {
       BlockQuoteView(item: renderable)
