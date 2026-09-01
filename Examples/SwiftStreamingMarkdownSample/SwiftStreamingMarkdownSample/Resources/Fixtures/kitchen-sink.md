@@ -219,9 +219,9 @@ HTML blocks may render as plain text or be ignored depending on parser support.
 
 </details>
 
-## Mermaid diagram fallback
+## Mermaid diagram
 
-Mermaid is intentionally included as an unimplemented markdown feature. Until a diagram renderer exists, this should remain readable as a fenced code block.
+Mermaid fences render as interactive diagrams. Configure them via `MermaidConfig`; setting `.disabled` falls back to a readable fenced code block.
 
 ```mermaid
 flowchart TD

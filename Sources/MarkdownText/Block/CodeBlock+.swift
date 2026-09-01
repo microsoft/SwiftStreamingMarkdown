@@ -11,6 +11,8 @@ extension CodeBlock: BlockConvertible {
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> MarkdownRenderable {
     if self.language == LaTexPreProcessorImpl.customCodeType {
       return .latex(id: self.id, content: self.code)
+    } else if self.language?.lowercased() == "mermaid" && config.mermaidConfig.isEnabled {
+      return .mermaidView(id: self.id, code: self.code)
     } else {
       return .codeBlock(id: self.id, language: self.language, code: self.code)
     }

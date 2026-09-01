@@ -104,6 +104,7 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [x] `Inline code`
 - [x] Inline links
 - [x] Fenced code blocks with language tag
+- [x] Mermaid diagrams — rendered as interactive diagrams for `mermaid`-tagged fenced code blocks; theme and opt-out via `MermaidConfig` (`withMermaidConfig`, `.disabled`)
 - [x] Block quotes (with nested inlines, lists, and citations)
 - [x] Ordered lists
 - [x] Unordered lists (with nesting)
@@ -121,7 +122,7 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [ ] Raw HTML (`<details>`, `<kbd>`, `<aside>`, …) — kept inline as text
 - [ ] GitHub alerts (`> [!NOTE]`) — rendered as plain block quotes
 - [ ] Container directives (`::: warning … :::`) and admonitions (`!!! note`)
-- [ ] Mermaid / PlantUML diagrams — rendered as fenced code
+- [ ] PlantUML diagrams — rendered as fenced code
 
 The bundled `Kitchen Sink` demonstration in the sample app exercises every item above so you can verify the fallback behavior on-device.
 

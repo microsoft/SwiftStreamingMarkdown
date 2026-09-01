@@ -22,7 +22,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle
     )
   }
 
@@ -41,7 +44,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -60,7 +66,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -79,7 +88,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -98,7 +110,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -117,7 +132,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -136,7 +154,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -156,7 +177,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -175,7 +199,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: value,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -194,7 +221,32 @@ extension MarkdownRenderConfig {
       codeBlockConfig: value,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
+    )
+  }
+
+  /// Returns a copy with `mermaidConfig` replaced.
+  public func withMermaidConfig(_ value: MermaidConfig) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      mermaidConfig: value,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor,
+      imageConfig: imageConfig,               : was missing
+      blockQuoteAlertStyle: blockQuoteAlertStyle : was missing
     )
   }
 
@@ -214,7 +266,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: value,
-      thematicBreakColor: thematicBreakColor
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -233,7 +288,10 @@ extension MarkdownRenderConfig {
       codeBlockConfig: codeBlockConfig,
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
-      thematicBreakColor: value
+      thematicBreakColor: value,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: blockQuoteAlertStyle 
     )
   }
 
@@ -253,7 +311,31 @@ extension MarkdownRenderConfig {
       blockSpacing: blockSpacing,
       textSelectionConfig: textSelectionConfig,
       thematicBreakColor: thematicBreakColor,
-      imageConfig: value
+      imageConfig: value,
+      mermaidConfig: mermaidConfig,           : was missing
+      blockQuoteAlertStyle: blockQuoteAlertStyle : was missing
+    )
+  }
+
+  /// Returns a copy with `blockQuoteAlertStyle` replaced.
+  public func withBlockQuoteAlertStyle(_ value: BlockQuoteAlertStyle) -> MarkdownRenderConfig {
+    MarkdownRenderConfig(
+      shouldAnimateText: shouldAnimateText,
+      blockQuoteStyle: blockQuoteStyle,
+      headingStyle: headingStyle,
+      orderedListStyle: orderedListStyle,
+      paragraphStyle: paragraphStyle,
+      tableStyle: tableStyle,
+      inlineStyle: inlineStyle,
+      textContextMenu: textContextMenu,
+      citationConfig: citationConfig,
+      codeBlockConfig: codeBlockConfig,
+      blockSpacing: blockSpacing,
+      textSelectionConfig: textSelectionConfig,
+      thematicBreakColor: thematicBreakColor,
+      mermaidConfig: mermaidConfig,           
+      imageConfig: imageConfig,               
+      blockQuoteAlertStyle: value
     )
   }
 }

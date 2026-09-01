@@ -60,6 +60,8 @@ struct SingleBlockView: View {
       case .codeBlock(_, let language, let code):
         CodeBlockView(language: language ?? "",
                       code: code)
+      case .mermaidView(_, let code):
+        MermaidBlockView(code: code)
       case .thematicBreak:
         ThematicBreakView()
       case .table(_, let headers, let rows, let rawMarkdown):

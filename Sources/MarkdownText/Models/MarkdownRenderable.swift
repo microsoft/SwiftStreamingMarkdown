@@ -33,6 +33,9 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   /// To be rendered as a code block
   case codeBlock(id: String, language: String?, code: String)
 
+  /// To be rendered as a Mermaid diagram (a code block tagged with `mermaid`)
+  case mermaidView(id: String, code: String)
+
   /// To be rendered as a table
   case table(id: String, headers: [NSMutableAttributedString], rows: [[NSMutableAttributedString]], rawMarkdown: String)
 
@@ -54,6 +57,7 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
     case .orderedList(let id, _): return id
     case .unorderedList(let id, _, _): return id
     case .codeBlock(let id, _, _): return id
+    case .mermaidView(let id, _): return id
     case .table(let id, _, _, _): return id
     case .thematicBreak(let id): return id
     case .blockQuote(let id, _): return id

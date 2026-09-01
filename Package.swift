@@ -13,6 +13,7 @@ let package = Package(
       targets: ["SwiftStreamingMarkdown"])
   ],
   dependencies: [
+    .package(url: "https://github.com/lukilabs/beautiful-mermaid-swift", exact: "1.0.4"),
     .package(url: "https://github.com/ordo-one/equatable", exact: "1.4.1"),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.4"),
     .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
@@ -28,7 +29,8 @@ let package = Package(
         .product(name: "Markdown", package: "swift-markdown"),
         .product(name: "HighlightSwift", package: "highlightswift"),
         .product(name: "iosMath", package: "iosMath"),
-        .product(name: "Shimmer", package: "SwiftUI-Shimmer")
+        .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+        .product(name: "BeautifulMermaid", package: "beautiful-mermaid-swift")
       ],
       path: "Sources/MarkdownText",
       resources: [
