@@ -149,7 +149,34 @@ extension Markdown.InlineCode: InlineConvertible {
     return self.code.hasPrefix(LaTexPreProcessorImpl.inlineCodePrefix) && self.code.hasSuffix(LaTexPreProcessorImpl.inlineCodeSuffix)
   }
 
+  /// The footnote number when this inline code's payload matches the marker
+  /// syntax and is a positive integer; `nil` for user-authored code that merely
+  /// resembles one but has a non-numeric payload, which keeps its normal
+  /// inline-code rendering. A numeric-payload match renders as a footnote
+  /// superscript regardless of whether the preprocessor emitted it or a user
+  /// authored it verbatim — the same trade-off the LaTeX marker syntax
+  /// already makes.
+  var footnoteReferenceNumber: Int? {
+    guard self.code.hasPrefix(FootnotePreProcessorImpl.inlineCodePrefix),
+          self.code.hasSuffix(FootnotePreProcessorImpl.inlineCodeSuffix)
+    else {
+      return nil
+    }
+    let payload = self.code
+      .dropFirst(FootnotePreProcessorImpl.inlineCodePrefix.count)
+      .dropLast(FootnotePreProcessorImpl.inlineCodeSuffix.count)
+    guard let number = Int(payload), number > 0 else { return nil }
+    return number
+  }
+
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
+    if let footnoteNumber = self.footnoteReferenceNumber {
+      let baseFont = attributeContainer[NSAttributedString.Key.font] as? MDFont ?? config.paragraphStyle.textFonts.normal
+      var container = attributeContainer
+      container[.font] = baseFont.resized(to: baseFont.pointSize * 0.7)
+      container[.baselineOffset] = baseFont.pointSize * 0.35
+      return NSMutableAttributedString(string: String(footnoteNumber)).mergingAttributes(container)
+    }
     var codeContent = self.code
     if self.isInlineLatex {
       codeContent = String(self

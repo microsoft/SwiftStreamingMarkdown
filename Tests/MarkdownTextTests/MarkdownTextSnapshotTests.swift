@@ -304,4 +304,20 @@ final class MarkdownTextSnapshotTests: SnapshotTestCase {
     }
     assert(view)
   }
+
+  func testFootnotes() async throws {
+    let text = """
+    Footnotes render as superscript references[^first], repeated references[^first] share \
+    a number, and later ones[^second] continue the sequence.
+
+    [^first]: footnote definitions render in an end-of-document notes section.
+    [^second]: inline **formatting** inside a definition is preserved.
+    """
+    let document = await parser.parse(text: text)
+    let renderables = await RenderableDocument(document: document, config: .default)
+    let view = CanvasView {
+      DocumentView(renderableDocument: renderables, config: .init()).padding(.horizontal, 24)
+    }
+    assert(view)
+  }
 }
