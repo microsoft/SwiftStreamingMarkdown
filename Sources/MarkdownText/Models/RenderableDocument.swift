@@ -50,6 +50,7 @@ public struct RenderableDocument: Equatable, Sendable {
       attributes[.kern] = kern
     }
     let content = NSMutableAttributedString(string: plainText, attributes: attributes)
+    content.applyParagraphLayout()
     self.init(renderables: [.paragraph(id: UUID().uuidString, content: content)])
   }
 
@@ -84,6 +85,8 @@ extension MarkdownRenderable {
     switch self {
     case .paragraph(_, let content), .heading(_, _, let content):
       return content.string
+    case .textGroup(_, let blocks, _):
+      return blocks.compactMap { $0.plainText }.joined(separator: "\n\n")
     case .latex(_, let content):
       return content
     case .orderedList(_, let items):
@@ -129,7 +132,7 @@ private extension BlockQuoteType {
 extension MarkdownRenderable {
   func extractAttributedStrings() -> [NSAttributedString] {
     switch self {
-    case .paragraph(_, let str):
+    case .paragraph(_, let str), .textGroup(_, _, let str):
       return [str]
     case .orderedList(_, let items):
       return items.flatMap { $0.attributedStrings() }

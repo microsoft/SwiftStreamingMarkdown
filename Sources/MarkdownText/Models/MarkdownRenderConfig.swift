@@ -35,7 +35,9 @@ public struct MarkdownRenderConfig: Hashable, Sendable {
   /// Configuration that controls code-block syntax-highlighting styling.
   public let codeBlockConfig: CodeBlockConfig
   /// Vertical spacing between adjacent blocks (paragraphs, headings,
-  /// code blocks, lists, etc.). Defaults to 30.
+  /// code blocks, lists, etc.). Defaults to 30. Adjacent top-level
+  /// paragraphs share one text view, so they're never spaced closer than
+  /// their 5-point line spacing.
   public let blockSpacing: CGFloat
   /// Configuration for the built-in "Select more text" edit-menu action and the
   /// modal it presents. Enabled by default.

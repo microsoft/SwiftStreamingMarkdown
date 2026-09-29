@@ -12,7 +12,6 @@ struct ParagraphView: UIViewRepresentable {
   @Environment(\.markdownController) var markdownController: MarkdownController?
 
   var contents: NSMutableAttributedString
-  var lineSpacing: CGFloat?
 
   func makeCoordinator() -> Coordinator {
     Coordinator()
@@ -20,9 +19,9 @@ struct ParagraphView: UIViewRepresentable {
 
   func makeUIView(context: Context) -> ParagraphUIView {
     let openUrlFunction = openURL.callAsFunction(_:)
-    let view = ParagraphViewCache.shared.createOrReuseView(contents: contents, lineSpacing: lineSpacing)
+    let view = ParagraphViewCache.shared.createOrReuseView(contents: contents)
     view.onUrlTap = openUrlFunction
-    view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
+    view.setParagraphContents(contents, animatedByWord: false)
     view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
 
@@ -37,9 +36,9 @@ struct ParagraphView: UIViewRepresentable {
   }
 
   func updateUIView(_ view: ParagraphUIView, context: Context) {
-    if view.paragraphContents != contents || view.lineSpacing != lineSpacing {
+    if view.paragraphContents != contents {
       let shouldAnimate = view.window != nil && config.shouldAnimateText // only animate when visible
-      view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
+      view.setParagraphContents(contents, animatedByWord: shouldAnimate)
     }
     view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
@@ -51,11 +50,10 @@ struct ParagraphView: UIViewRepresentable {
       return nil
     }
 
-    // Check if content or lineSpacing changed - if so, clear the cache
-    if contents != context.coordinator.lastContents || lineSpacing != context.coordinator.lastLineSpacing {
+    // Check if content changed - if so, clear the cache
+    if contents != context.coordinator.lastContents {
       context.coordinator.sizeCache.removeAll()
       context.coordinator.lastContents = contents
-      context.coordinator.lastLineSpacing = lineSpacing
     }
 
     // Round width to avoid cache misses from floating point precision issues
@@ -80,13 +78,12 @@ struct ParagraphView: UIViewRepresentable {
     // Cache all calculated sizes keyed by width
     var sizeCache: [CGFloat: CGSize] = [:]
     var lastContents: NSMutableAttributedString?
-    var lastLineSpacing: CGFloat?
   }
 }
 
 extension ParagraphView: Equatable {
   static func == (lhs: ParagraphView, rhs: ParagraphView) -> Bool {
-    lhs.contents == rhs.contents && lhs.lineSpacing == rhs.lineSpacing
+    lhs.contents == rhs.contents
   }
 }
 #endif

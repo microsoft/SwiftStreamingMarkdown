@@ -12,7 +12,6 @@ struct ParagraphView: NSViewRepresentable {
   @Environment(\.markdownController) var markdownController: MarkdownController?
 
   var contents: NSMutableAttributedString
-  var lineSpacing: CGFloat?
 
   func makeCoordinator() -> Coordinator {
     Coordinator()
@@ -26,7 +25,7 @@ struct ParagraphView: NSViewRepresentable {
     // paragraph gets its own view instead.
     let view = ParagraphNSView()
     view.onUrlTap = openUrlFunction
-    view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: false)
+    view.setParagraphContents(contents, animatedByWord: false)
     view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
 
@@ -42,9 +41,9 @@ struct ParagraphView: NSViewRepresentable {
   }
 
   func updateNSView(_ view: ParagraphNSView, context: Context) {
-    if view.paragraphContents != contents || view.lineSpacing != lineSpacing {
+    if view.paragraphContents != contents {
       let shouldAnimate = view.window != nil && config.shouldAnimateText
-      view.setParagraphContents(contents, lineSpacing: lineSpacing, animatedByWord: shouldAnimate)
+      view.setParagraphContents(contents, animatedByWord: shouldAnimate)
     }
     view.setTextContextMenu(config.resolvedTextContextMenu)
     view.setMarkdownController(markdownController)
@@ -55,10 +54,9 @@ struct ParagraphView: NSViewRepresentable {
       return nil
     }
 
-    if contents != context.coordinator.lastContents || lineSpacing != context.coordinator.lastLineSpacing {
+    if contents != context.coordinator.lastContents {
       context.coordinator.sizeCache.removeAll()
       context.coordinator.lastContents = contents
-      context.coordinator.lastLineSpacing = lineSpacing
     }
 
     let cacheKey = (width * 10).rounded() / 10
@@ -76,13 +74,12 @@ struct ParagraphView: NSViewRepresentable {
   class Coordinator {
     var sizeCache: [CGFloat: CGSize] = [:]
     var lastContents: NSMutableAttributedString?
-    var lastLineSpacing: CGFloat?
   }
 }
 
 extension ParagraphView: Equatable {
   static func == (lhs: ParagraphView, rhs: ParagraphView) -> Bool {
-    lhs.contents.isEqual(to: rhs.contents) && lhs.lineSpacing == rhs.lineSpacing
+    lhs.contents.isEqual(to: rhs.contents)
   }
 }
 #endif

@@ -255,7 +255,11 @@ final class MarkdownTextTests: XCTestCase {
 
     let document = await parser.parse(text: text)
     let renderableDoc = await RenderableDocument(document: document, config: .default)
-    let renderables = renderableDoc.renderables
+    // The heading and paragraph share a text group; inspect its blocks.
+    guard case .textGroup(_, let renderables, _) = renderableDoc.renderables.first else {
+      XCTFail("Heading and paragraph should be grouped")
+      return
+    }
 
     // Verify it parses without error
     XCTAssertEqual(renderables.count, 2)

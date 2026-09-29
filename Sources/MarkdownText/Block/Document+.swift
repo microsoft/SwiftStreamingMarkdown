@@ -13,5 +13,6 @@ extension Markdown.Document {
     return self
       .blockConvertibleChildren
       .map { $0.convert(attributeContainer: NSAttributeContainer(), config: config) }
+      .groupingAdjacentTextBlocks(config: config)
   }
 }

@@ -38,14 +38,12 @@ struct SingleBlockView: View {
   var body: some View {
     Group {
       switch renderable {
-      case .heading(_, _, let contents):
+      case .heading(_, _, let contents), .paragraph(_, let contents), .textGroup(_, _, let contents):
+        // One branch for all text blocks, so a block that becomes a group while streaming keeps its text view.
         ParagraphView(contents: contents)
-          .transition(.opacity)
-          .accessibilityAddTraits(.isHeader)
-      case .paragraph(_, let contents):
-        ParagraphView(contents: contents, lineSpacing: 5)
           .fixedSize(horizontal: false, vertical: true)
           .transition(.opacity)
+          .accessibilityAddTraits(renderable.isHeading ? .isHeader : [])
       case .latex(_, let latexString):
         ScrollView(.horizontal) {
           HStack(spacing: 0) {

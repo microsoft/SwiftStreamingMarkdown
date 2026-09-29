@@ -98,7 +98,7 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 ### Supported
 
 - [x] Headings (`#` … `######`)
-- [x] Paragraphs with soft and hard line breaks
+- [x] Paragraphs with soft and hard line breaks (adjacent headings and paragraphs share one text view, so a text selection can span them)
 - [x] Images (`![alt](url)`) — block-level, opt-in via the experimental `ImageConfig` (remote-allowlist, asset-catalog, and bundled-resource sources; tap to open the built-in fullscreen viewer)
 - [x] **Bold**, *italic*, ***bold-italic***, ~~strikethrough~~
 - [x] `Inline code`

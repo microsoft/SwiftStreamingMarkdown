@@ -18,6 +18,12 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   /// To be rendered as a paragraph
   case paragraph(id: String, content: NSMutableAttributedString)
 
+  /// Adjacent top-level headings and paragraphs rendered in a single text view
+  /// so a text selection can span them. `content` joins the `blocks` with
+  /// paragraph breaks spaced by `blockSpacing`, or by the line spacing where
+  /// that's larger. See `groupingAdjacentTextBlocks(config:)`.
+  case textGroup(id: String, blocks: [MarkdownRenderable], content: NSMutableAttributedString)
+
   /// To be rendered as LaTeX (Math formatting)
   case latex(id: String, content: String)
 
@@ -49,6 +55,7 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   var id: String {
     switch self {
     case .paragraph(let id, _): return id
+    case .textGroup(let id, _, _): return id
     case .latex(let id, _): return id
     case .heading(let id, _, _): return id
     case .orderedList(let id, _): return id
@@ -71,6 +78,13 @@ indirect enum MarkdownRenderable: Identifiable, Equatable, @unchecked Sendable {
   var isBlockQuote: Bool {
     switch self {
     case .blockQuote: return true
+    default: return false
+    }
+  }
+
+  var isHeading: Bool {
+    switch self {
+    case .heading: return true
     default: return false
     }
   }

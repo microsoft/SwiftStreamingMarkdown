@@ -41,8 +41,7 @@ struct ParagraphViewTests {
   private func createParagraphView(from attributedString: NSAttributedString) -> ParagraphView {
     let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
     return ParagraphView(
-      contents: mutableAttributedString,
-      lineSpacing: nil
+      contents: mutableAttributedString
     )
   }
 
