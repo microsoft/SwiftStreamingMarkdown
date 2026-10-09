@@ -38,7 +38,7 @@ struct PinchZoomView: View {
     GeometryReader { geometry in
       image
         .resizable()
-        .aspectRatio(contentMode: .fit)
+        .scaledToFit()
         .scaleEffect(scale * activeScale)
         .offset(offset)
         .background(
