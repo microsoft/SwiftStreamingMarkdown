@@ -113,12 +113,13 @@ The renderer targets the subset of CommonMark + GitHub-flavored Markdown that LL
 - [x] Inline LaTeX math via `\( … \)`
 - [x] Display LaTeX math via `$$ … $$`
 - [x] Inline citation pills
+- [x] Inline HTML formatting tags — `<br>`, `<b>`/`<strong>`, `<i>`/`<em>`, `<s>`/`<del>`/`<strike>`, `<u>`/`<ins>`, `<mark>`, `<sub>`/`<sup>`, `<code>`/`<kbd>`/`<samp>`/`<tt>`, `<a href>`, `<wbr>` (comments are dropped; unclosed open tags auto-close like browsers; unsupported or unmatched closing tags render as literal text)
 
 ### Not yet supported
 
 - [ ] Footnotes (`[^1]`)
 - [ ] Highlight (`==text==`), superscript (`^x^`), subscript (`~x~`)
-- [ ] Raw HTML (`<details>`, `<kbd>`, `<aside>`, …) — kept inline as text
+- [ ] Block-level raw HTML (`<details>`, `<aside>`, …) — kept inline as text
 - [ ] GitHub alerts (`> [!NOTE]`) — rendered as plain block quotes
 - [ ] Container directives (`::: warning … :::`) and admonitions (`!!! note`)
 - [ ] Mermaid / PlantUML diagrams — rendered as fenced code
