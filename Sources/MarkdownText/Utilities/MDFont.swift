@@ -12,3 +12,14 @@ import AppKit
 /// Cross-platform font type. Resolves to `UIFont` on UIKit platforms and `NSFont` on AppKit platforms.
 public typealias MDFont = NSFont
 #endif
+
+extension MDFont {
+  /// Returns a copy of the font scaled by `factor`.
+  func scaled(by factor: CGFloat) -> MDFont {
+    #if canImport(UIKit)
+    return withSize(pointSize * factor)
+    #else
+    return NSFont(descriptor: fontDescriptor, size: pointSize * factor) ?? self
+    #endif
+  }
+}
