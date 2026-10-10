@@ -236,9 +236,17 @@ struct ChatBubble: View {
 }
 ```
 
+Mid-stream snapshots are parsed with speculative rewriting enabled —
+half-typed emphasis and partial table headers are repaired so text doesn't
+jitter — and the final snapshot is re-parsed literally once the stream
+completes, so a deliberate trailing `*` is restored.
+
 If you'd rather drive `DocumentView` directly, parse each snapshot with
 `MarkdownParser.parse(text:config:)` and feed the resulting
-`RenderableDocument` into your view yourself.
+`RenderableDocument` into your view yourself. Pass
+`speculativeRewrite: true` for incomplete snapshots and keep the default
+`false` for the completed document — the same behavior
+`StreamedMarkdownView` applies internally.
 
 The bundled [sample app](Examples/SwiftStreamingMarkdownSample) demonstrates
 chunked streaming end-to-end with adjustable chunk size and interval, plus

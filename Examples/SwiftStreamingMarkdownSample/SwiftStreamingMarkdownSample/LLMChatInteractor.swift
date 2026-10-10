@@ -53,7 +53,12 @@ final class LLMChatInteractor: ObservableObject {
       ) ?? markdown.endIndex
 
       let snapshot = String(markdown[..<endIndex])
-      let document = await parser.parse(text: snapshot, config: markdownConfig)
+      let isComplete = endIndex == markdown.endIndex
+      let document = await parser.parse(
+        text: snapshot,
+        config: markdownConfig,
+        speculativeRewrite: !isComplete
+      )
       await viewModel.updateAssistantMessage(id: messageID, document: document)
 
       if endIndex == markdown.endIndex { break }
