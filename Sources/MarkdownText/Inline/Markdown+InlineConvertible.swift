@@ -187,6 +187,62 @@ extension Markdown.InlineCode: InlineConvertible {
   }
 }
 
+extension Markdown.InlineAttributes: InlineConvertible {
+
+  /// Attribute keys this renderer understands inside `attributes`. Produced by
+  /// `InlineHTMLRewriter` for tags that have no dedicated Markdown node
+  /// (`<u>`/`<ins>`, `<mark>`, `<sub>`, `<sup>`).
+  private static let enabledKeyRegex = try? Regex(#"(?:^|[,{}\s])([a-zA-Z]+)\s*:\s*true\b"#)
+
+  private var enabledKeys: Set<String> {
+    guard let regex = Self.enabledKeyRegex else { return [] }
+    var keys = Set<String>()
+    for match in attributes.matches(of: regex) {
+      if let key = match.output[1].substring {
+        keys.insert(String(key))
+      }
+    }
+    return keys
+  }
+
+  func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
+    var container = attributeContainer
+    let font = attributeContainer[.font] as? MDFont ?? config.paragraphStyle.textFonts.normal
+    let keys = enabledKeys
+    if keys.contains("subscript") {
+      container[.baselineOffset] = -font.pointSize * 0.2
+    }
+    if keys.contains("superscript") {
+      container[.baselineOffset] = font.pointSize * 0.35
+    }
+    if keys.contains("underline") {
+      container[.underlineStyle] = NSUnderlineStyle.single.rawValue
+      container[.underlineColor] = container[.foregroundColor]
+    }
+    if keys.contains("highlight") {
+      container[.backgroundColor] = MDColor.systemYellow.withAlphaComponent(0.45)
+    }
+    let str = NSMutableAttributedString()
+    self.inlineConvertibleChildren.forEach { convertible in
+      str.append(convertible.convert(attributeContainer: container, config: config))
+    }
+    if keys.contains("subscript") || keys.contains("superscript") {
+      // Scale the produced runs rather than the container font: inner
+      // converters (`Strong`, `Emphasis`, `InlineCode`) overwrite `.font`
+      // with their own variants, which would leave e.g. `<sup><b>x</b></sup>`
+      // at full size.
+      var scaled: [(NSRange, MDFont)] = []
+      str.enumerateAttribute(.font, in: NSRange(location: 0, length: str.length)) { value, range, _ in
+        scaled.append((range, (value as? MDFont) ?? font))
+      }
+      for (range, base) in scaled {
+        str.addAttribute(.font, value: base.scaled(by: 0.75), range: range)
+      }
+    }
+    return str
+  }
+}
+
 extension Markdown.Table.Cell: InlineConvertible {
 
   func convert(attributeContainer: NSAttributeContainer, config: MarkdownRenderConfig) -> NSMutableAttributedString {
