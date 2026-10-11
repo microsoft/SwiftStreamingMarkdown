@@ -26,6 +26,13 @@ struct PinchZoomView: View {
 
   private var isScaled: Bool { scale > Self.minZoomScale }
 
+  private var usesNativeZoom: Bool {
+    if #available(iOS 18.0, *) {
+      return true
+    }
+    return false
+  }
+
   let image: Image
   let onSwipeToDismiss: () -> Void
 
@@ -41,6 +48,7 @@ struct PinchZoomView: View {
         .aspectRatio(contentMode: .fit)
         .scaleEffect(scale * activeScale)
         .offset(offset)
+        .accessibilityIdentifier("markdown-image-viewer.image")
         .background(
           GeometryReader { proxy in
             Color.clear
@@ -57,8 +65,7 @@ struct PinchZoomView: View {
           handleDoubleTap(at: location, in: geometry)
         }
         .gesture(
-          SimultaneousGesture(
-            DragGesture()
+          DragGesture()
               .onChanged { value in
                 let deltaWidth = value.translation.width - lastDragDist.width
                 let deltaHeight = value.translation.height - lastDragDist.height
@@ -78,7 +85,10 @@ struct PinchZoomView: View {
                   panOffset(velocity: value.velocity, containerSize: geometry.size)
                 }
               },
-            MagnificationGesture()
+          including: isScaled || !usesNativeZoom ? .all : .none
+        )
+        .simultaneousGesture(
+          MagnificationGesture()
               .updating($activeScale, body: { value, state, _ in
                 state = value
               })
@@ -89,9 +99,9 @@ struct PinchZoomView: View {
                   animateOffset(to: newOffset)
                 }
               }
-          )
         )
     }
+    .interactiveDismissDisabled(usesNativeZoom && (isScaled || activeScale != Self.minZoomScale))
   }
 
   private func handleDoubleTap(at location: CGPoint, in geometry: GeometryProxy) {

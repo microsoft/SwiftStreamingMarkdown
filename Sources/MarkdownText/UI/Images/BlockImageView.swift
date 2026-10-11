@@ -20,16 +20,31 @@ struct BlockImageView: View {
   @Environment(\.markdownConfig) private var config
 
   @State private var isViewerPresented = false
+  @Namespace private var imageTransition
 
   var body: some View {
-    imageContent
+    transitionSource
       .frame(maxWidth: .infinity, alignment: .center)
       .accessibilityLabel(data.alt.isEmpty ? Text(String.imageLabel) : Text(data.alt))
+      .accessibilityIdentifier("markdown-image.inline")
       .contentShape(Rectangle())
       .onTapGesture {
         handleTap()
       }
-      .imageViewer(source: data.source, alt: data.alt, isPresented: $isViewerPresented)
+      .imageViewer(source: data.source, alt: data.alt, isPresented: $isViewerPresented, namespace: imageTransition)
+  }
+
+  @ViewBuilder
+  private var transitionSource: some View {
+    #if os(iOS)
+    if #available(iOS 18.0, *) {
+      imageContent.matchedTransitionSource(id: "image", in: imageTransition)
+    } else {
+      imageContent
+    }
+    #else
+    imageContent
+    #endif
   }
 
   private func handleTap() {

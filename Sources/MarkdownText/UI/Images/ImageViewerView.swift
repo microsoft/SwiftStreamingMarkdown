@@ -13,7 +13,8 @@ extension View {
   func imageViewer(
     source: ImageData.Source?,
     alt: String,
-    isPresented: Binding<Bool>
+    isPresented: Binding<Bool>,
+    namespace: Namespace.ID
   ) -> some View {
     #if os(iOS)
     fullScreenCover(isPresented: isPresented) {
@@ -21,6 +22,7 @@ extension View {
         ImageViewerView(source: source, alt: alt) {
           isPresented.wrappedValue = false
         }
+        .imageZoomTransition(namespace: namespace)
       }
     }
     #else
@@ -30,6 +32,17 @@ extension View {
 }
 
 #if os(iOS)
+
+private extension View {
+  @ViewBuilder
+  func imageZoomTransition(namespace: Namespace.ID) -> some View {
+    if #available(iOS 18.0, *) {
+      navigationTransition(.zoom(sourceID: "image", in: namespace))
+    } else {
+      self
+    }
+  }
+}
 
 /// The built-in fullscreen image viewer presented when a user taps a rendered
 /// block-level image and `ImageConfig.fullscreenViewerEnabled` is `true`.
@@ -51,6 +64,7 @@ struct ImageViewerView: View {
         .ignoresSafeArea()
 
       zoomableImage
+        .ignoresSafeArea()
         .accessibilityLabel(alt.isEmpty ? Text(String.imageLabel) : Text(alt))
 
       dismissButton
@@ -93,6 +107,7 @@ struct ImageViewerView: View {
             .background(.ultraThinMaterial, in: Circle())
         }
         .accessibilityLabel(Text(String.imageViewerCloseLabel))
+        .accessibilityIdentifier("markdown-image-viewer.close")
         .padding(16)
       }
       Spacer()
