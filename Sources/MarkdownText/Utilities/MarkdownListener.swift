@@ -43,6 +43,12 @@ public final class MarkdownController: ObservableObject {
     self.listener = listener
   }
 
+  /// Whether table copy/download taps reach a listener. `TableView` shows its
+  /// action controls only when this is `true`.
+  var handlesTableActions: Bool {
+    listener != nil
+  }
+
   /// Request presentation of the full-document text selection modal.
   func requestTextSelection() {
     isTextSelectionRequested = true
