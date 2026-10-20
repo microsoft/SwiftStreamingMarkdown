@@ -136,7 +136,7 @@ struct TableView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      if controller != nil {
+      if controller?.handlesTableActions == true {
         scrollView.onTapGesture {
           withAnimation(.easeInOut(duration: 0.2)) {
             isExpanded.toggle()
