@@ -13,7 +13,7 @@ let package = Package(
       targets: ["SwiftStreamingMarkdown"])
   ],
   dependencies: [
-    .package(url: "https://github.com/ordo-one/equatable", exact: "1.4.1"),
+    .package(url: "https://github.com/ordo-one/equatable", exact: "1.5.0"),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.4"),
     .package(url: "https://github.com/swiftlang/swift-markdown.git", exact: "0.7.3"),
     .package(url: "https://github.com/appstefan/highlightswift", revision: "99c431b38a1444a5fd6a4978307fbbefe3a7af53"),
